@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "kobo.fullname" . }}-test-connection"
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "kobo.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

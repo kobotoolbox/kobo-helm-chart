@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kobo.fullname" . }}-kpi
+  labels:
+    app.kubernetes.io/component: kpi
+    {{- include "kobo.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.kpi.autoscaling.enabled }}
+  replicas: {{ .Values.kpi.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kpi
+      {{- include "kobo.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
+        tag: "{{ .Values.kpi.image.tag }}"
+      labels:
+        app.kubernetes.io/component: kpi
+        {{- include "kobo.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "kobo.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /accounts/login/
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /accounts/login/
+              port: http
+            initialDelaySeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: {{ include "kobo.fullname" . }}-kpi
+            - configMapRef:
+                name: {{ include "kobo.fullname" . }}-kpi
+          command: ["/srv/init/run-uwsgi.sh"]
+          volumeMounts:
+          - name: scripts
+            mountPath: /srv/init/
+
+      {{- with .Values.kpi.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kpi.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kpi.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/component: kpi
+      volumes:
+      - name: scripts
+        configMap:
+          name: kpi-scripts
+          defaultMode: 0744
+          items:
+          - key: run-uwsgi.sh
+            path: run-uwsgi.sh

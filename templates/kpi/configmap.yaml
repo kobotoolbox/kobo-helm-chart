@@ -1,0 +1,23 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kobo.fullname" . }}-kpi
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook-weight": "-1"
+data:
+{{- range $k, $v := .Values.kpi.env.normal }}
+  {{ $k }}: {{ $v | quote }}
+{{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kpi-scripts
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+data:
+{{ (.Files.Glob "files/run-uwsgi.sh").AsConfig | indent 2}}
