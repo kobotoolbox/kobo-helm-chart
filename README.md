@@ -23,4 +23,5 @@ Set image tag versions yourself, do not set to latest.
 
 # Acknowledgements
 
-Includes ideas from https://github.com/one-acre-fund/kobo-k8s/
+- Includes ideas from https://github.com/one-acre-fund/kobo-k8s/
+- unicef

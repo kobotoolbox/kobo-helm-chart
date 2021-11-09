@@ -1,0 +1,28 @@
+{{- if .Values.kpi.worker.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "kobo.fullname" . }}-kpi-worker
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "kobo.fullname" . }}-kpi-worker
+  minReplicas: {{ .Values.kpi.worker.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.kpi.worker.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.kpi.worker.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.kpi.worker.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.kpi.worker.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.kpi.worker.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "kobo.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "kobo.fullname" . }}:{{ .Values.kpi.service.port }}']
   restartPolicy: Never

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kobo.fullname" . }}-kpi-beat
+  labels:
+    app.kubernetes.io/component: kpi-beat
+    {{- include "kobo.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kpi-beat
+      {{- include "kobo.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
+        tag: "{{ .Values.kpi.image.tag }}"
+      labels:
+        app.kubernetes.io/component: kpi-beat
+        {{- include "kobo.selectorLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
+          resources:
+            limits:
+              cpu: 50m
+              memory: 96Mi
+            requests:
+              cpu: 1m
+              memory: 32Mi
+          envFrom:
+            - secretRef:
+                name: {{ include "kobo.fullname" . }}-kpi
+            - configMapRef:
+                name: {{ include "kobo.fullname" . }}-kpi
+          command: ["celery", "beat", "-A", "kobo", "-l", "info", "--pidfile=/tmp/celery_beat.pid", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler"]
+
+      {{- with .Values.kpi.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kpi.worker.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kpi.worker.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
