@@ -20,4 +20,4 @@ metadata:
   labels:
     {{- include "kobo.labels" . | nindent 4 }}
 data:
-{{ (.Files.Glob "files/run-uwsgi.sh").AsConfig | indent 2}}
+{{ (.Files.Glob "files/kpi/run-uwsgi.sh").AsConfig | indent 2}}

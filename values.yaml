@@ -93,6 +93,7 @@ kobocat:
       # Overwrite these
       DATABASE_URL: "postgis://postgres:password@postgres-postgresql:5432/postgres"
       DJANGO_SECRET_KEY: "change_me_too_please"
+      KOBOCAT_BROKER_URL: "redis://localhost:6379/1"
   ingress:
     enabled: false
     className: ""
@@ -107,6 +108,21 @@ kobocat:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+  worker:
+    replicaCount: 1
+    resources: {}
+      # limits:
+      #   cpu: 1000m
+      #   memory: 1024Mi
+      # requests:
+      #   cpu: 100m
+      #   memory: 512Mi
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 100
+      targetCPUUtilizationPercentage: 80
+      # targetMemoryUtilizationPercentage: 80
 
     
 

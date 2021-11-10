@@ -11,3 +11,13 @@ data:
 {{- range $k, $v := .Values.kobocat.env.normal }}
   {{ $k }}: {{ $v | quote }}
 {{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kobocat-scripts
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+data:
+{{ (.Files.Glob "files/kobocat/run-uwsgi.sh").AsConfig | indent 2}}
