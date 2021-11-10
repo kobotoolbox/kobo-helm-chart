@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kobo.fullname" . }}-kobocat
+  labels:
+    app.kubernetes.io/component: kobocat
+    {{- include "kobo.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.kobocat.autoscaling.enabled }}
+  replicas: {{ .Values.kobocat.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kobocat
+      {{- include "kobo.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/kobocat/secrets.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/kobocat/configmap.yaml") . | sha256sum }}
+        tag: "{{ .Values.kobocat.image.tag }}"
+      labels:
+        app.kubernetes.io/component: kobocat
+        {{- include "kobo.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "kobo.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.kobocat.image.repository }}:{{ .Values.kobocat.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.kobocat.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /accounts/login/
+          #     port: http
+          #   initialDelaySeconds: 5
+          #   timeoutSeconds: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /accounts/login/
+          #     port: http
+          #   initialDelaySeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: {{ include "kobo.fullname" . }}-kobocat
+            - configMapRef:
+                name: {{ include "kobo.fullname" . }}-kobocat
+      {{- with .Values.kobocat.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kobocat.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kobocat.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/component: kobocat

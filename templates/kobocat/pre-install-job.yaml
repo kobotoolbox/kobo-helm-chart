@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "kobo.fullname" . }}-kobocat
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    "helm.sh/hook-weight": "0"
+    checksum/secret: {{ include (print $.Template.BasePath "/kobocat/secrets.yaml") . | sha256sum }}
+    checksum/configmap: {{ include (print $.Template.BasePath "/kobocat/configmap.yaml") . | sha256sum }}
+    tag: "{{ .Values.kobocat.image.tag }}"
+spec:
+  activeDeadlineSeconds: 600
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: pre-install-job
+        image: "{{ .Values.kobocat.image.repository }}:{{ .Values.kobocat.image.tag }}"
+        imagePullPolicy: {{ .Values.kobocat.image.pullPolicy }}
+        command: ["./manage.py","migrate"]
+        env:
+          - name: DATABASE_URL
+            value: {{ required "kobocat.env.secret.DATABASE_URL is a required value." .Values.kobocat.env.secret.DATABASE_URL }}
+          - name: DJANGO_SECRET_KEY
+            value: {{ required "kobocat.env.secret.DJANGO_SECRET_KEY is a required value." .Values.kobocat.env.secret.DJANGO_SECRET_KEY }}
+        {{- range $k, $v := .Values.kobocat.env.normal }}
+          - name: {{ $k }}
+            value: {{ $v | quote }}
+        {{- end }}
