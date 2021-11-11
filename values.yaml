@@ -24,10 +24,15 @@ kpi:
     type: ClusterIP
     port: 80
   env:
-    normal: {}
+    normal:
+      EMAIL_BACKEND: "django.core.mail.backends.console.EmailBackend"
     secret:
       # Overwrite these
       DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
+      KPI_MONGO_HOST: "mongo-mongodb"
+      KPI_MONGO_NAME: "admin"
+      KPI_MONGO_USER: "root"
+      KPI_MONGO_PASS: "password"
       KC_DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/kobocat"
       KPI_BROKER_URL: "redis://localhost:6379/1"
       DJANGO_SECRET_KEY: "change_me_please"
@@ -92,6 +97,10 @@ kobocat:
     secret:
       # Overwrite these
       DATABASE_URL: "postgis://postgres:password@postgres-postgresql:5432/postgres"
+      KOBOCAT_MONGO_HOST: "mongo-mongodb"
+      KOBOCAT_MONGO_NAME: "admin"
+      KOBOCAT_MONGO_USER: "root"
+      KOBOCAT_MONGO_PASS: "password"
       DJANGO_SECRET_KEY: "change_me_too_please"
       KOBOCAT_BROKER_URL: "redis://localhost:6379/1"
   ingress:
@@ -130,7 +139,7 @@ enketo:
   image:
     repository: kobotoolbox/enketo-express-extra-widgets
     pullPolicy: IfNotPresent
-    tag: "2.8.1"
+    tag: "3.0.4"
   replicaCount: 1
   resources: {}
     # limits:
@@ -148,6 +157,28 @@ enketo:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  service:
+    type: ClusterIP
+    port: 80
+  env:
+    normal: {}
+    secret:
+      # Change these
+      ENKETO_REDIS_MAIN_URL: "redis://localhost:6379/1"
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+      # kubernetes.io/ingress.class: nginx
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
 
 imagePullSecrets: []
 nameOverride: ""

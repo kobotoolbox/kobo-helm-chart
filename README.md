@@ -6,10 +6,9 @@ This chart is intended for high availability instances of KoBo Toolbox. Small an
 
 - Does not include databases - expects only environment variables for external databases
 - As generic as possible, agnostic about the environment variables set for each service
-- Based on https://gitlab.com/burke-software/django-helm-chart
 - Supports high availability via k8s's horizontal pod autoscaler (HPA), pod disruption budget (PDB), and topology spread constraints
 - Stick to defaults and conventions from `helm create` when possible
-- Every service/job should do one job. Migrate, run uwsgi, run celery, etc
+- Every deployment/job should do one thing. Migrate, run uwsgi, run celery, etc
 
 # Usage
 
@@ -23,5 +22,8 @@ Set image tag versions yourself, do not set to latest.
 
 # Acknowledgements
 
-- Includes ideas from https://github.com/one-acre-fund/kobo-k8s/
-- unicef
+Includes ideas from:
+
+- https://gitlab.com/burke-software/django-helm-chart
+- https://github.com/one-acre-fund/kobo-k8s/
+- unicef helm chart

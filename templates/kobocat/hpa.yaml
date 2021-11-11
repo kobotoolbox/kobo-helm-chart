@@ -1,0 +1,28 @@
+{{- if .Values.kobocat.autoscaling.enabled }}
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "kobo.fullname" . }}-kobocat
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "kobo.fullname" . }}-kobocat
+  minReplicas: {{ .Values.kobocat.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.kobocat.autoscaling.maxReplicas }}
+  metrics:
+    {{- if .Values.kobocat.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        targetAverageUtilization: {{ .Values.kobocat.autoscaling.targetCPUUtilizationPercentage }}
+    {{- end }}
+    {{- if .Values.kobocat.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        targetAverageUtilization: {{ .Values.kobocat.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- end }}
+{{- end }}

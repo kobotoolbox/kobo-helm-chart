@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kobo.fullname" . }}-enketo
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook-weight": "-1"
+data:
+{{- range $k, $v := .Values.enketo.env.normal }}
+  {{ $k }}: {{ $v | quote }}
+{{- end }}

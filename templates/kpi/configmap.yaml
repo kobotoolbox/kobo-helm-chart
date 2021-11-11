@@ -8,6 +8,14 @@ metadata:
   annotations:
     "helm.sh/hook-weight": "-1"
 data:
+{{- if .Values.kobocat.ingress.enabled }}
+  KOBOCAT_URL: {{ include "kobo.kobocatUrl" . | quote }}
+{{- end }}
+  KOBOCAT_INTERNAL_URL: http://{{ include "kobo.fullname" . }}-kobocat
+{{- if .Values.enketo.ingress.enabled }}
+  ENKETO_URL: {{ include "kobo.enketoUrl" . | quote }}
+{{- end }}
+  ENKETO_INTERNAL_URL: http://{{ include "kobo.fullname" . }}-enketo
 {{- range $k, $v := .Values.kpi.env.normal }}
   {{ $k }}: {{ $v | quote }}
 {{- end }}

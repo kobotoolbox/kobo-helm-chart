@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kobo.fullname" . }}-enketo
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.enketo.service.type }}
+  ports:
+    - port: {{ .Values.enketo.service.port }}
+      targetPort: 8005
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "kobo.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: enketo

@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kobo.fullname" . }}-enketo
+  labels:
+    app.kubernetes.io/component: enketo
+    {{- include "kobo.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.enketo.autoscaling.enabled }}
+  replicas: {{ .Values.enketo.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: enketo
+      {{- include "kobo.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/enketo/secrets.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/enketo/configmap.yaml") . | sha256sum }}
+        tag: "{{ .Values.enketo.image.tag }}"
+      labels:
+        app.kubernetes.io/component: enketo
+        {{- include "kobo.selectorLabels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "kobo.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          # Override to avoid create config script, since we use env vars
+          command: ["pm2", "start", "--no-daemon", "app.js", "-n", "enketo"]
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.enketo.image.repository }}:{{ .Values.enketo.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.enketo.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8005
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: {{ include "kobo.fullname" . }}-enketo
+            - configMapRef:
+                name: {{ include "kobo.fullname" . }}-enketo
+      {{- with .Values.enketo.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.enketo.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.enketo.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/component: enketo
