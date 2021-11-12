@@ -180,6 +180,10 @@ enketo:
     #    hosts:
     #      - chart-example.local
 
+nginx:
+  image: nginx:1.21.4
+
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

@@ -27,7 +27,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: backend
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag | default .Chart.AppVersion }}"
@@ -56,8 +56,20 @@ spec:
                 name: {{ include "kobo.fullname" . }}-kpi
           command: ["/srv/init/run-uwsgi.sh"]
           volumeMounts:
+          - name: static-volume
+            mountPath: /srv/static
           - name: scripts
             mountPath: /srv/init/
+        - name: nginx
+          image: {{ .Values.nginx.image }}
+          imagePullPolicy: Always
+          volumeMounts:
+          - name: static-volume
+            mountPath: /static
+          - name: nginx-conf
+            mountPath: /etc/nginx/conf.d/
+          ports:
+            - containerPort: 80
 
       {{- with .Values.kpi.nodeSelector }}
       nodeSelector:
@@ -79,6 +91,8 @@ spec:
           matchLabels:
             app.kubernetes.io/component: kpi
       volumes:
+      - name: static-volume
+        emptyDir: {}
       - name: scripts
         configMap:
           name: kpi-scripts
@@ -86,3 +100,6 @@ spec:
           items:
           - key: run-uwsgi.sh
             path: run-uwsgi.sh
+      - name: nginx-conf
+        configMap:
+          name: nginx-kpi-conf

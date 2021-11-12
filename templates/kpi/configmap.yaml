@@ -29,3 +29,14 @@ metadata:
     {{- include "kobo.labels" . | nindent 4 }}
 data:
 {{ (.Files.Glob "files/kpi/run-uwsgi.sh").AsConfig | indent 2}}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-kpi-conf
+  labels:
+    component: kpi
+    {{- include "kobo.labels" . | nindent 4 }}
+data:
+{{ (.Files.Glob "files/kpi/nginx.conf").AsConfig | indent 2 }}
