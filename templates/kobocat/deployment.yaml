@@ -36,17 +36,17 @@ spec:
             - name: http
               containerPort: 8000
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /accounts/login/
-          #     port: http
-          #   initialDelaySeconds: 5
-          #   timeoutSeconds: 5
-          # readinessProbe:
-          #   httpGet:
-          #     path: /accounts/login/
-          #     port: http
-          #   initialDelaySeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api/v1/
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/v1/
+              port: http
+            initialDelaySeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           envFrom:
