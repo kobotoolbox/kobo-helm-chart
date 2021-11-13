@@ -12,9 +12,10 @@ This chart is intended for high availability instances of KoBo Toolbox. Small an
 
 # Usage
 
-Carefully review values.yaml
+1. Prepare 
+1. Carefully review values.yaml. Set image tag version, do not set to latest. 
 
-Set image tag versions yourself, do not set to latest.
+`helm -n david-kobo-chart install kobo . -f your-values.yaml`
 
 ## Upgrading
 
