@@ -8,6 +8,7 @@ metadata:
   annotations:
     "helm.sh/hook-weight": "-1"
 data:
+  ENKETO_VERSION: "Express"
 {{- if .Values.kobocat.ingress.enabled }}
   KOBOCAT_URL: {{ include "kobo.kobocatUrl" . | quote }}
 {{- end }}
