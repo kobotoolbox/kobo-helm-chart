@@ -8,6 +8,9 @@ metadata:
   annotations:
     "helm.sh/hook-weight": "-1"
 data:
+{{- if .Values.kobocat.ingress.enabled }}
+  KOBOCAT_URL: {{ include "kobo.kobocatUrl" . | quote }}
+{{- end }}
 {{- range $k, $v := .Values.kobocat.env.normal }}
   {{ $k }}: {{ $v | quote }}
 {{- end }}
