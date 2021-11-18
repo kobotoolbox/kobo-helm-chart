@@ -7,10 +7,14 @@ metadata:
 spec:
   type: {{ .Values.kobocat.service.type }}
   ports:
-    - port: {{ .Values.kobocat.service.port }}
-      targetPort: 8000
+    - name: http
       protocol: TCP
-      name: http
+      port: 8001 
+      targetPort: 8000
+    - name: nginx
+      protocol: TCP
+      port: {{ .Values.kobocat.service.port }}
+      targetPort: 80
   selector:
     {{- include "kobo.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: kobocat

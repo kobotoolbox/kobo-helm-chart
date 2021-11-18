@@ -27,7 +27,7 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: backend
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.kobocat.image.repository }}:{{ .Values.kobocat.image.tag | default .Chart.AppVersion }}"
@@ -58,6 +58,32 @@ spec:
           volumeMounts:
           - name: scripts
             mountPath: /srv/init/
+        - name: nginx
+          image: {{ .Values.nginx.image }}
+          imagePullPolicy: Always
+          volumeMounts:
+          - name: static-volume
+            mountPath: /static
+          - name: nginx-conf
+            mountPath: /etc/nginx/conf.d/
+          ports:
+            - containerPort: 80
+      initContainers:
+        - name: init
+          image: "{{ .Values.kobocat.image.repository }}:{{ .Values.kobocat.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.kobocat.image.pullPolicy }}
+          command: ["/srv/init/init.sh"]
+          volumeMounts:
+          - name: static-volume
+            mountPath: /static    
+          - name: scripts
+            mountPath: /srv/init/
+          envFrom:
+            - secretRef:
+                name: {{ include "kobo.fullname" . }}-kobocat
+            - configMapRef:
+                name: {{ include "kobo.fullname" . }}-kobocat
+
       {{- with .Values.kobocat.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -78,6 +104,8 @@ spec:
           matchLabels:
             app.kubernetes.io/component: kobocat
       volumes:
+      - name: static-volume
+        emptyDir: {}
       - name: scripts
         configMap:
           name: kobocat-scripts
@@ -85,3 +113,8 @@ spec:
           items:
           - key: run-uwsgi.sh
             path: run-uwsgi.sh
+          - key: init.sh
+            path: init.sh
+      - name: nginx-conf
+        configMap:
+          name: nginx-kobocat-conf

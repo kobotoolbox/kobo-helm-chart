@@ -21,3 +21,15 @@ metadata:
     {{- include "kobo.labels" . | nindent 4 }}
 data:
 {{ (.Files.Glob "files/kobocat/run-uwsgi.sh").AsConfig | indent 2}}
+{{ (.Files.Glob "files/kobocat/init.sh").AsConfig | indent 2}}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-kobocat-conf
+  labels:
+    component: kobocat
+    {{- include "kobo.labels" . | nindent 4 }}
+data:
+{{ (.Files.Glob "files/kobocat/nginx.conf").AsConfig | indent 2 }}

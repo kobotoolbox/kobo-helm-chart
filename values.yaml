@@ -107,7 +107,7 @@ kobocat:
       KOBOCAT_MONGO_NAME: "admin"
       KOBOCAT_MONGO_USER: "root"
       KOBOCAT_MONGO_PASS: "password"
-      DJANGO_SECRET_KEY: "change_me_too_please"
+      DJANGO_SECRET_KEY: "change_me_please"
       KOBOCAT_BROKER_URL: "redis://localhost:6379/1"
   ingress:
     enabled: false

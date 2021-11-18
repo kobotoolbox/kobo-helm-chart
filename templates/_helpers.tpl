@@ -66,7 +66,7 @@ Guess the public kobocat url, assume https
 */}}
 {{- define "kobo.kobocatUrl" -}}
 {{- if .Values.kobocat.ingress.enabled }}
-{{- with (first .Values.kobocat.ingress.hosts) }}https://{{ .host }}{{- end }}/{{- end }}
+{{- with (first .Values.kobocat.ingress.hosts) }}https://{{ .host }}{{- end }}{{- end }}
 {{- end }}
 
 {{/*
