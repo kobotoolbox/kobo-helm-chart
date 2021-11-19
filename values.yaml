@@ -1,3 +1,11 @@
+# Shared
+kobotoolbox:
+  djangoSecret: "change_me_please"
+  mongoHost: "mongo-mongodb.tmp-databases"
+  mongoName: "admin"
+  mongoUser: "root"
+  mongoPass: "PtOvp3368E"
+
 kpi:
   image:
     repository: kobotoolbox/kpi
@@ -31,16 +39,11 @@ kpi:
       KPI_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # -- Set s3 bucket name is relevant
       KPI_AWS_STORAGE_BUCKET_NAME: "kobo-eks-staging"
-      KPI_MONGO_HOST: "mongo-mongodb"
-      KPI_MONGO_NAME: "admin"
-      KPI_MONGO_USER: "root"
     secret:
       # Overwrite these
       DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
-      KPI_MONGO_PASS: "password"
       KC_DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/kobocat"
       KPI_BROKER_URL: "redis://localhost:6379/1"
-      DJANGO_SECRET_KEY: "change_me_please"
       REDIS_SESSION_URL: "redis://localhost:6379/1"
   worker:
     replicaCount: 1
@@ -103,11 +106,6 @@ kobocat:
     secret:
       # Overwrite these
       DATABASE_URL: "postgis://postgres:password@postgres-postgresql:5432/postgres"
-      KOBOCAT_MONGO_HOST: "mongo-mongodb"
-      KOBOCAT_MONGO_NAME: "admin"
-      KOBOCAT_MONGO_USER: "root"
-      KOBOCAT_MONGO_PASS: "password"
-      DJANGO_SECRET_KEY: "change_me_please"
       KOBOCAT_BROKER_URL: "redis://localhost:6379/1"
   ingress:
     enabled: false

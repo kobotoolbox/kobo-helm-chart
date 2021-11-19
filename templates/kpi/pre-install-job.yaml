@@ -27,7 +27,7 @@ spec:
           - name: KC_DATABASE_URL
             value: {{ required "kpi.env.secret.KC_DATABASE_URL is a required value." .Values.kpi.env.secret.KC_DATABASE_URL }}
           - name: DJANGO_SECRET_KEY
-            value: {{ required "kpi.env.secret.DJANGO_SECRET_KEY is a required value." .Values.kpi.env.secret.DJANGO_SECRET_KEY }}
+            value: {{ required "djangoSecret is a required value." .Values.kobotoolbox.djangoSecret }}
         {{- range $k, $v := .Values.kpi.env.normal }}
           - name: {{ $k }}
             value: {{ $v | quote }}

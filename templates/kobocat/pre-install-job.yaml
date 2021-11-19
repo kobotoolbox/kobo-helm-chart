@@ -25,7 +25,7 @@ spec:
           - name: DATABASE_URL
             value: {{ required "kobocat.env.secret.DATABASE_URL is a required value." .Values.kobocat.env.secret.DATABASE_URL }}
           - name: DJANGO_SECRET_KEY
-            value: {{ required "kobocat.env.secret.DJANGO_SECRET_KEY is a required value." .Values.kobocat.env.secret.DJANGO_SECRET_KEY }}
+            value: {{ required "djangoSecret is a required value." .Values.kobotoolbox.djangoSecret }}
         {{- range $k, $v := .Values.kobocat.env.normal }}
           - name: {{ $k }}
             value: {{ $v | quote }}
