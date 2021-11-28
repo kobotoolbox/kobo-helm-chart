@@ -23,7 +23,7 @@ spec:
         command: ["./manage.py","migrate"]
         env:
           - name: DATABASE_URL
-            value: {{ required "kobocat.env.secret.DATABASE_URL is a required value." .Values.kobocat.env.secret.DATABASE_URL }}
+            value: {{ required "kobocatDatabase required" .Values.kobotoolbox.kobocatDatabase }}
           - name: DJANGO_SECRET_KEY
             value: {{ required "djangoSecret is a required value." .Values.kobotoolbox.djangoSecret }}
         {{- range $k, $v := .Values.kobocat.env.normal }}

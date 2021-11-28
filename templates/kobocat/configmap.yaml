@@ -8,6 +8,9 @@ metadata:
   annotations:
     "helm.sh/hook-weight": "-1"
 data:
+  KOBOCAT_MONGO_HOST: {{ required "mongoHost is required" .Values.kobotoolbox.mongoHost }}
+  KOBOCAT_MONGO_NAME: {{ required "mongoName is required" .Values.kobotoolbox.mongoName }}
+  KOBOCAT_MONGO_USER: {{ required "mongoUser is required" .Values.kobotoolbox.mongoUser }}
 {{- if .Values.kobocat.ingress.enabled }}
   KOBOCAT_URL: {{ include "kobo.kobocatUrl" . | quote }}
 {{- end }}
