@@ -14,19 +14,19 @@ kpi:
     pullPolicy: IfNotPresent
     tag: "2.021.45"
   replicaCount: 1
-  resources: {}
-    # limits:
-    #   cpu: 1000m
-    #   memory: 1024Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 512Mi
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 512Mi
   autoscaling:
     enabled: false
-    minReplicas: 1
-    maxReplicas: 100
+    minReplicas: 2
+    maxReplicas: 20
     targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -49,19 +49,19 @@ kpi:
       # AWS_SECRET_ACCESS_KEY: ""
   worker:
     replicaCount: 1
-    resources: {}
-      # limits:
-      #   cpu: 1000m
-      #   memory: 1024Mi
-      # requests:
-      #   cpu: 100m
-      #   memory: 512Mi
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 100m
+        memory: 512Mi
     autoscaling:
-      enabled: false
+      enabled: true
       minReplicas: 1
-      maxReplicas: 100
+      maxReplicas: 20
       targetCPUUtilizationPercentage: 80
-      # targetMemoryUtilizationPercentage: 80
+      targetMemoryUtilizationPercentage: 90
   ingress:
     enabled: false
     className: ""
@@ -84,19 +84,19 @@ kobocat:
     pullPolicy: IfNotPresent
     tag: "2.021.45"
   replicaCount: 1
-  resources: {}
-    # limits:
-    #   cpu: 1000m
-    #   memory: 1024Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 512Mi
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 512Mi
   autoscaling:
     enabled: false
-    minReplicas: 1
-    maxReplicas: 100
+    minReplicas: 2
+    maxReplicas: 20
     targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 90
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -128,17 +128,17 @@ kobocat:
     #      - chart-example.local
   worker:
     replicaCount: 1
-    resources: {}
-      # limits:
-      #   cpu: 1000m
-      #   memory: 1024Mi
-      # requests:
-      #   cpu: 100m
-      #   memory: 512Mi
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1024Mi
+      requests:
+        cpu: 100m
+        memory: 512Mi
     autoscaling:
       enabled: false
       minReplicas: 1
-      maxReplicas: 100
+      maxReplicas: 20
       targetCPUUtilizationPercentage: 80
       # targetMemoryUtilizationPercentage: 80
 
@@ -150,19 +150,19 @@ enketo:
     pullPolicy: IfNotPresent
     tag: "3.0.4"
   replicaCount: 1
-  resources: {}
-    # limits:
-    #   cpu: 1000m
-    #   memory: 1024Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 512Mi
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 512Mi
   autoscaling:
     enabled: false
-    minReplicas: 1
-    maxReplicas: 100
+    minReplicas: 2
+    maxReplicas: 20
     targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 90
   nodeSelector: {}
   tolerations: []
   affinity: {}
