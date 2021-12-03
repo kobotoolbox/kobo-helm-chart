@@ -52,10 +52,10 @@ kpi:
     resources:
       limits:
         cpu: 1000m
-        memory: 1024Mi
+        memory: 800Mi
       requests:
         cpu: 300m
-        memory: 512Mi
+        memory: 280Mi
     autoscaling:
       enabled: true
       minReplicas: 1
@@ -131,10 +131,10 @@ kobocat:
     resources:
       limits:
         cpu: 1000m
-        memory: 1024Mi
+        memory: 800Mi
       requests:
-        cpu: 100m
-        memory: 512Mi
+        cpu: 300m
+        memory: 280Mi
     autoscaling:
       enabled: false
       minReplicas: 1
