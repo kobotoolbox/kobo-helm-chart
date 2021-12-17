@@ -32,7 +32,7 @@ spec:
           image: "{{ .Values.kobocat.image.repository }}:{{ .Values.kobocat.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.kobocat.image.pullPolicy }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.kobocat.worker.resources | nindent 12 }}
           envFrom:
             - secretRef:
                 name: {{ include "kobo.fullname" . }}-kobocat

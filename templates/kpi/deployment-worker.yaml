@@ -32,7 +32,7 @@ spec:
           image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            {{- toYaml .Values.kpi.worker.resources | nindent 12 }}
           envFrom:
             - secretRef:
                 name: {{ include "kobo.fullname" . }}-kpi
