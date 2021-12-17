@@ -1,0 +1,25 @@
+stages:
+  - build
+  - upload
+
+build:
+  image:
+    name: alpine/helm
+    entrypoint: ["/bin/sh", "-c"]
+  stage: build
+  script:
+    - helm lint
+    - helm package -d chart .
+    - mv chart/kobo*.tgz chart/kobo.tgz
+  artifacts:
+    paths:
+      - chart
+ 
+upload:
+  image: curlimages/curl:latest
+  stage: upload
+  script:
+    - 'curl --request POST --user gitlab-ci-token:$CI_JOB_TOKEN --form "chart=@kobo.tgz" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/helm/api/stable/charts"'
+  only:
+    - main
+
