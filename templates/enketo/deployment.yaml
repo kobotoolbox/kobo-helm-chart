@@ -29,7 +29,7 @@ spec:
       containers:
         - name: {{ .Chart.Name }}
           # Override to avoid create config script, since we use env vars
-          command: ["pm2", "start", "--no-daemon", "app.js", "-n", "enketo"]
+          command: ["node", "app.js"]
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.enketo.image.repository }}:{{ .Values.enketo.image.tag | default .Chart.AppVersion }}"
@@ -46,7 +46,6 @@ spec:
             tcpSocket:
               port: 8005
             initialDelaySeconds: 10
-            periodSeconds: 20
           resources:
             {{- toYaml .Values.enketo.resources | nindent 12 }}
           envFrom:
