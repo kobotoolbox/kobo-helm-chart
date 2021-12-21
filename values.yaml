@@ -159,7 +159,7 @@ enketo:
       memory: 256Mi
   autoscaling:
     enabled: false
-    minReplicas: 3
+    minReplicas: 2
     maxReplicas: 20
     targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 90
