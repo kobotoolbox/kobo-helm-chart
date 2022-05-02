@@ -2,7 +2,7 @@
 
 This chart is intended for high availability instances of KoBo Toolbox. Small and casual instances should use [kobo-install](https://github.com/kobotoolbox/kobo-install). 
 
-This chart is not stable and should probably not be used at all. Versions may change for no reason at all or breaking changes may apply without updating the version.
+This chart is still being tested and isn't intended for external use at this time. Versions may change for no reason at all or breaking changes may apply without updating the version.
 
 # Design decisions
 
@@ -19,8 +19,6 @@ This chart is not stable and should probably not be used at all. Versions may ch
 1. `helm install your-kobo kobo/kobo -f your-values.yaml`
 
 ## Upgrading
-
-Upgrades are at your own risk.
 
 1. `helm repo update`
 1. `helm upgrade your-kobo kobo -f your-values.yaml`
