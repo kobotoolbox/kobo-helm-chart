@@ -1,5 +1,5 @@
 {{- if .Values.kpi.worker.autoscaling.enabled }}
-apiVersion: autoscaling/v2beta1
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "kobo.fullname" . }}-kpi-worker
@@ -17,12 +17,16 @@ spec:
     - type: Resource
       resource:
         name: cpu
-        targetAverageUtilization: {{ .Values.kpi.worker.autoscaling.targetCPUUtilizationPercentage }}
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.kpi.worker.autoscaling.targetCPUUtilizationPercentage }}
     {{- end }}
     {{- if .Values.kpi.worker.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
-        targetAverageUtilization: {{ .Values.kpi.worker.autoscaling.targetMemoryUtilizationPercentage }}
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.kpi.worker.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}

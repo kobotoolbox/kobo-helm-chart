@@ -38,7 +38,7 @@ spec:
                 name: {{ include "kobo.fullname" . }}-kobocat
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kobocat
-          command: ["celery", "worker", "-A", "onadata", "-l", "info", "-Ofair", "--hostname=kobocat_main_worker@%h"]
+          command: ["celery", "-A", "onadata", "worker", "-l", "info", "-Ofair", "--hostname=kobocat_main_worker@%h"]
 
       {{- with .Values.kobocat.worker.nodeSelector }}
       nodeSelector:
