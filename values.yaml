@@ -191,7 +191,7 @@ enketo:
     #      - chart-example.local
 
 nginx:
-  image: nginx:1.21.4
+  image: nginx:1.21
 
 
 imagePullSecrets: []
