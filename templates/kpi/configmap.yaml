@@ -12,6 +12,7 @@ data:
   KPI_MONGO_HOST: {{ required "mongoHost is required" .Values.kobotoolbox.mongoHost }}
   KPI_MONGO_NAME: {{ required "mongoName is required" .Values.kobotoolbox.mongoName }}
   KPI_MONGO_USER: {{ required "mongoUser is required" .Values.kobotoolbox.mongoUser }}
+  MONGO_USE_TLS: {{ quote .Values.kobotoolbox.mongoTls }}
 {{- if .Values.kobocat.ingress.enabled }}
   KOBOCAT_URL: {{ include "kobo.kobocatUrl" . | quote }}
 {{- end }}

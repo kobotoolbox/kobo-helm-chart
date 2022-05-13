@@ -5,6 +5,7 @@ kobotoolbox:
   mongoName: "formhub"
   mongoUser: "root"
   mongoPass: "pass"
+  mongoTls: "false"
   kobocatDatabase: "postgis://postgres:password@postgres-postgresql:5432/postgres"
   redisSession: "redis://:pass@redis-master:6379/1"
 
