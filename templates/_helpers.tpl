@@ -82,5 +82,5 @@ Guess the public enketo at url, assume https
 */}}
 {{- define "kobo.enketoUrl" -}}
 {{- if .Values.enketo.ingress.enabled }}
-{{- with (first .Values.enketo.ingress.hosts) }}https://{{ .host }}{{- end }}/{{- end }}
+{{- with (first .Values.enketo.ingress.hosts) }}https://{{ .host }}{{- end }}{{- end }}
 {{- end }}
