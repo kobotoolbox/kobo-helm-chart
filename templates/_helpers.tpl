@@ -62,6 +62,14 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
+Guess the public kpi url, assume https
+*/}}
+{{- define "kobo.kpiUrl" -}}
+{{- if .Values.kpi.ingress.enabled }}
+{{- with (first .Values.kpi.ingress.hosts) }}https://{{ .host }}{{- end }}{{- end }}
+{{- end }}
+
+{{/*
 Guess the public kobocat url, assume https
 */}}
 {{- define "kobo.kobocatUrl" -}}
