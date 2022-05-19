@@ -42,11 +42,11 @@ kpi:
       KPI_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # -- Set s3 bucket name is relevant
       KPI_AWS_STORAGE_BUCKET_NAME: "kobo-eks-staging"
-      # AWS_ACCESS_KEY_ID: ""
     secret:
       # Overwrite these
       DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
       KPI_BROKER_URL: "redis://localhost:6379/1"
+      # AWS_ACCESS_KEY_ID: ""
       # AWS_SECRET_ACCESS_KEY: ""
   worker:
     replicaCount: 1
@@ -108,10 +108,10 @@ kobocat:
     normal: {}
       # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
-      # KOBOCAT_AWS_ACCESS_KEY_ID: ""
     secret:
       # Overwrite these
       KOBOCAT_BROKER_URL: "redis://localhost:6379/1"
+      # KOBOCAT_AWS_ACCESS_KEY_ID: ""
       # KOBOCAT_AWS_SECRET_ACCESS_KEY: ""
   ingress:
     enabled: false
