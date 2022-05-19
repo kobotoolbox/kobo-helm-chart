@@ -1,4 +1,4 @@
-# KoBo Toolbox Helm Chart
+# KoboToolbox Helm Chart
 
 This chart is intended for high availability instances of KoBo Toolbox. Small and casual instances should use [kobo-install](https://github.com/kobotoolbox/kobo-install). 
 
