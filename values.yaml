@@ -177,7 +177,56 @@ enketo:
     type: ClusterIP
     port: 80
   env:
-    normal: {}
+    normal: 
+      # -- Maps settings. It is an array, see https://github.com/enketo/enketo-express/blob/master/config/sample.env#L16-L19
+      ENKETO_MAPS_0_NAME: humanitarian
+      ENKETO_MAPS_0_TILES_0: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+      ENKETO_MAPS_0_ATTRIBUTION: "&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap</a> & <a href=\"https://www.hotosm.org/updates/2013-09-29_a_new_window_on_openstreetmap_data\">Yohan Boniface & Humanitarian OpenStreetMap Team</a> | <a href=\"https://www.openstreetmap.org/copyright\">Terms</a>"
+      ENKETO_MAPS_1_NAME: satellite
+      ENKETO_MAPS_1_TILES_0: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+      ENKETO_MAPS_1_ATTRIBUTION: "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community"
+      ENKETO_MAPS_2_NAME: terrain
+      ENKETO_MAPS_2_TILES_0: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+      ENKETO_MAPS_2_ATTRIBUTION: "&copy; <a href=\"https://openstreetmap.org\">OpenStreetMap</a> | <a href=\"https://www.openstreetmap.org/copyright\">Terms</a>"
+      ENKETO_MAPS_3_NAME: streets
+      ENKETO_MAPS_3_TILES_0: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      ENKETO_MAPS_3_ATTRIBUTION: "&copy; <a href=\"https://openstreetmap.org\">OpenStreetMap</a> | <a href=\"https://www.openstreetmap.org/copyright\">Terms</a>"
+      # -- Payload limit
+      ENKETO_PAYLOAD_LIMIT: 1mb
+      # -- Text field character limit
+      ENKETO_TEXT_FIELD_CHARACTER_LIMIT: 1000000
+      # -- Widgets list. It is an array.
+      ENKETO_WIDGETS_0: note
+      ENKETO_WIDGETS_1: select-desktop
+      ENKETO_WIDGETS_2: select-mobile
+      ENKETO_WIDGETS_3: autocomplete
+      ENKETO_WIDGETS_4: geo
+      ENKETO_WIDGETS_5: textarea
+      ENKETO_WIDGETS_6: url
+      ENKETO_WIDGETS_7: table
+      ENKETO_WIDGETS_8: radio
+      ENKETO_WIDGETS_9: date
+      ENKETO_WIDGETS_10: time
+      ENKETO_WIDGETS_11: datetime
+      ENKETO_WIDGETS_12: select-media
+      ENKETO_WIDGETS_13: file
+      ENKETO_WIDGETS_14: draw
+      ENKETO_WIDGETS_15: rank
+      ENKETO_WIDGETS_16: likert
+      ENKETO_WIDGETS_17: range
+      ENKETO_WIDGETS_18: columns
+      ENKETO_WIDGETS_19: image-view
+      ENKETO_WIDGETS_20: comment
+      ENKETO_WIDGETS_21: image-map
+      ENKETO_WIDGETS_22: date-native
+      ENKETO_WIDGETS_23: date-native-ios
+      ENKETO_WIDGETS_24: date-mobile
+      ENKETO_WIDGETS_25: text-max
+      ENKETO_WIDGETS_26: text-print
+      ENKETO_WIDGETS_27: rating
+      ENKETO_WIDGETS_28: thousands-sep
+      ENKETO_WIDGETS_29: "../../../node_modules/enketo-image-customization-widget/image-customization"
+      ENKETO_WIDGETS_30: "../../../node_modules/enketo-literacy-test-widget/literacywidget"
     secret:
       # Change these
       ENKETO_REDIS_MAIN_URL: "redis://localhost:6379/1"
