@@ -40,12 +40,20 @@ kpi:
       KPI_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # -- Set s3 bucket name is relevant
       KPI_AWS_STORAGE_BUCKET_NAME: "kobo-eks-staging"
+      # -- KoBoCAT Django file storage, should match KPI setting
+      KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
+      # -- KoBoCAT Bucket name 
+      KOBOCAT_AWS_STORAGE_BUCKET_NAME: "kobo-eks-staging"
     secret:
       # Overwrite these
       DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
       KPI_BROKER_URL: "redis://localhost:6379/1"
       # AWS_ACCESS_KEY_ID: ""
       # AWS_SECRET_ACCESS_KEY: ""
+      # -- Enketo API key. Must match Enketo setting below
+      # ENKETO_API_KEY: ""
+      # -- Alias for Enketo API key. Still in used but deprecated 
+      # ENKETO_API_TOKEN: ""
   worker:
     replicaCount: 1
     resources:
@@ -174,6 +182,10 @@ enketo:
       # Change these
       ENKETO_REDIS_MAIN_URL: "redis://localhost:6379/1"
       ENKETO_REDIS_CACHE_URL: "redis://localhost:6379/1"
+      # -- Enketo API key. Must match Enketo setting below
+      # ENKETO_API_KEY: ""
+      # -- Alias for Enketo API key. Still in used but deprecated 
+      # ENKETO_API_TOKEN: ""
   ingress:
     enabled: false
     className: ""
