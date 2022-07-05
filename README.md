@@ -1,6 +1,6 @@
 # KoboToolbox Helm Chart
 
-This chart is intended for high availability instances of KoBo Toolbox. Small and casual instances should use [kobo-install](https://github.com/kobotoolbox/kobo-install). 
+This chart is intended for high availability instances of KoboToolbox. Small and casual instances should use [kobo-install](https://github.com/kobotoolbox/kobo-install).
 
 This chart is still being tested and isn't intended for external use at this time. Versions may change for no reason at all or breaking changes may apply without updating the version.
 
