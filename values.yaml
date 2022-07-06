@@ -6,6 +6,7 @@ kobotoolbox:
   kobocatDatabase: "postgis://postgres:password@postgres-postgresql:5432/postgres"
   redisSession: "redis://:pass@redis-master:6379/1"
   djangoLanguageCodes: "ar cs de-DE en es fr hi ku pl pt tr zh-hans"
+  enketoApiKey: "change_me_please"
 
 kpi:
   image:
@@ -37,23 +38,19 @@ kpi:
       # -- Django email backend
       EMAIL_BACKEND: "django.core.mail.backends.console.EmailBackend"
       # -- Django file storage, recommend using a django-storages approach for scalability
-      KPI_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
+      # KPI_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # -- Set s3 bucket name is relevant
-      KPI_AWS_STORAGE_BUCKET_NAME: "kobo-eks-staging"
+      # KPI_AWS_STORAGE_BUCKET_NAME: ""
       # -- KoBoCAT Django file storage, should match KPI setting
-      KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
+      # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # -- KoBoCAT Bucket name 
-      KOBOCAT_AWS_STORAGE_BUCKET_NAME: "kobo-eks-staging"
+      # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
     secret:
       # Overwrite these
       DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
       KPI_BROKER_URL: "redis://localhost:6379/1"
       # AWS_ACCESS_KEY_ID: ""
       # AWS_SECRET_ACCESS_KEY: ""
-      # -- Enketo API key. Must match Enketo setting below
-      # ENKETO_API_KEY: ""
-      # -- Alias for Enketo API key. Still in used but deprecated 
-      # ENKETO_API_TOKEN: ""
   worker:
     replicaCount: 1
     resources:
@@ -231,10 +228,6 @@ enketo:
       # Change these
       ENKETO_REDIS_MAIN_URL: "redis://localhost:6379/1"
       ENKETO_REDIS_CACHE_URL: "redis://localhost:6379/1"
-      # -- Enketo API key. Must match Enketo setting below
-      # ENKETO_API_KEY: ""
-      # -- Alias for Enketo API key. Still in used but deprecated 
-      # ENKETO_API_TOKEN: ""
   ingress:
     enabled: false
     className: ""
