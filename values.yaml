@@ -191,7 +191,7 @@ enketo:
       # -- Payload limit
       ENKETO_PAYLOAD_LIMIT: 1mb
       # -- Text field character limit
-      ENKETO_TEXT_FIELD_CHARACTER_LIMIT: 1000000
+      ENKETO_TEXT_FIELD_CHARACTER_LIMIT: "1000000"
       # -- Widgets list. It is an array.
       ENKETO_WIDGETS_0: note
       ENKETO_WIDGETS_1: select-desktop
