@@ -175,6 +175,10 @@ enketo:
     port: 80
   env:
     normal: 
+      ENKETO_APP_NAME: "Enketo Express for KoboToolbox"
+      ENKETO_LINKED_FORM_AND_DATA_SERVER_NAME: "KoboToolbox"
+      ENKETO_LINKED_FORM_AND_DATA_SERVER_ALLOW_INSECURE_TRANSPORT: "true"
+      ENKETO_LINKED_FORM_AND_DATA_SERVER_SERVER_URL: ""
       # -- Maps settings. It is an array, see https://github.com/enketo/enketo-express/blob/master/config/sample.env#L16-L19
       ENKETO_MAPS_0_NAME: humanitarian
       ENKETO_MAPS_0_TILES_0: "https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
