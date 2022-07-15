@@ -12,12 +12,12 @@ kpi:
   image:
     repository: kobotoolbox/kpi
     pullPolicy: IfNotPresent
-    tag: "2.022.16b"
+    tag: "2.022.24"
   replicaCount: 1
   resources:
     limits:
       cpu: 1000m
-      memory: 1024Mi
+      memory: 1100Mi
     requests:
       cpu: 100m
       memory: 700Mi
@@ -49,6 +49,7 @@ kpi:
       # Overwrite these
       DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
       KPI_BROKER_URL: "redis://localhost:6379/1"
+      CACHE_URL: "redis://localhost:6379/1"
       # AWS_ACCESS_KEY_ID: ""
       # AWS_SECRET_ACCESS_KEY: ""
   worker:
@@ -86,7 +87,7 @@ kobocat:
   image:
     repository: kobotoolbox/kobocat
     pullPolicy: IfNotPresent
-    tag: "2.022.16"
+    tag: "2.022.24"
   replicaCount: 1
   resources:
     limits:
@@ -250,6 +251,9 @@ enketo:
 nginx:
   image: nginx:1.21
 
+# Chart managed mongodb uses replicaset (by default) to enable high availility
+# Kobotoolbox does not have automatic retry logic when the mongodb master changes
+# These errors should be rare and brief, minimally acceptable for production.
 mongodb:
   enabled: false
   architecture: "replicaset"
@@ -274,6 +278,7 @@ mongodb:
       cpu: 100m
       memory: 512Mi
 
+# Chart managed redis is intended for testing only
 redis:
   enabled: false
   auth:
@@ -299,6 +304,7 @@ redis:
         cpu: 100m
         memory: 512Mi
 
+# Chart managed postgresql is intended for testing only
 postgresql:
   enabled: false
   auth:
