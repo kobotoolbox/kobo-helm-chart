@@ -250,6 +250,69 @@ enketo:
 nginx:
   image: nginx:1.21
 
+mongodb:
+  enabled: false
+  architecture: "replicaset"
+  replicaCount: 3
+  pdb:
+    create: true
+  persistence:
+    size: 40Gi
+  auth:
+    rootPassword: "change_me_please"
+    usernames:
+      - "mongo"
+    passwords:
+      - "change_me_please"
+    databases:
+      - "formhub"
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 100m
+      memory: 512Mi
+
+redis:
+  enabled: false
+  auth:
+    password: "change_me_please"
+  master:
+    persistence:
+      size: 10Gi
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+  replica:
+    persistence:
+      size: 10Gi
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+
+postgresql:
+  enabled: false
+  auth:
+    postgresPassword: "change_me_please"
+  primary:
+    persistence:
+      size: 10Gi
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
 
 imagePullSecrets: []
 nameOverride: ""
