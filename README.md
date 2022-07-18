@@ -6,7 +6,7 @@ This chart is still being tested and isn't intended for external use at this tim
 
 # Design decisions
 
-- Does not include databases - expects only environment variables for external databases
+- Minimal helm managed database support, for production use external databases. 
 - As generic as possible, agnostic about the environment variables set for each service
 - Supports high availability via k8s's horizontal pod autoscaler (HPA), pod disruption budget (PDB), and topology spread constraints
 - Stick to defaults and conventions from `helm create` when possible
