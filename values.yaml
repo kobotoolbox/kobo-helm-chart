@@ -33,6 +33,8 @@ kpi:
   service:
     type: ClusterIP
     port: 80
+  budget:
+    minAvailable: 1
   env:
     normal:
       # -- Django email backend
@@ -108,6 +110,8 @@ kobocat:
   service:
     type: ClusterIP
     port: 80
+  budget:
+    minAvailable: 1
   env:
     normal: {}
       # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
@@ -174,6 +178,8 @@ enketo:
   service:
     type: ClusterIP
     port: 80
+  budget:
+    minAvailable: 1
   env:
     normal: 
       ENKETO_APP_NAME: "Enketo Express for KoboToolbox"

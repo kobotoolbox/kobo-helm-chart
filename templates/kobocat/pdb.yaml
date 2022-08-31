@@ -1,0 +1,18 @@
+{{- if or (and .Values.kobocat.autoscaling.enabled (gt (.Values.kobocat.autoscaling.minReplicas | int) 1)) (gt (.Values.kobocat.replicaCount | int) 1) }}
+{{- if .Values.kobocat.budget -}}
+{{- if .Values.kobocat.budget.minAvailable -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "kobo.fullname" . }}-kobocat
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.kobocat.budget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "kobo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: kobocat
+{{- end -}}
+{{- end -}}
+{{- end -}}
