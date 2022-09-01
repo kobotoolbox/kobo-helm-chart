@@ -1,0 +1,18 @@
+{{- if or (and .Values.enketo.autoscaling.enabled (gt (.Values.enketo.autoscaling.minReplicas | int) 1)) (gt (.Values.enketo.replicaCount | int) 1) }}
+{{- if .Values.enketo.budget -}}
+{{- if .Values.enketo.budget.minAvailable -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "kobo.fullname" . }}-enketo
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.enketo.budget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "kobo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: enketo
+{{- end -}}
+{{- end -}}
+{{- end -}}

@@ -1,0 +1,18 @@
+{{- if or (and .Values.kpi.autoscaling.enabled (gt (.Values.kpi.autoscaling.minReplicas | int) 1)) (gt (.Values.kpi.replicaCount | int) 1) }}
+{{- if .Values.kpi.budget -}}
+{{- if .Values.kpi.budget.minAvailable -}}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "kobo.fullname" . }}-kpi
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+spec:
+  minAvailable: {{ .Values.kpi.budget.minAvailable }}
+  selector:
+    matchLabels:
+      {{- include "kobo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: kpi
+{{- end -}}
+{{- end -}}
+{{- end -}}

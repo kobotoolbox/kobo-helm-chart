@@ -12,7 +12,7 @@ kpi:
   image:
     repository: kobotoolbox/kpi
     pullPolicy: IfNotPresent
-    tag: "2.022.24a"
+    tag: "2.022.24c"
   replicaCount: 1
   resources:
     limits:
@@ -20,7 +20,7 @@ kpi:
       memory: 1100Mi
     requests:
       cpu: 100m
-      memory: 700Mi
+      memory: 900Mi
   autoscaling:
     enabled: false
     minReplicas: 2
@@ -33,6 +33,8 @@ kpi:
   service:
     type: ClusterIP
     port: 80
+  budget:
+    minAvailable: 1
   env:
     normal:
       # -- Django email backend
@@ -92,10 +94,10 @@ kobocat:
   resources:
     limits:
       cpu: 1000m
-      memory: 1200Mi
+      memory: 1300Mi
     requests:
       cpu: 500m
-      memory: 900Mi
+      memory: 1100Mi
   autoscaling:
     enabled: false
     minReplicas: 2
@@ -108,6 +110,8 @@ kobocat:
   service:
     type: ClusterIP
     port: 80
+  budget:
+    minAvailable: 1
   env:
     normal: {}
       # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
@@ -174,6 +178,8 @@ enketo:
   service:
     type: ClusterIP
     port: 80
+  budget:
+    minAvailable: 1
   env:
     normal: 
       ENKETO_APP_NAME: "Enketo Express for KoboToolbox"
