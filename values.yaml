@@ -5,6 +5,7 @@ kobotoolbox:
   mongoDatabase: "mongodb://root:password@mongodb:27017"
   kobocatDatabase: "postgis://postgres:password@postgres-postgresql:5432/postgres"
   redisSession: "redis://:pass@redis-master:6379/1"
+  serviceAccountBackend: "redis://:pass@redis-master:6379/1"
   djangoLanguageCodes: "ar cs de-DE en es fr hi ku pl pt tr zh-hans"
   enketoApiKey: "change_me_please"
 

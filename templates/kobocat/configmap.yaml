@@ -18,6 +18,7 @@ data:
   KOBOCAT_URL: {{ include "kobo.kobocatUrl" . | quote }}
 {{- end }}
   KOBOCAT_INTERNAL_URL: http://{{ include "kobo.fullname" . }}-kobocat
+  SERVICE_ACCOUNT_WHITELISTED_HOSTS: {{ include "kobo.fullname" . }}-kobocat
 {{- if .Values.enketo.ingress.enabled }}
   ENKETO_URL: {{ include "kobo.enketoUrl" . | quote }}
 {{- end }}
