@@ -4,8 +4,19 @@ kobotoolbox:
   mongoName: "formhub"
   mongoDatabase: "mongodb://root:password@mongodb:27017"
   kobocatDatabase: "postgis://postgres:password@postgres-postgresql:5432/postgres"
-  redisSession: "redis://:pass@redis-master:6379/1"
-  serviceAccountBackend: "redis://:pass@redis-master:6379/1"
+  # Set to use for all redis needs (cache, broker, etc) redis connection string without db number.
+  # Unset to specify each redis usage seperately
+  # Redis default DB numbers
+  # - Enketo - 0 (cannot be changed)
+  # - Session - 1 
+  # - KPI Broker - 2
+  # - Kobocat Broker - 3
+  # - KPI Cache - 4
+  # - Kobocat Cache - 5
+  # - Service account - 6
+  redis: "redis://:pass@redis-master:6379"  # Do not add / nor /1 suffix
+  #redisSession: "redis://:pass@redis-master:6379/1"
+  #serviceAccountBackend: "redis://:pass@redis-master:6379/1"
   djangoLanguageCodes: "ar cs de-DE en es fr hi ku pl pt tr zh-hans"
   enketoApiKey: "change_me_please"
 
@@ -51,8 +62,8 @@ kpi:
     secret:
       # Overwrite these
       DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
-      KPI_BROKER_URL: "redis://localhost:6379/1"
-      CACHE_URL: "redis://localhost:6379/1"
+      # KPI_BROKER_URL: "redis://localhost:6379/1"
+      # CACHE_URL: "redis://localhost:6379/1"
       # AWS_ACCESS_KEY_ID: ""
       # AWS_SECRET_ACCESS_KEY: ""
   worker:
@@ -134,7 +145,7 @@ kobocat:
       # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
     secret:
       # Overwrite these
-      KOBOCAT_BROKER_URL: "redis://localhost:6379/1"
+      # KOBOCAT_BROKER_URL: "redis://localhost:6379/1"
       # KOBOCAT_AWS_ACCESS_KEY_ID: ""
       # KOBOCAT_AWS_SECRET_ACCESS_KEY: ""
   ingress:
@@ -254,9 +265,10 @@ enketo:
       ENKETO_WIDGETS_31: "../../../node_modules/enketo-image-customization-widget/image-customization"
       ENKETO_WIDGETS_32: "../../../node_modules/enketo-literacy-test-widget/literacywidget"
     secret:
-      # Change these
-      ENKETO_REDIS_MAIN_URL: "redis://localhost:6379/1"
-      ENKETO_REDIS_CACHE_URL: "redis://localhost:6379/1"
+      {}
+      # Set if kobotoolbox.redis is unset
+      # ENKETO_REDIS_MAIN_URL: "redis://localhost:6379"
+      # ENKETO_REDIS_CACHE_URL: "redis://localhost:6379"
   ingress:
     enabled: false
     className: ""
@@ -307,6 +319,9 @@ redis:
   enabled: false
   auth:
     password: "change_me_please"
+  commonConfiguration: |-
+    maxmemory 900mb
+    maxmemory-policy volatile-lru
   master:
     persistence:
       size: 10Gi
