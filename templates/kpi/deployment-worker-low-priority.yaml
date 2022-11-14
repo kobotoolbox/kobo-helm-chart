@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "kobo.fullname" . }}-kpi-worker
+  name: {{ include "kobo.fullname" . }}-kpi-worker-low-priority
   labels:
-    app.kubernetes.io/component: kpi-worker
+    app.kubernetes.io/component: kpi-worker-low-priority
     {{- include "kobo.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.kpi.worker.autoscaling.enabled }}
-  replicas: {{ .Values.kpi.worker.replicaCount }}
+  {{- if not .Values.kpi.workerLowPriority.autoscaling.enabled }}
+  replicas: {{ .Values.kpi.workerLowPriority.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/component: kpi-worker
+      app.kubernetes.io/component: kpi-worker-low-priority
       {{- include "kobo.selectorLabels" . | nindent 6 }}
   template:
     metadata:
@@ -20,7 +20,7 @@ spec:
         checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
         tag: "{{ .Values.kpi.image.tag }}"
       labels:
-        app.kubernetes.io/component: kpi-worker
+        app.kubernetes.io/component: kpi-worker-low-priority
         {{- include "kobo.selectorLabels" . | nindent 8 }}
     spec:
       securityContext:
@@ -32,23 +32,23 @@ spec:
           image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
           resources:
-            {{- toYaml .Values.kpi.worker.resources | nindent 12 }}
+            {{- toYaml .Values.kpi.workerLowPriority.resources | nindent 12 }}
           envFrom:
             - secretRef:
                 name: {{ include "kobo.fullname" . }}-kpi
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
-          command: ["celery", "-A", "kobo", "worker", "--queues", "kpi_queue", "-l", "info", "--hostname=kpi_main_worker@%h", "--concurrency", "2"]
+          command: ["celery", "-A", "kobo", "worker", "--queues=kpi_low_priority_queue", "-l", "info", "--hostname=kpi_main_worker@%h", "--concurrency", "2"]
 
-      {{- with .Values.kpi.worker.nodeSelector }}
+      {{- with .Values.kpi.workerLowPriority.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kpi.worker.affinity }}
+      {{- with .Values.kpi.workerLowPriority.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kpi.worker.tolerations }}
+      {{- with .Values.kpi.workerLowPriority.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
