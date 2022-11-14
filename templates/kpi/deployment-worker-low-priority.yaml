@@ -6,8 +6,8 @@ metadata:
     app.kubernetes.io/component: kpi-worker-low-priority
     {{- include "kobo.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.kpi.worker.autoscaling.enabled }}
-  replicas: {{ .Values.kpi.worker.replicaCount }}
+  {{- if not .Values.kpi.workerLowPriority.autoscaling.enabled }}
+  replicas: {{ .Values.kpi.workerLowPriority.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
@@ -32,7 +32,7 @@ spec:
           image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
           resources:
-            {{- toYaml .Values.kpi.worker.resources | nindent 12 }}
+            {{- toYaml .Values.kpi.workerLowPriority.resources | nindent 12 }}
           envFrom:
             - secretRef:
                 name: {{ include "kobo.fullname" . }}-kpi
@@ -40,15 +40,15 @@ spec:
                 name: {{ include "kobo.fullname" . }}-kpi
           command: ["celery", "-A", "kobo", "worker", "--queues=kpi_low_priority_queue", "-l", "info", "--hostname=kpi_main_worker@%h", "--autoscale", "2,2"]
 
-      {{- with .Values.kpi.worker.nodeSelector }}
+      {{- with .Values.kpi.workerLowPriority.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kpi.worker.affinity }}
+      {{- with .Values.kpi.workerLowPriority.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kpi.worker.tolerations }}
+      {{- with .Values.kpi.workerLowPriority.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
