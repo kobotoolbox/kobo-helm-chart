@@ -38,7 +38,7 @@ spec:
                 name: {{ include "kobo.fullname" . }}-kpi
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
-          command: ["celery", "-A", "kobo", "worker", "--queues", "kpi_queue", "-l", "info", "--hostname=kpi_main_worker@%h", "--autoscale", "2,2"]
+          command: ["celery", "-A", "kobo", "worker", "--queues", "kpi_queue", "-l", "info", "--hostname=kpi_main_worker@%h", "--concurrency", "2"]
 
       {{- with .Values.kpi.worker.nodeSelector }}
       nodeSelector:
