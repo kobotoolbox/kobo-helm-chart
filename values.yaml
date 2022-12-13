@@ -173,7 +173,7 @@ enketo:
   image:
     repository: kobotoolbox/enketo-express-extra-widgets
     pullPolicy: IfNotPresent
-    tag: "4.1.5"
+    tag: "5.0.0-nested-repeat-count-fix"
   replicaCount: 1
   resources:
     limits:
@@ -249,8 +249,10 @@ enketo:
       ENKETO_WIDGETS_26: text-print
       ENKETO_WIDGETS_27: rating
       ENKETO_WIDGETS_28: thousands-sep
-      ENKETO_WIDGETS_29: "../../../node_modules/enketo-image-customization-widget/image-customization"
-      ENKETO_WIDGETS_30: "../../../node_modules/enketo-literacy-test-widget/literacywidget"
+      ENKETO_WIDGETS_29: integer
+      ENKETO_WIDGETS_30: decimal
+      ENKETO_WIDGETS_31: "../../../node_modules/enketo-image-customization-widget/image-customization"
+      ENKETO_WIDGETS_32: "../../../node_modules/enketo-literacy-test-widget/literacywidget"
     secret:
       # Change these
       ENKETO_REDIS_MAIN_URL: "redis://localhost:6379/1"
