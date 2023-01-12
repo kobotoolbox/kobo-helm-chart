@@ -26,8 +26,8 @@ kpi:
     enabled: false
     minReplicas: 2
     maxReplicas: 20
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 90
+    targetCPU: 80
+    targetMemory: 90
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -68,8 +68,8 @@ kpi:
       enabled: true
       minReplicas: 1
       maxReplicas: 20
-      targetCPUUtilizationPercentage: 80
-      # targetMemoryUtilizationPercentage: 80
+      targetCPU: 80
+      # targetMemory: 80
   workerLowPriority:
     replicaCount: 1
     resources:
@@ -83,8 +83,8 @@ kpi:
       enabled: true
       minReplicas: 1
       maxReplicas: 20
-      targetCPUUtilizationPercentage: 80
-      # targetMemoryUtilizationPercentage: 80
+      targetCPU: 80
+      # targetMemory: 80
   ingress:
     enabled: false
     className: ""
@@ -118,8 +118,8 @@ kobocat:
     enabled: false
     minReplicas: 2
     maxReplicas: 20
-    targetCPUUtilizationPercentage: 80
-    targetMemoryUtilizationPercentage: 99
+    targetCPU: 80
+    targetMemory: 99
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -164,8 +164,8 @@ kobocat:
       enabled: false
       minReplicas: 1
       maxReplicas: 20
-      targetCPUUtilizationPercentage: 80
-      # targetMemoryUtilizationPercentage: 80
+      targetCPU: 80
+      # targetMemory: 80
 
     
 
@@ -186,8 +186,8 @@ enketo:
     enabled: false
     minReplicas: 2
     maxReplicas: 20
-    targetCPUUtilizationPercentage: 80
-    # targetMemoryUtilizationPercentage: 90
+    targetCPU: 80
+    # targetMemory: 90
   nodeSelector: {}
   tolerations: []
   affinity: {}

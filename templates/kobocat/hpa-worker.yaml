@@ -1,5 +1,5 @@
 {{- if .Values.kobocat.worker.autoscaling.enabled }}
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "kobo.fullname" . }}-kobocat-worker
@@ -13,20 +13,20 @@ spec:
   minReplicas: {{ .Values.kobocat.worker.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.kobocat.worker.autoscaling.maxReplicas }}
   metrics:
-    {{- if .Values.kobocat.worker.autoscaling.targetCPUUtilizationPercentage }}
+    {{- if .Values.kobocat.worker.autoscaling.targetCPU }}
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.kobocat.worker.autoscaling.targetCPUUtilizationPercentage }}
+          averageUtilization: {{ .Values.kobocat.worker.autoscaling.targetCPU }}
     {{- end }}
-    {{- if .Values.kobocat.worker.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- if .Values.kobocat.worker.autoscaling.targetMemory }}
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ .Values.kobocat.worker.autoscaling.targetMemoryUtilizationPercentage }}
+          averageUtilization: {{ .Values.kobocat.worker.autoscaling.targetMemory }}
     {{- end }}
 {{- end }}

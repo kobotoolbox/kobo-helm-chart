@@ -1,5 +1,5 @@
 {{- if .Values.kpi.autoscaling.enabled }}
-apiVersion: autoscaling/v2beta2
+apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "kobo.fullname" . }}-kpi
@@ -13,20 +13,20 @@ spec:
   minReplicas: {{ .Values.kpi.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.kpi.autoscaling.maxReplicas }}
   metrics:
-    {{- if .Values.kpi.autoscaling.targetCPUUtilizationPercentage }}
+    {{- if .Values.kpi.autoscaling.targetCPU }}
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.kpi.autoscaling.targetCPUUtilizationPercentage }}
+          averageUtilization: {{ .Values.kpi.autoscaling.targetCPU }}
     {{- end }}
-    {{- if .Values.kpi.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- if .Values.kpi.autoscaling.targetMemory }}
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ .Values.kpi.autoscaling.targetMemoryUtilizationPercentage }}
+          averageUtilization: {{ .Values.kpi.autoscaling.targetMemory }}
     {{- end }}
 {{- end }}
