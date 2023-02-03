@@ -1,3 +1,4 @@
+{{- if .Values.preInstall.enabled -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -12,7 +13,7 @@ metadata:
     checksum/configmap: {{ include (print $.Template.BasePath "/kobocat/configmap.yaml") . | sha256sum }}
     tag: "{{ .Values.kobocat.image.tag }}"
 spec:
-  activeDeadlineSeconds: 600
+  activeDeadlineSeconds: {{ default 600 .Values.preInstall.activeDeadlineSeconds }}
   template:
     spec:
       restartPolicy: Never
@@ -30,3 +31,4 @@ spec:
           - name: {{ $k }}
             value: {{ $v | quote }}
         {{- end }}
+{{- end }}

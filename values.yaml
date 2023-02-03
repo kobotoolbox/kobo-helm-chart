@@ -20,6 +20,10 @@ kobotoolbox:
   djangoLanguageCodes: "ar cs de-DE en es fr hi ku pl pt tr zh-hans"
   enketoApiKey: "change_me_please"
 
+preInstall:
+  enabled: true
+  activeDeadlineSeconds: 600
+
 kpi:
   image:
     repository: kobotoolbox/kpi
