@@ -30,7 +30,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kobocat-scripts
+  name: {{ include "kobo.fullname" . }}-kobocat-scripts
   labels:
     {{- include "kobo.labels" . | nindent 4 }}
 data:
@@ -41,7 +41,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-kobocat-conf
+  name: {{ include "kobo.fullname" . }}-nginx-kobocat-conf
   labels:
     component: kobocat
     {{- include "kobo.labels" . | nindent 4 }}

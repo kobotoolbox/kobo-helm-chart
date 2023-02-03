@@ -102,11 +102,11 @@ spec:
         emptyDir: {}
       - name: scripts
         configMap:
-          name: kpi-scripts
+          name: {{ include "kobo.fullname" . }}-kpi-scripts
           defaultMode: 0777
           items:
           - key: run-uwsgi.sh
             path: run-uwsgi.sh
       - name: nginx-conf
         configMap:
-          name: nginx-kpi-conf
+          name: {{ include "kobo.fullname" . }}-nginx-kpi-conf

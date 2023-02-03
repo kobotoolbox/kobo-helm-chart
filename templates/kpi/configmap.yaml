@@ -31,7 +31,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kpi-scripts
+  name: {{ include "kobo.fullname" . }}-kpi-scripts
   labels:
     {{- include "kobo.labels" . | nindent 4 }}
 data:
@@ -41,7 +41,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-kpi-conf
+  name: {{ include "kobo.fullname" . }}-nginx-kpi-conf
   labels:
     component: kpi
     {{- include "kobo.labels" . | nindent 4 }}
