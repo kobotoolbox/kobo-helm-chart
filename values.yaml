@@ -285,7 +285,7 @@ enketo:
     #      - chart-example.local
 
 nginx:
-  image: nginx:1.21
+  image: nginx:1.23
 
 # Chart managed mongodb uses replicaset (by default) to enable high availility
 # Kobotoolbox does not have automatic retry logic when the mongodb master changes
@@ -296,6 +296,10 @@ mongodb:
   replicaCount: 3
   pdb:
     create: true
+  initdbScripts:
+    init_01_add_index.js: |
+      db.instances.createIndex( { _userform_id: 1 } )
+      db.instances.createIndex( { _userform_id: 1, _id: -1 } )
   persistence:
     size: 40Gi
   auth:

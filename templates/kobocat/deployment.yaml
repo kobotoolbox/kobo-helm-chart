@@ -115,7 +115,7 @@ spec:
         emptyDir: {}
       - name: scripts
         configMap:
-          name: kobocat-scripts
+          name: {{ include "kobo.fullname" . }}-kobocat-scripts
           defaultMode: 0777
           items:
           - key: run-uwsgi.sh
@@ -124,4 +124,4 @@ spec:
             path: init.sh
       - name: nginx-conf
         configMap:
-          name: nginx-kobocat-conf
+          name: {{ include "kobo.fullname" . }}-nginx-kobocat-conf
