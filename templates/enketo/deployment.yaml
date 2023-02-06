@@ -48,6 +48,22 @@ spec:
             initialDelaySeconds: 10
           resources:
             {{- toYaml .Values.enketo.resources | nindent 12 }}
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- if .Values.redis.enabled }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (include "kobo.redis.fullname" .) .Values.redis.auth.existingSecret }}
+                  key: redis-password
+            - name: ENKETO_REDIS_MAIN_URL
+              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379
+            - name: ENKETO_REDIS_CACHE_URL 
+              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379
+            {{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "kobo.fullname" . }}-enketo
