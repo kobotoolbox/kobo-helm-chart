@@ -358,6 +358,10 @@ postgresql:
   primary:
     persistence:
       size: 10Gi
+    initdb:
+      scripts:
+        create-koboform.sql: |
+          CREATE DATABASE koboform;
     resources:
       limits:
         cpu: 1000m
