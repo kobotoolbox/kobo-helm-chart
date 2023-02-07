@@ -33,6 +33,46 @@ spec:
           imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
           resources:
             {{- toYaml .Values.kpi.worker.resources | nindent 12 }}
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- if .Values.postgresql.enabled }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (include "kobo.postgresql.fullname" .) .Values.postgresql.auth.existingSecret }}
+                  key: postgres-password
+            - name: DATABASE_URL
+              value: postgres://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/koboform
+            - name: KC_DATABASE_URL
+              value: postgis://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/postgres
+            {{- end }}
+            {{- if .Values.mongodb.enabled }}
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (include "kobo.mongodb.fullname" .) .Values.mongodb.auth.existingSecret }}
+                  key: mongodb-passwords
+            - name: MONGO_DB_URL
+              value: mongodb://root:$(MONGODB_PASSWORD)@{{ (include "kobo.mongodb.fullname" .) }}:27017
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (include "kobo.redis.fullname" .) .Values.redis.auth.existingSecret }}
+                  key: redis-password
+            - name: REDIS_SESSION_URL
+              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379/1
+            - name: SERVICE_ACCOUNT_BACKEND_URL
+              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379/6
+            - name: KPI_BROKER_URL
+              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379/2
+            - name: CACHE_URL
+              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379/4
+            {{- end }}
           envFrom:
             - secretRef:
                 name: {{ include "kobo.fullname" . }}-kpi

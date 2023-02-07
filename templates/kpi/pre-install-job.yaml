@@ -23,12 +23,22 @@ spec:
         imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
         command: ["./manage.py","migrate"]
         env:
-          - name: DATABASE_URL
-            value: {{ required "kpi.env.secret.DATABASE_URL is a required value." .Values.kpi.env.secret.DATABASE_URL }}
-          - name: KC_DATABASE_URL
-            value: {{ required "kobocatDatabase required" .Values.kobotoolbox.kobocatDatabase }}
           - name: DJANGO_SECRET_KEY
             value: {{ required "djangoSecret is a required value." .Values.kobotoolbox.djangoSecret }}
+          {{- if .Values.postgresql.enabled }}
+          - name: POSTGRES_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ default (include "kobo.postgresql.fullname" .) .Values.postgresql.auth.existingSecret }}
+                key: postgres-password
+          - name: DATABASE_URL
+            value: postgres://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/koboform
+          - name: KC_DATABASE_URL
+            value: postgres://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/postgres
+          {{- else }}
+          - name: DATABASE_URL
+            value: {{ required "kpi.env.secret.DATABASE_URL is a required value." .Values.kpi.env.secret.DATABASE_URL }}
+          {{- end }}
         {{- range $k, $v := .Values.kpi.env.normal }}
           - name: {{ $k }}
             value: {{ $v | quote }}

@@ -2,8 +2,8 @@
 kobotoolbox:
   djangoSecret: "change_me_please"
   mongoName: "formhub"
-  mongoDatabase: "mongodb://root:password@mongodb:27017"
-  kobocatDatabase: "postgis://postgres:password@postgres-postgresql:5432/postgres"
+  # mongoDatabase: "mongodb://root:password@mongodb:27017"
+  # kobocatDatabase: "postgis://postgres:password@postgres-postgresql:5432/postgres"
   # Set to use for all redis needs (cache, broker, etc) redis connection string without db number.
   # Unset to specify each redis usage seperately
   # Redis default DB numbers
@@ -14,10 +14,10 @@ kobotoolbox:
   # - KPI Cache - 4
   # - Kobocat Cache - 5
   # - Service account - 6
-  redis: "redis://:pass@redis-master:6379"  # Do not add / nor /1 suffix
+  #redis: "redis://:pass@redis-master:6379"  # Do not add / nor /1 suffix
   #redisSession: "redis://:pass@redis-master:6379/1"
-  #serviceAccountBackend: "redis://:pass@redis-master:6379/1"
-  djangoLanguageCodes: "ar cs de-DE en es fr hi ku pl pt tr zh-hans"
+  #serviceAccountBackend: "redis://:pass@redis-master:6379/6"
+  djangoLanguageCodes: "ar cs de-DE en es fr hi ku pl pt ru tr uk zh-hans"
   enketoApiKey: "change_me_please"
 
 preInstall:
@@ -64,8 +64,8 @@ kpi:
       # -- KoBoCAT Bucket name 
       # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
     secret:
-      # Overwrite these
-      DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
+      {}
+      # DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
       # KPI_BROKER_URL: "redis://localhost:6379/1"
       # CACHE_URL: "redis://localhost:6379/1"
       # AWS_ACCESS_KEY_ID: ""
@@ -147,9 +147,8 @@ kobocat:
     normal: {}
       # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
-    secret:
-      # Overwrite these
-      # KOBOCAT_BROKER_URL: "redis://localhost:6379/1"
+    secret: {}
+      # KOBOCAT_BROKER_URL: "redis://localhost:6379/3"
       # KOBOCAT_AWS_ACCESS_KEY_ID: ""
       # KOBOCAT_AWS_SECRET_ACCESS_KEY: ""
   ingress:
@@ -297,7 +296,6 @@ nginx:
 mongodb:
   enabled: false
   architecture: "replicaset"
-  replicaCount: 3
   pdb:
     create: true
   initdbScripts:
@@ -359,6 +357,10 @@ postgresql:
   primary:
     persistence:
       size: 10Gi
+    initdb:
+      scripts:
+        create-koboform.sql: |
+          CREATE DATABASE koboform;
     resources:
       limits:
         cpu: 1000m
