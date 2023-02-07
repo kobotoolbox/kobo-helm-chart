@@ -17,7 +17,7 @@ kobotoolbox:
   #redis: "redis://:pass@redis-master:6379"  # Do not add / nor /1 suffix
   #redisSession: "redis://:pass@redis-master:6379/1"
   #serviceAccountBackend: "redis://:pass@redis-master:6379/1"
-  djangoLanguageCodes: "ar cs de-DE en es fr hi ku pl pt tr zh-hans"
+  djangoLanguageCodes: "ar cs de-DE en es fr hi ku pl pt ru tr uk zh-hans"
   enketoApiKey: "change_me_please"
 
 preInstall:
