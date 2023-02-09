@@ -300,8 +300,9 @@ mongodb:
     create: true
   initdbScripts:
     init_01_add_index.js: |
-      db.instances.createIndex( { _userform_id: 1 } )
-      db.instances.createIndex( { _userform_id: 1, _id: -1 } )
+      db = db.getSiblingDB("formhub");
+      db.instances.createIndex( { _userform_id: 1 } );
+      db.instances.createIndex( { _userform_id: 1, _id: -1 } );
   persistence:
     size: 40Gi
   auth:
