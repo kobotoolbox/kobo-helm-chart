@@ -72,7 +72,7 @@ spec:
                   name: {{ default (include "kobo.mongodb.fullname" .) .Values.mongodb.auth.existingSecret }}
                   key: mongodb-passwords
             - name: MONGO_DB_URL
-              value: mongodb://{{ default "mongo" (first .Values.mongodb.auth.usernames) }}:$(MONGODB_PASSWORD)@{{ (include "kobo.mongodb.fullname" .) }}:27017/?authSource={{ default "formhub" (first .Values.mongodb.auth.databases) }}
+              value: mongodb://{{ default "mongo" (first .Values.mongodb.auth.usernames) }}:$(MONGODB_PASSWORD)@{{ (include "kobo.mongodb.fullname" .) }}:27017/{{ default "formhub" (first .Values.mongodb.auth.databases) }}
             {{- end }}
             {{- if .Values.redis.enabled }}
             - name: REDIS_PASSWORD
