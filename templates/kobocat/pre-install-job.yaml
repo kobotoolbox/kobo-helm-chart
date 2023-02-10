@@ -32,7 +32,7 @@ spec:
                 name: {{ default (include "kobo.postgresql.fullname" .) .Values.postgresql.auth.existingSecret }}
                 key: postgres-password
           - name: DATABASE_URL
-            value: postgis://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/postgres
+            value: {{ (include "kobo.postgresql.kc_url" .) }}
           {{- else }}
           - name: DATABASE_URL
             value: {{ required "kobocatDatabase required" .Values.kobotoolbox.kobocatDatabase }}

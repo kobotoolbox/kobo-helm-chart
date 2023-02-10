@@ -32,7 +32,7 @@ spec:
                 name: {{ default (include "kobo.postgresql.fullname" .) .Values.postgresql.auth.existingSecret }}
                 key: postgres-password
           - name: DATABASE_URL
-            value: postgres://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/koboform
+            value: {{ (include "kobo.postgresql.url" .) }}
           - name: KC_DATABASE_URL
             value: postgres://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/postgres
           {{- else }}
