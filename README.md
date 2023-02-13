@@ -14,7 +14,7 @@ This chart is still being tested and isn't intended for external use at this tim
 # Usage
 
 1. `helm repo add kobo https://gitlab.com/api/v4/projects/32216873/packages/helm/stable`
-1. Carefully review values.yaml. Set image tag version, do not set to latest. Set databases, secret keys, etc.
+1. Carefully review values.yaml. Set image tag version, if desired. Set databases, secret keys, etc.
 1. `helm install your-kobo kobo/kobo -f your-values.yaml`
 
 ## Upgrading
