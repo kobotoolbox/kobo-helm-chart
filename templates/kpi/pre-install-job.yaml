@@ -32,12 +32,14 @@ spec:
                 name: {{ default (include "kobo.postgresql.fullname" .) .Values.postgresql.auth.existingSecret }}
                 key: postgres-password
           - name: DATABASE_URL
-            value: postgres://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/koboform
+            value: {{ (include "kobo.postgresql.url" .) }}
           - name: KC_DATABASE_URL
             value: postgres://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/postgres
           {{- else }}
           - name: DATABASE_URL
             value: {{ required "kpi.env.secret.DATABASE_URL is a required value." .Values.kpi.env.secret.DATABASE_URL }}
+          - name: KC_DATABASE_URL
+            value: {{ required "kobocatDatabase required" .Values.kobotoolbox.kobocatDatabase }}
           {{- end }}
         {{- range $k, $v := .Values.kpi.env.normal }}
           - name: {{ $k }}

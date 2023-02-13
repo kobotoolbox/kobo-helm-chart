@@ -48,7 +48,7 @@ spec:
                   name: {{ default (include "kobo.postgresql.fullname" .) .Values.postgresql.auth.existingSecret }}
                   key: postgres-password
             - name: DATABASE_URL
-              value: postgis://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/postgres
+              value: {{ (include "kobo.postgresql.kc_url" .) }}
             {{- end }}
             {{- if .Values.mongodb.enabled }}
             - name: MONGODB_PASSWORD
@@ -57,7 +57,7 @@ spec:
                   name: {{ default (include "kobo.mongodb.fullname" .) .Values.mongodb.auth.existingSecret }}
                   key: mongodb-passwords
             - name: MONGO_DB_URL
-              value: mongodb://root:$(MONGODB_PASSWORD)@{{ (include "kobo.mongodb.fullname" .) }}:27017
+              value: {{ (include "kobo.mongodb.url" .) }}
             {{- end }}
             {{- if .Values.redis.enabled }}
             - name: REDIS_PASSWORD
@@ -66,13 +66,13 @@ spec:
                   name: {{ default (include "kobo.redis.fullname" .) .Values.redis.auth.existingSecret }}
                   key: redis-password
             - name: REDIS_SESSION_URL
-              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379/1
+              value: {{ (include "kobo.redis.url" .) }}/1
             - name: SERVICE_ACCOUNT_BACKEND_URL
-              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379/6
+              value: {{ (include "kobo.redis.url" .) }}/6
             - name: KOBOCAT_BROKER_URL
-              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379/3
+              value: {{ (include "kobo.redis.url" .) }}/3
             - name: CACHE_URL
-              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379/5
+              value: {{ (include "kobo.redis.url" .) }}/5
             {{- end }}
           envFrom:
             - secretRef:

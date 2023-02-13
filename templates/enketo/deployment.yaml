@@ -60,9 +60,9 @@ spec:
                   name: {{ default (include "kobo.redis.fullname" .) .Values.redis.auth.existingSecret }}
                   key: redis-password
             - name: ENKETO_REDIS_MAIN_URL
-              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379
+              value: {{ (include "kobo.redis.url" .) }}
             - name: ENKETO_REDIS_CACHE_URL 
-              value: redis://:$(REDIS_PASSWORD)@{{ (include "kobo.redis.fullname" .) }}-master:6379
+              value: {{ (include "kobo.redis.url" .) }}
             {{- end }}
           envFrom:
             - secretRef:

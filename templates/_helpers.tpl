@@ -98,6 +98,22 @@ Guess the public enketo at url, assume https
 {{- end -}}
 {{- end -}}
 
+{{/*
+PostgreSQL connection URL
+Requires POSTGRES_PASSWORD to be set environment variable
+*/}}
+{{- define "kobo.postgresql.url" -}}
+{{- printf "postgres://postgres:$(POSTGRES_PASSWORD)@%s:5432/koboform" (include "kobo.postgresql.fullname" .) -}}
+{{- end -}}
+
+{{/*
+PostgreSQL connection URL for KoboCat
+Requires POSTGRES_PASSWORD to be set environment variable
+*/}}
+{{- define "kobo.postgresql.kc_url" -}}
+{{- printf "postgis://postgres:$(POSTGRES_PASSWORD)@%s:5432/postgres" (include "kobo.postgresql.fullname" .) -}}
+{{- end -}}
+
 {{- define "kobo.mongodb.fullname" -}}
 {{- if .Values.mongodb.fullnameOverride -}}
 {{- .Values.mongodb.fullnameOverride | trunc 63 | trimSuffix "-" -}}
@@ -107,6 +123,22 @@ Guess the public enketo at url, assume https
 {{- .Release.Name | trunc 63 | trimSuffix "-" -}}-mongodb
 {{- else -}}
 {{- printf "%s-%s" .Release.Name "mongodb" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+MongoDB connection URL
+Requires MONGODB_PASSWORD to be set environment variable
+*/}}
+{{- define "kobo.mongodb.url" -}}
+{{- if .Values.kobotoolbox.mongoDatabase -}}
+{{- .Values.kobotoolbox.mongoDatabase -}}
+{{- else -}}
+{{- if eq .Values.mongodb.architecture "replicaset" -}}
+{{- printf "mongodb://%s:$(MONGODB_PASSWORD)@%s-headless:27017/%s?replicaSet=rs0" (first .Values.mongodb.auth.usernames) (include "kobo.mongodb.fullname" .) (first .Values.mongodb.auth.databases) -}}
+{{- else -}}
+{{- printf "mongodb://%s:$(MONGODB_PASSWORD)@%s:27017/%s" (first .Values.mongodb.auth.usernames) (include "kobo.mongodb.fullname" .) (first .Values.mongodb.auth.databases) -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
@@ -122,4 +154,12 @@ Guess the public enketo at url, assume https
 {{- printf "%s-%s" .Release.Name "redis" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 {{- end -}}
+{{- end -}}
+
+{{/*
+Redis connection URL (without DB number)
+Requires REDIS_PASSWORD to be set environment variable
+*/}}
+{{- define "kobo.redis.url" -}}
+{{- printf "redis://:$(REDIS_PASSWORD)@%s-master:6379" (include "kobo.redis.fullname" .) -}}
 {{- end -}}
