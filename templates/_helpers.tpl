@@ -132,7 +132,11 @@ MongoDB connection URL
 Requires MONGODB_PASSWORD to be set environment variable
 */}}
 {{- define "kobo.mongodb.url" -}}
+{{- if .Values.kobotoolbox.mongoDatabase -}}
+{{- .Values.kobotoolbox.mongoDatabase -}}
+{{- else -}}
 {{- printf "mongodb://%s:$(MONGODB_PASSWORD)@%s:27017/%s" (first .Values.mongodb.auth.usernames) (include "kobo.mongodb.fullname" .) (first .Values.mongodb.auth.databases) -}}
+{{- end -}}
 {{- end -}}
 
 {{- define "kobo.redis.fullname" -}}
