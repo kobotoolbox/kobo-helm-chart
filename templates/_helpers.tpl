@@ -135,7 +135,11 @@ Requires MONGODB_PASSWORD to be set environment variable
 {{- if .Values.kobotoolbox.mongoDatabase -}}
 {{- .Values.kobotoolbox.mongoDatabase -}}
 {{- else -}}
+{{- if eq .Values.mongodb.architecture "replicaset" -}}
+{{- printf "mongodb://%s:$(MONGODB_PASSWORD)@%s-headless:27017/%s?replicaSet=rs0" (first .Values.mongodb.auth.usernames) (include "kobo.mongodb.fullname" .) (first .Values.mongodb.auth.databases) -}}
+{{- else -}}
 {{- printf "mongodb://%s:$(MONGODB_PASSWORD)@%s:27017/%s" (first .Values.mongodb.auth.usernames) (include "kobo.mongodb.fullname" .) (first .Values.mongodb.auth.databases) -}}
+{{- end -}}
 {{- end -}}
 {{- end -}}
 
