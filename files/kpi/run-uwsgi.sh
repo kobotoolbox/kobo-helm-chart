@@ -9,6 +9,8 @@ INITIAL_WORKERS="${INITIAL_WORKERS:-6}"
 MAX_WORKERS="${MAX_WORKERS:-8}"
 OVERLOAD_TIME="${OVERLOAD_TIME:-30}"
 UWSGI_THREADS=${UWSGI_THREADS:-1}
+MAX_REQUESTS="${UWSGI_MAX_REQUESTS:-100000}"
+WORKER_RELOAD_MERCY="${UWSGI_WORKER_RELOAD_MERCY:-30}"
 
 echo "Copying static files..."
 rsync -aq --delete "${KPI_SRC_DIR}/staticfiles/" "${NGINX_STATIC_DIR}/" || true
@@ -33,7 +35,8 @@ exec uwsgi \
     --cheaper-busyness-multiplier=20 \
     --threads=$UWSGI_THREADS \
     --harakiri=60 \
-    --max-requests=10000 \
+    --max-requests=$MAX_REQUESTS \
+    --worker-reload-mercy=$WORKER_RELOAD_MERCY \
     --die-on-term \
     --enable-threads \
     --single-interpreter \
