@@ -1,12 +1,12 @@
 dependencies:
 - name: mongodb
   repository: https://charts.bitnami.com/bitnami
-  version: 13.6.7
+  version: 13.8.1
 - name: redis
   repository: https://charts.bitnami.com/bitnami
-  version: 17.7.1
+  version: 17.8.0
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
-  version: 12.1.14
-digest: sha256:25a91c01f79212b7194dee432bda9dbf581200824b10516dee8d28003aa17370
-generated: "2023-02-03T13:35:43.304929385-05:00"
+  version: 12.2.1
+digest: sha256:3f63b0a1ff5278e5af080a93be31c7ef7693cc94375b4cce65fc2b1ac4fad785
+generated: "2023-02-23T16:15:03.61242351-05:00"
