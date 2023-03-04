@@ -22,24 +22,6 @@ data:
 {{- if .Values.enketo.ingress.enabled }}
   ENKETO_URL: {{ include "kobo.enketoUrl" . | quote }}
 {{- end }}
-{{- if not .Values.kpi.env.normal.DEFAULT_FROM_EMAIL }}
-  DEFAULT_FROM_EMAIL: "support@kobotoolbox.org"
-{{- end }}
-{{- if not .Values.kpi.env.normal.ENKETO_EXPRESS_PUBLIC_SUBDOMAIN }}
-  ENKETO_EXPRESS_PUBLIC_SUBDOMAIN: "ee"
-{{- end }}
-{{- if not .Values.kpi.env.normal.KOBOCAT_PUBLIC_SUBDOMAIN }}
-  KOBOCAT_PUBLIC_SUBDOMAIN: "kc"
-{{- end }}
-{{- if not .Values.kpi.env.normal.KOBOFORM_PUBLIC_SUBDOMAIN }}
-  KOBOFORM_PUBLIC_SUBDOMAIN: "kf"
-{{- end }}
-{{- if not .Values.kpi.env.normal.PUBLIC_REQUEST_SCHEME }}
-  PUBLIC_REQUEST_SCHEME: "https"
-{{- end }}
-{{- if not .Values.kpi.env.normal.SECURE_HSTS_SECONDS }}
-  SECURE_HSTS_SECONDS: "3000"
-{{- end }}
 {{- range $k, $v := .Values.kobocat.env.normal }}
   {{ $k }}: {{ $v | quote }}
 {{- end }}
