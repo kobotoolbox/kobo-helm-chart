@@ -54,12 +54,10 @@ kpi:
   env:
     normal:
       # By default, the following are set but can be overridden
-      DEFAULT_FROM_EMAIL: "support@kobotoolbox.org"
       ENKETO_EXPRESS_PUBLIC_SUBDOMAIN: "ee"
       KOBOCAT_PUBLIC_SUBDOMAIN: "kc"
-      KOBOFORM_PUBLIC_SUBDOMAIN: "kf"
+      KOBOFORM_PUBLIC_SUBDOMAIN: "kobo"
       PUBLIC_REQUEST_SCHEME: "https"
-      SECURE_HSTS_SECONDS: "3000" # (recommend set to greater value)
       # -- Django email backend
       EMAIL_BACKEND: "django.core.mail.backends.console.EmailBackend"
       # -- Django file storage, recommend using a django-storages approach for scalability
@@ -153,12 +151,10 @@ kobocat:
   env:
     normal:
       # By default, the following are set but can be overridden
-      DEFAULT_FROM_EMAIL: "support@kobotoolbox.org"
       ENKETO_EXPRESS_PUBLIC_SUBDOMAIN: "ee"
       KOBOCAT_PUBLIC_SUBDOMAIN: "kc"
-      KOBOFORM_PUBLIC_SUBDOMAIN: "kf"
+      KOBOFORM_PUBLIC_SUBDOMAIN: "kobo"
       PUBLIC_REQUEST_SCHEME: "https"
-      SECURE_HSTS_SECONDS: "3000" # (recommend set to greater value)
       # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
     secret: {}
