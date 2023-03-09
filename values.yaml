@@ -43,6 +43,11 @@ kpi:
     maxReplicas: 20
     targetCPU: 80
     targetMemory: 90
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #      maxSurge: "25%""
+  #      maxUnavailable: "25%"
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -140,6 +145,11 @@ kobocat:
     maxReplicas: 20
     targetCPU: 80
     targetMemory: 99
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #      maxSurge: "25%""
+  #      maxUnavailable: "25%"
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -212,6 +222,11 @@ enketo:
     maxReplicas: 20
     targetCPU: 80
     # targetMemory: 90
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #      maxSurge: "25%""
+  #      maxUnavailable: "25%"
   nodeSelector: {}
   tolerations: []
   affinity: {}

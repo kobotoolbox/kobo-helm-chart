@@ -9,6 +9,9 @@ spec:
   {{- if not .Values.enketo.autoscaling.enabled }}
   replicas: {{ .Values.enketo.replicaCount }}
   {{- end }}
+  {{- if .Values.enketo.strategy }}
+  strategy: {{- toYaml .Values.enketo.strategy | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/component: enketo
