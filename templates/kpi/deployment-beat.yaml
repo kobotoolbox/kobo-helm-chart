@@ -82,7 +82,10 @@ spec:
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
           command: ["celery", "-A", "kobo", "beat", "-l", "info", "--pidfile=/tmp/celery_beat.pid", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler"]
-
+          {{- with .Values.kobocat.extraVolumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
       {{- with .Values.kpi.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -94,4 +97,8 @@ spec:
       {{- with .Values.kpi.worker.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kobocat.extraVolumes }}
+      volumes:
+        {{- toYaml . | nindent 6 }}
       {{- end }}

@@ -79,7 +79,10 @@ spec:
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
           command: ["celery", "-A", "kobo", "worker", "--queues=kpi_low_priority_queue", "-l", "info", "--hostname=kpi_main_worker@%h", "--concurrency", "2"]
-
+          {{- with .Values.kobocat.extraVolumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
       {{- with .Values.kpi.workerLowPriority.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -91,4 +94,8 @@ spec:
       {{- with .Values.kpi.workerLowPriority.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kobocat.extraVolumes }}
+      volumes:
+        {{- toYaml . | nindent 6 }}
       {{- end }}

@@ -41,4 +41,12 @@ spec:
           - name: {{ $k }}
             value: {{ $v | quote }}
         {{- end }}
+        {{- with .Values.kobocat.extraVolumeMounts }}
+        volumeMounts:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      {{- with .Values.kobocat.extraVolumes }}
+      volumes:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
 {{- end }}
