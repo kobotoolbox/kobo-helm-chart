@@ -15,6 +15,7 @@ kobotoolbox:
   # - Kobocat Cache - 5
   # - Service account - 6
   #redis: "redis://:pass@redis-master:6379"  # Do not add / nor /1 suffix
+  redisParameters: "" # ?ssl_cert_reqs=CERT_REQUIRED
   #redisSession: "redis://:pass@redis-master:6379/1"
   #serviceAccountBackend: "redis://:pass@redis-master:6379/6"
   djangoLanguageCodes: "ar cs de-DE en es fr hi ku pl pt ru tr uk zh-hans"
