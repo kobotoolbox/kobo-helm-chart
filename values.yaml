@@ -43,6 +43,11 @@ kpi:
     maxReplicas: 20
     targetCPU: 80
     targetMemory: 90
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #      maxSurge: "25%""
+  #      maxUnavailable: "25%"
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -53,6 +58,11 @@ kpi:
     minAvailable: 1
   env:
     normal:
+      # By default, the following are set but can be overridden
+      ENKETO_EXPRESS_PUBLIC_SUBDOMAIN: "ee"
+      KOBOCAT_PUBLIC_SUBDOMAIN: "kc"
+      KOBOFORM_PUBLIC_SUBDOMAIN: "kobo"
+      PUBLIC_REQUEST_SCHEME: "https"
       # -- Django email backend
       EMAIL_BACKEND: "django.core.mail.backends.console.EmailBackend"
       # -- Django file storage, recommend using a django-storages approach for scalability
@@ -135,6 +145,11 @@ kobocat:
     maxReplicas: 20
     targetCPU: 80
     targetMemory: 99
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #      maxSurge: "25%""
+  #      maxUnavailable: "25%"
   nodeSelector: {}
   tolerations: []
   affinity: {}
@@ -144,7 +159,12 @@ kobocat:
   budget:
     minAvailable: 1
   env:
-    normal: {}
+    normal:
+      # By default, the following are set but can be overridden
+      ENKETO_EXPRESS_PUBLIC_SUBDOMAIN: "ee"
+      KOBOCAT_PUBLIC_SUBDOMAIN: "kc"
+      KOBOFORM_PUBLIC_SUBDOMAIN: "kobo"
+      PUBLIC_REQUEST_SCHEME: "https"
       # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
     secret: {}
@@ -202,6 +222,11 @@ enketo:
     maxReplicas: 20
     targetCPU: 80
     # targetMemory: 90
+  # strategy:
+  #   type: RollingUpdate
+  #   rollingUpdate:
+  #      maxSurge: "25%""
+  #      maxUnavailable: "25%"
   nodeSelector: {}
   tolerations: []
   affinity: {}

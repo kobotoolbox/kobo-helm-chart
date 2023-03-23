@@ -9,6 +9,9 @@ spec:
   {{- if not .Values.kpi.autoscaling.enabled }}
   replicas: {{ .Values.kpi.replicaCount }}
   {{- end }}
+  {{- if .Values.kpi.strategy }}
+  strategy: {{- toYaml .Values.kpi.strategy | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app.kubernetes.io/component: kpi
