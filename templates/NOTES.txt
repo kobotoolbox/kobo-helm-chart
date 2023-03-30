@@ -3,7 +3,7 @@
   {{- if get ( get ( index $.Values $app ) "ingress" ) "enabled" }}
     {{- range $host := get ( get ( index $.Values $app ) "ingress" ) "hosts" }}
       {{- range .paths }}
-      http{{ if ( get ( get ( index $.Values $app ) "ingress" ) "hosts" ) }}s{{ end }}://{{ $host.host }}{{ .path }}
+      http{{ if ( get ( get ( index $.Values $app ) "ingress" ) "hosts" ) }}s{{ end }}://{{ $host.host }}{{ $.path }}
       {{- end }}
     {{- end }}
     {{- else if contains "NodePort" ( get ( get ( index $.Values $app ) "service" ) "type" ) }}
