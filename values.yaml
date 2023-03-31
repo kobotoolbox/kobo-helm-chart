@@ -340,6 +340,7 @@ mongodb:
       - "change_me_please"
     databases:
       - "formhub"
+    existingSecret: ""
   resources:
     limits:
       cpu: 1000m
@@ -353,6 +354,7 @@ redis:
   enabled: false
   auth:
     password: "change_me_please"
+    existingSecret: ""
   commonConfiguration: |-
     maxmemory 900mb
     maxmemory-policy volatile-lru
@@ -382,6 +384,7 @@ postgresql:
   enabled: false
   auth:
     postgresPassword: "change_me_please"
+    existingSecret: ""
   primary:
     persistence:
       size: 10Gi
