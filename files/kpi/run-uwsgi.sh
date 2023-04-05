@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 set -e
 
-UWSGI_LISTEN="${UWSGI_LISTEN:-256}"
+LISTEN="${UWSGI_LISTEN:-256}"
 PORT="${PORT:-8000}"
 CHEAPER_OVERLOAD="${UWSGI_CHEAPER_OVERLOAD:-30}"
 MAX_REQUESTS="${UWSGI_MAX_REQUESTS:-2048}"
@@ -39,4 +39,4 @@ exec uwsgi \
     --ignore-sigpipe \
     --ignore-write-errors \
     --disable-write-exception \
-    --listen=$UWSGI_LISTEN
+    --listen=$LISTEN
