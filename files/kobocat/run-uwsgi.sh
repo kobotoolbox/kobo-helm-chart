@@ -1,42 +1,39 @@
 #!/usr/bin/env sh
 set -e
 
-UWSGI_LISTEN="${UWSGI_LISTEN:-128}"
+UWSGI_LISTEN="${UWSGI_LISTEN:-256}"
 PORT="${PORT:-8000}"
-
-MIN_WORKERS="${MIN_WORKERS:-4}"
-INITIAL_WORKERS="${INITIAL_WORKERS:-6}"
-MAX_WORKERS="${MAX_WORKERS:-8}"
-OVERLOAD_TIME="${OVERLOAD_TIME:-30}"
-UWSGI_THREADS=${UWSGI_THREADS:-1}
-
-echo "Running uwsgi with INITIAL_WORKERS: $INITIAL_WORKERS, MIN_WORKERS: $MIN_WORKERS, MAX_WORKERS: $MAX_WORKERS, OVERLOAD_TIME: $OVERLOAD_TIME, THREADS: $UWSGI_THREADS"
+CHEAPER_OVERLOAD="${UWSGI_CHEAPER_OVERLOAD:-30}"
+MAX_REQUESTS="${UWSGI_MAX_REQUESTS:-2048}"
+RELOAD_ON_RSS="${UWSGIO_RELOAD_ON_RSS:-512}"
+WORKER_RELOAD_MERCY="${UWSGI_WORKER_RELOAD_MERCY:-60}"
+HARAKIRI="${UWSGI_HARAKIRI:-60}"
+WORKERS="${UWSGI_WORKERS:-2}"
+BUFFER_SIZE="${UWSGI_BUFFER_SIZE:-32768}"
 
 exec uwsgi \
     --module=onadata.apps.main.wsgi:application \
     --env DJANGO_SETTINGS_MODULE=onadata.settings.prod \
-    --master --pidfile=/tmp/project-master.pid \
+    --master \
+    --pidfile=/tmp/project-master.pid \
     --log-x-forwarded-for \
     --log-format-strftime \
     --http-socket=:$PORT \
     --cheaper-algo=busyness \
-    --cheaper=$MIN_WORKERS \
-    --cheaper-initial=$INITIAL_WORKERS \
-    --workers=$MAX_WORKERS \
-    --cheaper-overload=$OVERLOAD_TIME \
+    --workers=$WORKERS \
+    --cheaper-overload=$CHEAPER_OVERLOAD \
     --cheaper-step=1 \
     --cheaper-busyness-max=50 \
     --cheaper-busyness-min=25 \
     --cheaper-busyness-multiplier=20 \
-    --threads=$UWSGI_THREADS \
-    --harakiri=60 \
-    --max-requests=10000 \
+    --harakiri=$HARAKIRI \
+    --max-requests=$MAX_REQUESTS \
     --die-on-term \
     --enable-threads \
     --single-interpreter \
     --post-buffering \
-    --buffer-size=83146 \
+    --buffer-size=$BUFFER_SIZE \
     --ignore-sigpipe \
     --ignore-write-errors \
+    --disable-write-exception \
     --listen=$UWSGI_LISTEN
-
