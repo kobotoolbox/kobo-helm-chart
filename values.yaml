@@ -83,7 +83,16 @@ kpi:
       # AWS_SECRET_ACCESS_KEY: ""
   worker:
     replicaCount: 1
-    resources:
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 10
+      periodSeconds: 60
+      timeoutSeconds: 30
+      command:
+        - /bin/sh
+        - -c
+        - exec
+        - celery -A kobo inspect ping -d kpi_main_worker@$HOSTNAME | grep -q OK
       limits:
         cpu: 1000m
         memory: 800Mi
@@ -98,6 +107,16 @@ kpi:
       # targetMemory: 80
   workerLowPriority:
     replicaCount: 1
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 10
+      periodSeconds: 60
+      timeoutSeconds: 30
+      command:
+        - /bin/sh
+        - -c
+        - exec
+        - celery -A kobo inspect ping -d kpi_main_worker@$HOSTNAME | grep -q OK
     resources:
       limits:
         cpu: 1000m
@@ -132,6 +151,7 @@ kobocat:
     repository: kobotoolbox/kobocat
     pullPolicy: IfNotPresent
     tag: "2.023.04a"
+  replicaCount: 1
   replicaCount: 1
   resources:
     limits:
@@ -188,6 +208,16 @@ kobocat:
     #      - chart-example.local
   worker:
     replicaCount: 1
+    livenessProbe:
+      enabled: true
+      initialDelaySeconds: 10
+      periodSeconds: 60
+      timeoutSeconds: 30
+      command:
+        - /bin/sh
+        - -c
+        - exec
+        - celery -A onadata inspect ping -d kobocat_main_worker@$HOSTNAME | grep -q OK
     resources:
       limits:
         cpu: 1000m
