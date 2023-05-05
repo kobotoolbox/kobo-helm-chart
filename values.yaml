@@ -152,7 +152,6 @@ kobocat:
     pullPolicy: IfNotPresent
     tag: "2.023.04a"
   replicaCount: 1
-  replicaCount: 1
   resources:
     limits:
       cpu: 1000m
