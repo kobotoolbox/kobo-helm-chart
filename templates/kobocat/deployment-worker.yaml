@@ -77,7 +77,10 @@ spec:
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kobocat
           command: ["celery", "-A", "onadata", "worker", "-l", "info", "-Ofair", "--hostname=kobocat_main_worker@%h"]
-
+          {{- with .Values.kobocat.extraVolumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
       {{- with .Values.kobocat.worker.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -89,4 +92,8 @@ spec:
       {{- with .Values.kobocat.worker.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kobocat.extraVolumes }}
+      volumes:
+        {{- toYaml . | nindent 6 }}
       {{- end }}

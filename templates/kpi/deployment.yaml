@@ -103,6 +103,9 @@ spec:
             mountPath: /srv/static
           - name: scripts
             mountPath: /srv/init/
+          {{- with .Values.kpi.extraVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
         - name: nginx
           image: {{ .Values.nginx.image }}
           imagePullPolicy: Always
@@ -120,7 +123,6 @@ spec:
             mountPath: /etc/nginx/conf.d/
           ports:
             - containerPort: 80
-
       {{- with .Values.kpi.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -153,3 +155,6 @@ spec:
       - name: nginx-conf
         configMap:
           name: {{ include "kobo.fullname" . }}-nginx-kpi-conf
+      {{- with .Values.kpi.extraVolumes }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
