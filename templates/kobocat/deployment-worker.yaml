@@ -31,6 +31,10 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.kobocat.image.repository }}:{{ .Values.kobocat.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.kobocat.image.pullPolicy }}
+          {{- if .Values.kobocat.worker.livenessProbe}}
+          livenessProbe:
+            {{- .Values.kobocat.worker.livenessProbe | toYaml | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.kobocat.worker.resources | nindent 12 }}
           env:

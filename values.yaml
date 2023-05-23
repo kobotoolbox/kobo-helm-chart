@@ -85,7 +85,15 @@ kpi:
   extraVolumes: []
   worker:
     replicaCount: 1
-    resources:
+    livenessProbe:
+      initialDelaySeconds: 10
+      periodSeconds: 60
+      timeoutSeconds: 30
+      exec:
+        command:
+          - "bash"
+          - "-c"
+          - "celery -A kobo inspect ping -d kpi_main_worker@$HOSTNAME | grep -q OK"
       limits:
         cpu: 1000m
         memory: 800Mi
@@ -100,6 +108,15 @@ kpi:
       # targetMemory: 80
   workerLowPriority:
     replicaCount: 1
+    livenessProbe:
+      initialDelaySeconds: 10
+      periodSeconds: 60
+      timeoutSeconds: 30
+      exec:
+        command:
+          - "bash"
+          - "-c"
+          - "celery -A kobo inspect ping -d kpi_main_worker@$HOSTNAME | grep -q OK"
     resources:
       limits:
         cpu: 1000m
@@ -192,6 +209,15 @@ kobocat:
   extraVolumes: [ ]
   worker:
     replicaCount: 1
+    livenessProbe:
+      initialDelaySeconds: 10
+      periodSeconds: 60
+      timeoutSeconds: 30
+      exec:
+        command:
+          - "bash"
+          - "-c"
+          - "celery -A onadata inspect ping -d kobocat_main_worker@$HOSTNAME | grep -q OK"
     resources:
       limits:
         cpu: 1000m

@@ -31,6 +31,10 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
+          {{- if .Values.kpi.worker.livenessProbe}}
+          livenessProbe:
+            {{- .Values.kpi.worker.livenessProbe | toYaml | nindent 12 }}
+          {{- end }}
           resources:
             {{- toYaml .Values.kpi.worker.resources | nindent 12 }}
           env:
