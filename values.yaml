@@ -86,15 +86,14 @@ kpi:
   worker:
     replicaCount: 1
     livenessProbe:
-      enabled: true
       initialDelaySeconds: 10
       periodSeconds: 60
       timeoutSeconds: 30
-      command:
-        - /bin/sh
-        - -c
-        - exec
-        - celery -A kobo inspect ping -d kpi_main_worker@$HOSTNAME | grep -q OK
+      exec:
+        command:
+          - "bash"
+          - "-c"
+          - "celery -A kobo inspect ping -d kpi_main_worker@$HOSTNAME | grep -q OK"
       limits:
         cpu: 1000m
         memory: 800Mi
@@ -110,15 +109,14 @@ kpi:
   workerLowPriority:
     replicaCount: 1
     livenessProbe:
-      enabled: true
       initialDelaySeconds: 10
       periodSeconds: 60
       timeoutSeconds: 30
-      command:
-        - /bin/sh
-        - -c
-        - exec
-        - celery -A kobo inspect ping -d kpi_main_worker@$HOSTNAME | grep -q OK
+      exec:
+        command:
+          - "bash"
+          - "-c"
+          - "celery -A kobo inspect ping -d kpi_main_worker@$HOSTNAME | grep -q OK"
     resources:
       limits:
         cpu: 1000m
@@ -212,15 +210,14 @@ kobocat:
   worker:
     replicaCount: 1
     livenessProbe:
-      enabled: true
       initialDelaySeconds: 10
       periodSeconds: 60
       timeoutSeconds: 30
-      command:
-        - /bin/sh
-        - -c
-        - exec
-        - celery -A onadata inspect ping -d kobocat_main_worker@$HOSTNAME | grep -q OK
+      exec:
+        command:
+          - "bash"
+          - "-c"
+          - "celery -A onadata inspect ping -d kobocat_main_worker@$HOSTNAME | grep -q OK"
     resources:
       limits:
         cpu: 1000m

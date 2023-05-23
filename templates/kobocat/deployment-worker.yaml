@@ -31,13 +31,9 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.kobocat.image.repository }}:{{ .Values.kobocat.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.kobocat.image.pullPolicy }}
-          {{- if .Values.kobocat.worker.livenessProbe.enabled }}
+          {{- if .Values.kobocat.worker.livenessProbe}}
           livenessProbe:
-            initialDelaySeconds: {{ .Values.kobocat.worker.livenessProbe.initialDelaySeconds }}
-            periodSeconds: {{ .Values.kobocat.worker.livenessProbe.periodSeconds }}
-            timeoutSeconds: {{ .Values.kobocat.worker.livenessProbe.timeoutSeconds }}
-            exec:
-              command: {{- toYaml .Values.kobocat.worker.livenessProbe.command | nindent 14 }}
+            {{- .Values.kobocat.worker.livenessProbe | toYaml | nindent 12 }}
           {{- end }}
           resources:
             {{- toYaml .Values.kobocat.worker.resources | nindent 12 }}
