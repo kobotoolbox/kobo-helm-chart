@@ -81,6 +81,8 @@ kpi:
       # CACHE_URL: "redis://localhost:6379/4"
       # AWS_ACCESS_KEY_ID: ""
       # AWS_SECRET_ACCESS_KEY: ""
+  extraVolumeMounts: []
+  extraVolumes: []
   worker:
     replicaCount: 1
     resources:
@@ -186,6 +188,8 @@ kobocat:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+  extraVolumeMounts: [ ]
+  extraVolumes: [ ]
   worker:
     replicaCount: 1
     resources:
@@ -299,6 +303,8 @@ enketo:
       # Set if kobotoolbox.redis is unset
       # ENKETO_REDIS_MAIN_URL: "redis://localhost:6379"
       # ENKETO_REDIS_CACHE_URL: "redis://localhost:6379"
+  extraVolumeMounts: [ ]
+  extraVolumes: [ ]
   ingress:
     enabled: false
     className: ""

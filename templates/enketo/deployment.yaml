@@ -72,6 +72,10 @@ spec:
                 name: {{ include "kobo.fullname" . }}-enketo
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-enketo
+          {{- with .Values.enketo.extraVolumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
       {{- with .Values.enketo.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -91,3 +95,7 @@ spec:
         labelSelector:
           matchLabels:
             app.kubernetes.io/component: enketo
+      {{- with .Values.enketo.extraVolumes }}
+      volumes:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
