@@ -123,7 +123,7 @@ spec:
           command: ["/srv/init/init.sh"]
           volumeMounts:
           - name: static-volume
-            mountPath: /static    
+            mountPath: /static
           - name: scripts
             mountPath: /srv/init/
           envFrom:
