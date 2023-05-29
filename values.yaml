@@ -8,7 +8,7 @@ kobotoolbox:
   # Unset to specify each redis usage seperately
   # Redis default DB numbers
   # - Enketo - 0 (cannot be changed)
-  # - Session - 1 
+  # - Session - 1
   # - KPI Broker - 2
   # - Kobocat Broker - 3
   # - KPI Cache - 4
@@ -29,7 +29,7 @@ kpi:
   image:
     repository: kobotoolbox/kpi
     pullPolicy: IfNotPresent
-    tag: "2.023.04d"
+    tag: "2.023.12b"
   replicaCount: 1
   resources:
     limits:
@@ -72,7 +72,7 @@ kpi:
       # KPI_AWS_STORAGE_BUCKET_NAME: ""
       # -- KoBoCAT Django file storage, should match KPI setting
       # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
-      # -- KoBoCAT Bucket name 
+      # -- KoBoCAT Bucket name
       # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
     secret:
       {}
@@ -150,7 +150,7 @@ kobocat:
   image:
     repository: kobotoolbox/kobocat
     pullPolicy: IfNotPresent
-    tag: "2.023.04a"
+    tag: "2.023.12b"
   replicaCount: 1
   resources:
     limits:
@@ -232,13 +232,12 @@ kobocat:
       targetCPU: 80
       # targetMemory: 80
 
-    
 
 enketo:
   image:
     repository: kobotoolbox/enketo-express-extra-widgets
     pullPolicy: IfNotPresent
-    tag: "5.0.0-nested-repeat-count-fix-retry-with-old-numeric-widgets"
+    tag: "6.0.0_plus_pm2-runtime_and_exponential-backoff_jnm"
   replicaCount: 1
   resources:
     limits:
@@ -267,7 +266,7 @@ enketo:
   budget:
     minAvailable: 1
   env:
-    normal: 
+    normal:
       ENKETO_APP_NAME: "Enketo Express for KoboToolbox"
       ENKETO_MAX_PROCESSES: "4"
       ENKETO_LINKED_FORM_AND_DATA_SERVER_NAME: "KoboToolbox"
