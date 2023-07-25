@@ -130,6 +130,14 @@ kpi:
       maxReplicas: 20
       targetCPU: 80
       # targetMemory: 80
+  beat:
+    resources:
+      limits:
+        cpu: 800m
+        memory: 400Mi
+      requests:
+        cpu: 50m
+        memory: 200Mi
   ingress:
     enabled: false
     className: ""

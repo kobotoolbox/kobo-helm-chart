@@ -30,12 +30,7 @@ spec:
           image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
           resources:
-            limits:
-              cpu: 50m
-              memory: 256Mi
-            requests:
-              cpu: 1m
-              memory: 32Mi
+            {{- toYaml .Values.kpi.beat.resources | nindent 12 }}
           env:
             - name: POD_IP
               valueFrom:
