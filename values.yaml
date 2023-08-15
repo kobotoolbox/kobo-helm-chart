@@ -29,7 +29,7 @@ kpi:
   image:
     repository: kobotoolbox/kpi
     pullPolicy: IfNotPresent
-    tag: "2.023.12b"
+    tag: "2.023.21"
   replicaCount: 1
   resources:
     limits:
@@ -94,6 +94,7 @@ kpi:
           - "bash"
           - "-c"
           - "celery -A kobo inspect ping -d kpi_main_worker@$HOSTNAME | grep -q OK"
+    resources:
       limits:
         cpu: 1000m
         memory: 800Mi
@@ -158,7 +159,7 @@ kobocat:
   image:
     repository: kobotoolbox/kobocat
     pullPolicy: IfNotPresent
-    tag: "2.023.12b"
+    tag: "2.023.21"
   replicaCount: 1
   resources:
     limits:
