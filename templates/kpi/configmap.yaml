@@ -46,4 +46,9 @@ metadata:
     component: kpi
     {{- include "kobo.labels" . | nindent 4 }}
 data:
+{{- if and .Values.kpi.nginx .Values.kpi.nginx.config }}
+  nginx.conf: |-
+    {{ .Values.kpi.nginx.config | nindent 4 }}
+{{- else }}
 {{ (.Files.Glob "files/kpi/nginx.conf").AsConfig | indent 2 }}
+{{- end }}
