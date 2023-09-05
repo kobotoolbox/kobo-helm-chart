@@ -242,6 +242,37 @@ kobocat:
       # targetMemory: 80
 
 
+flower:
+  enabled: false
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 50m
+      memory: 256Mi
+  nodeSelector: {}
+  tolerations: []
+  podAnnotations: {}
+  affinity: {}
+  service:
+    type: ClusterIP
+    port: 80
+  ingress:
+    enabled: false
+    annotations:
+      {}
+    hosts:
+      - host: chart-example.local
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls: []
+    #  - secretName: chart-example-tls
+    #    hosts:
+    #      - chart-example.local
+
+
 enketo:
   image:
     repository: kobotoolbox/enketo-express-extra-widgets

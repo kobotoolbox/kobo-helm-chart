@@ -1,0 +1,74 @@
+{{- if .Values.flower.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kobo.fullname" . }}-flower
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: flower 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "kobo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: flower
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        tag: "{{ .Values.image.tag }}"
+        {{- if .Values.flower.podAnnotations }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.flower.podAnnotations "context" $ ) | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "kobo.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: flower
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- if .Values.flower.args }}
+          args: {{- toYaml .Values.flower.args | nindent 10}}
+          {{- end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: celery -A kobo flower
+          ports:
+          - containerPort: 5555
+            name: http
+            protocol: TCP
+          resources:
+            {{- toYaml .Values.flower.resources | nindent 12 }}
+          env:
+            - name: SERVER_ROLE
+              value: "flower"
+          envFrom:
+            - secretRef:
+                name: {{ include "kobo.fullname" . }}
+            {{- if .Values.existingSecret }}
+            - secretRef:
+                name: {{ .Values.existingSecret }}
+            {{- end }}
+            - configMapRef:
+                name: {{ include "kobo.fullname" . }}
+      {{- with .Values.flower.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.flower.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.flower.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
