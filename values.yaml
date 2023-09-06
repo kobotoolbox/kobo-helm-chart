@@ -49,6 +49,12 @@ kpi:
   #   rollingUpdate:
   #      maxSurge: "25%""
   #      maxUnavailable: "25%"
+  # nginx:
+  #   config: |-
+  #     server {
+  #       listen       80;
+  #        server_name  example.com;
+  #     }
   nodeSelector: {}
   tolerations: []
   affinity: {}
