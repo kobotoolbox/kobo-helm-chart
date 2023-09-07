@@ -197,6 +197,9 @@ kobocat:
       KOBOCAT_PUBLIC_SUBDOMAIN: "kc"
       KOBOFORM_PUBLIC_SUBDOMAIN: "kobo"
       PUBLIC_REQUEST_SCHEME: "https"
+      # Celery configuration
+      CELERY_WORKER_AUTOSCALE: "2,3"
+      CELERY_WORKER_MAX_TASKS_PER_CHILD: "10000"
       # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
     secret: {}
