@@ -1,0 +1,81 @@
+{{- if .Values.flower.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kobo.fullname" . }}-flower
+  labels:
+    {{- include "kobo.labels" . | nindent 4 }}
+    app.kubernetes.io/component: flower 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "kobo.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: flower
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
+        tag: "{{ .Values.kpi.image.tag }}"
+        {{- if .Values.flower.podAnnotations }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.flower.podAnnotations "context" $ ) | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "kobo.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: flower
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          {{- if .Values.flower.args }}
+          args: {{- toYaml .Values.flower.args | nindent 10}}
+          {{- end }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag }}"
+          imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
+          command: ["celery", "-A", "kobo", "flower"]
+          ports:
+          - containerPort: 5555
+            name: http
+            protocol: TCP
+          resources:
+            {{- toYaml .Values.flower.resources | nindent 12 }}
+          env:
+            - name: SERVER_ROLE
+              value: "flower"
+            {{- if .Values.redis.enabled }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (include "kobo.redis.fullname" .) .Values.redis.auth.existingSecret }}
+                  key: redis-password
+            - name: REDIS_SESSION_URL
+              value: {{ (include "kobo.redis.url" .) }}/1
+            - name: SERVICE_ACCOUNT_BACKEND_URL
+              value: {{ (include "kobo.redis.url" .) }}/6
+            - name: KPI_BROKER_URL
+              value: {{ (include "kobo.redis.url" .) }}/2
+            - name: CACHE_URL
+              value: {{ (include "kobo.redis.url" .) }}/4
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ include "kobo.fullname" . }}-kpi
+            - configMapRef:
+                name: {{ include "kobo.fullname" . }}-kpi
+      {{- with .Values.flower.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.flower.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.flower.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
