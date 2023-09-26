@@ -57,6 +57,7 @@ kpi:
   #     }
   nodeSelector: {}
   tolerations: []
+  podAnnotations: {}
   affinity: {}
   service:
     type: ClusterIP
