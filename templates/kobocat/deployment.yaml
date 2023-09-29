@@ -21,6 +21,7 @@ spec:
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/kobocat/secrets.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/kobocat/configmap.yaml") . | sha256sum }}
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         tag: "{{ .Values.kobocat.image.tag }}"
       labels:
         app.kubernetes.io/component: kobocat
