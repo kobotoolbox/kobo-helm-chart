@@ -45,6 +45,10 @@ spec:
           - name: KC_DATABASE_URL
             value: {{ required "kobocatDatabase required" .Values.kobotoolbox.kobocatDatabase }}
           {{- end }}
+          {{ if .Values.kobotoolbox.redis }}
+          - name: CACHE_URL
+            value: {{ printf "%s/5%s" .Values.kobotoolbox.redis .Values.kobotoolbox.redisParameters | quote }}
+          {{- end }}
         {{- range $k, $v := .Values.kpi.env.normal }}
           - name: {{ $k }}
             value: {{ $v | quote }}
