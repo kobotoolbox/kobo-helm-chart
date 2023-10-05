@@ -103,7 +103,7 @@ PostgreSQL connection URL
 Requires POSTGRES_PASSWORD to be set environment variable
 */}}
 {{- define "kobo.postgresql.url" -}}
-{{- printf "postgres://postgres:$(POSTGRES_PASSWORD)@%s:5432/koboform" (include "kobo.postgresql.fullname" .) -}}
+{{- printf "postgres://%s:$(POSTGRES_PASSWORD)@%s:5432/%s" .Values.postgresql.auth.username (include "kobo.postgresql.fullname" .) .Values.kpi.env.normal.KPI_DATABASE_NAME -}}
 {{- end -}}
 
 {{/*
@@ -111,8 +111,9 @@ PostgreSQL connection URL for KoboCat
 Requires POSTGRES_PASSWORD to be set environment variable
 */}}
 {{- define "kobo.postgresql.kc_url" -}}
-{{- printf "postgis://postgres:$(POSTGRES_PASSWORD)@%s:5432/postgres" (include "kobo.postgresql.fullname" .) -}}
+{{- printf "postgis://%s:$(POSTGRES_PASSWORD)@%s:5432/%s" .Values.postgresql.auth.username (include "kobo.postgresql.fullname" .) .Values.kobocat.env.normal.KOBOCAT_DATABASE_NAME -}}
 {{- end -}}
+
 
 {{- define "kobo.mongodb.fullname" -}}
 {{- if .Values.mongodb.fullnameOverride -}}

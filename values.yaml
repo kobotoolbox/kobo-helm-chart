@@ -84,6 +84,7 @@ kpi:
       # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # -- KoBoCAT Bucket name
       # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
+      KPI_DATABASE_NAME: koboform
     secret:
       {}
       # DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
@@ -209,6 +210,7 @@ kobocat:
       CELERY_WORKER_MAX_TASKS_PER_CHILD: "10000"
       # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
+      KOBOCAT_DATABASE_NAME: kobocat
     secret: {}
       # KOBOCAT_BROKER_URL: "redis://localhost:6379/3"
       # KOBOCAT_AWS_ACCESS_KEY_ID: ""
@@ -452,6 +454,10 @@ redis:
 postgresql:
   enabled: false
   auth:
+    # Name for a custom user to create
+    username: "custom_user"
+    # Password for the custom user to create. Ignored if auth.existingSecret is provided
+    password: "change_me_please"
     postgresPassword: "change_me_please"
   primary:
     persistence:
