@@ -32,6 +32,6 @@ jobs:
 
     - name: Package Chart
       run: |
-        - helm package -d chart .
-        - mv chart/kobo*.tgz chart/kobo.tgz 
+        helm package -d chart .
+        mv chart/kobo*.tgz chart/kobo.tgz 
    
