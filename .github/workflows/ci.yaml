@@ -30,28 +30,8 @@ jobs:
       run: |
         helm lint .
 
-    # - name: Test Helm Chart
-    #   run: |
-    #     cd path/to/your/helm/chart
-    #     # You can run tests for your Helm chart here if you have any
-
-    - name: Create Artifact
+    - name: Package Chart
       run: |
-        # Create a directory to store your artifact
-        mkdir -p artifacts
-        # Copy your Helm chart and any additional files you want to include in the artifact
-        cp -R . artifacts/
-        # You can also add other files or manipulate the contents as needed
-
-    - name: Zip Artifact
-      run: |
-        # Navigate to the artifact directory
-        cd artifacts
-        # Create a zip file containing the Helm chart and other files
-        zip -r my-helm-chart-artifact.zip .
-      
-    - name: Publish Artifact
-      uses: actions/upload-artifact@v2
-      with:
-        name: my-helm-chart-artifact
-        path: artifacts/my-helm-chart-artifact.zip
+        - helm package -d chart .
+        - mv chart/kobo*.tgz chart/kobo.tgz 
+   
