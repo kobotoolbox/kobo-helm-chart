@@ -1,0 +1,54 @@
+name: Helm Chart Testing and Artifact Build
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Helm
+      uses: azure/setup-helm@v1
+      with:
+        version: 'v3.6.3' # You can specify the Helm version you want to use
+
+    - name: Install Helm Chart Dependencies
+      run: |
+        helm dependency update
+
+    - name: Lint Helm Chart
+      run: |
+        helm lint
+
+    # - name: Test Helm Chart
+    #   run: |
+    #     cd path/to/your/helm/chart
+    #     # You can run tests for your Helm chart here if you have any
+
+    - name: Create Artifact
+      run: |
+        # Create a directory to store your artifact
+        mkdir -p artifacts
+        # Copy your Helm chart and any additional files you want to include in the artifact
+        cp -R . artifacts/
+        # You can also add other files or manipulate the contents as needed
+
+    - name: Zip Artifact
+      run: |
+        # Navigate to the artifact directory
+        cd artifacts
+        # Create a zip file containing the Helm chart and other files
+        zip -r my-helm-chart-artifact.zip .
+      
+    - name: Publish Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-helm-chart-artifact
+        path: artifacts/my-helm-chart-artifact.zip
