@@ -277,7 +277,7 @@ enketo:
   image:
     repository: kobotoolbox/enketo-express-extra-widgets
     pullPolicy: IfNotPresent
-    tag: "6.0.0_plus_pm2-runtime_and_exponential-backoff_jnm"
+    tag: "6.2.2"
   replicaCount: 1
   resources:
     limits:
