@@ -45,13 +45,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /accounts/login/
+              path: /service_health/minimal/
               port: http
             initialDelaySeconds: 5
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /accounts/login/
+              path: /service_health/minimal/
               port: http
             initialDelaySeconds: 5
           resources:
