@@ -9,7 +9,6 @@ metadata:
     "helm.sh/hook-weight": "-1"
 data:
   KOBOCAT_MONGO_NAME: {{ required "mongoName is required" .Values.kobotoolbox.mongoName }}
-  DJANGO_LANGUAGE_CODES: {{ quote .Values.kobotoolbox.djangoLanguageCodes }}
 {{- if .Values.kpi.ingress.enabled }}
   KOBOFORM_URL: {{ include "kobo.kpiUrl" . | quote }}
 {{- end }}
