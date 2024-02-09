@@ -18,6 +18,7 @@ exec uwsgi \
     --module=kobo.wsgi:application \
     --env DJANGO_SETTINGS_MODULE=kobo.settings.prod \
     --master \
+    --buffer-size=$BUFFER_SIZE \
     --pidfile=/tmp/project-master.pid \
     --log-x-forwarded-for \
     --log-format-strftime \
@@ -35,7 +36,6 @@ exec uwsgi \
     --enable-threads \
     --single-interpreter \
     --post-buffering \
-    --buffer-size=$BUFFER_SIZE \
     --ignore-sigpipe \
     --ignore-write-errors \
     --disable-write-exception \

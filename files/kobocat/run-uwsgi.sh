@@ -15,6 +15,7 @@ exec uwsgi \
     --module=onadata.apps.main.wsgi:application \
     --env DJANGO_SETTINGS_MODULE=onadata.settings.prod \
     --master \
+    --buffer-size=$BUFFER_SIZE \
     --pidfile=/tmp/project-master.pid \
     --log-x-forwarded-for \
     --log-format-strftime \
@@ -32,7 +33,6 @@ exec uwsgi \
     --enable-threads \
     --single-interpreter \
     --post-buffering \
-    --buffer-size=$BUFFER_SIZE \
     --ignore-sigpipe \
     --ignore-write-errors \
     --disable-write-exception \
