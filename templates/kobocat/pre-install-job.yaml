@@ -41,6 +41,10 @@ spec:
           - name: DATABASE_URL
             value: {{ required "kobocatDatabase required" .Values.kobotoolbox.kobocatDatabase }}
           {{- end }}
+          {{ if .Values.kobotoolbox.redis }}
+          - name: ENKETO_REDIS_MAIN_URL
+            value: {{ printf "%s/0%s" .Values.kobotoolbox.redis .Values.kobotoolbox.redisParameters | b64enc | quote }}
+          {{- end }}
         {{- range $k, $v := .Values.kobocat.env.normal }}
           - name: {{ $k }}
             value: {{ $v | quote }}
