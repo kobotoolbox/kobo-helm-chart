@@ -43,7 +43,7 @@ spec:
           {{- end }}
           {{ if .Values.kobotoolbox.redis }}
           - name: ENKETO_REDIS_MAIN_URL
-            value: {{ printf "%s/0%s" .Values.kobotoolbox.redis .Values.kobotoolbox.redisParameters | b64enc | quote }}
+            value: {{ printf "%s/0%s" .Values.kobotoolbox.redis .Values.kobotoolbox.redisParameters | quote }}
           {{- end }}
         {{- range $k, $v := .Values.kobocat.env.normal }}
           - name: {{ $k }}
