@@ -28,7 +28,7 @@ kpi:
   image:
     repository: kobotoolbox/kpi
     pullPolicy: IfNotPresent
-    tag: "2.024.09a"
+    tag: "2.024.09b"
   replicaCount: 1
   resources:
     limits:
@@ -168,7 +168,7 @@ kobocat:
   image:
     repository: kobotoolbox/kobocat
     pullPolicy: IfNotPresent
-    tag: "2.024.09a"
+    tag: "2.024.09b"
   replicaCount: 1
   resources:
     limits:
