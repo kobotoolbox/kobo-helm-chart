@@ -85,7 +85,7 @@ spec:
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
           command: ["celery", "-A", "kobo", "worker", "--queues=kpi_low_priority_queue", "-l", "info", "--hostname=kpi_main_worker@%h"]
-          {{- with .Values.kobocat.extraVolumeMounts }}
+          {{- with .Values.kpi.extraVolumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
           {{- end }}
@@ -101,7 +101,7 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.kobocat.extraVolumes }}
+      {{- with .Values.kpi.extraVolumes }}
       volumes:
         {{- toYaml . | nindent 6 }}
       {{- end }}
