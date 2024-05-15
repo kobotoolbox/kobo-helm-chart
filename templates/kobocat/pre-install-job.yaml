@@ -49,6 +49,11 @@ spec:
           - name: {{ $k }}
             value: {{ $v | quote }}
         {{- end }}
+        envFrom:
+          - secretRef:
+              name: {{ include "kobo.fullname" . }}-kobocat
+          - configMapRef:
+              name: {{ include "kobo.fullname" . }}-kobocat
         {{- with .Values.kobocat.extraVolumeMounts }}
         volumeMounts:
           {{- toYaml . | nindent 10 }}

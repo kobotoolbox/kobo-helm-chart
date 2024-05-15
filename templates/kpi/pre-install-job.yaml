@@ -53,6 +53,11 @@ spec:
           - name: {{ $k }}
             value: {{ $v | quote }}
         {{- end }}
+        envFrom:
+          - secretRef:
+              name: {{ include "kobo.fullname" . }}-kpi
+          - configMapRef:
+              name: {{ include "kobo.fullname" . }}-kpi
         {{- with .Values.kpi.extraVolumeMounts }}
         volumeMounts:
           {{- toYaml . | nindent 10 }}
