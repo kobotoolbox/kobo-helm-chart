@@ -136,7 +136,7 @@ kpi:
         memory: 280Mi
     autoscaling:
       enabled: true
-      minReplicas: 1
+      minReplicas: 2
       maxReplicas: 20
       targetCPU: 80
       # targetMemory: 80
@@ -248,7 +248,7 @@ kobocat:
         memory: 280Mi
     autoscaling:
       enabled: false
-      minReplicas: 1
+      minReplicas: 2
       maxReplicas: 20
       targetCPU: 80
       # targetMemory: 80
