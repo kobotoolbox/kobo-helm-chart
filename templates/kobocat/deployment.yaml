@@ -42,13 +42,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /api/v1/
+              path: /service_health/minimal/
               port: http
             initialDelaySeconds: 5
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /api/v1/
+              path: /service_health/minimal/
               port: http
             initialDelaySeconds: 5
           resources:
