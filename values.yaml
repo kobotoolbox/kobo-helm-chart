@@ -110,16 +110,16 @@ kpi:
           - "celery -A kobo inspect ping -d kpi_main_worker@$HOSTNAME | grep -q OK"
     resources:
       limits:
-        cpu: 1000m
-        memory: 800Mi
+        cpu: 2000m
+        memory: 1400Mi
       requests:
-        cpu: 300m
-        memory: 280Mi
+        cpu: 400m
+        memory: 700Mi
     autoscaling:
       enabled: true
       minReplicas: 1
       maxReplicas: 20
-      targetCPU: 80
+      targetCPU: 90
       # targetMemory: 80
   workerLowPriority:
     replicaCount: 1
