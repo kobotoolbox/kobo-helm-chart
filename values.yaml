@@ -20,9 +20,14 @@ kobotoolbox:
   #serviceAccountBackend: "redis://:pass@redis-master:6379/6"
   enketoApiKey: "change_me_please"
 
+# Actually post-install and pre-update
 preInstall:
   enabled: true
   activeDeadlineSeconds: 600
+
+postInstall: {}
+  # command: "./manage.py anything"
+  # activeDeadlineSeconds: 60
 
 kpi:
   image:

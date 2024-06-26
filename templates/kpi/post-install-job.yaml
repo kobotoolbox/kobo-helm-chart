@@ -1,19 +1,16 @@
-{{- if .Values.preInstall.enabled -}}
+{{- if .Values.postInstall.command -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "kobo.fullname" . }}-kpi
+  name: {{ include "kobo.fullname" . }}-kpi-post-install
   labels:
     {{- include "kobo.labels" . | nindent 4 }}
   annotations:
-    "helm.sh/hook": post-install,pre-upgrade
+    "helm.sh/hook": post-install
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
-    "helm.sh/hook-weight": "0"
-    checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
-    checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
-    tag: "{{ .Values.kpi.image.tag }}"
+    "helm.sh/hook-weight": "1"
 spec:
-  activeDeadlineSeconds: {{ default 600 .Values.preInstall.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ default 60 .Values.postInstall.activeDeadlineSeconds }}
   template:
     metadata:
       labels:
@@ -22,10 +19,10 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-      - name: pre-install-job
+      - name: post-install-job
         image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag }}"
         imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
-        command: ["./manage.py","migrate"]
+        command: ["/bin/sh", "-c", "{{ .Values.postInstall.command }}"]
         env:
           - name: DJANGO_SECRET_KEY
             value: {{ required "djangoSecret is a required value." .Values.kobotoolbox.djangoSecret }}
