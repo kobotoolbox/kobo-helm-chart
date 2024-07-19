@@ -91,7 +91,7 @@ kpi:
     secret:
       {}
       # DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
-      # KPI_BROKER_URL: "redis://localhost:6379/2"
+      # CELERY_BROKER_URL: "redis://localhost:6379/2"
       # CACHE_URL: "redis://localhost:6379/4"
       # AWS_ACCESS_KEY_ID: ""
       # AWS_SECRET_ACCESS_KEY: ""
