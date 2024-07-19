@@ -1,0 +1,13 @@
+kobotoolbox:
+  kobocatDatabase: "postgis://kobo:jgSk3gpjmRUe@development-shared.cebluwjpt3fm.us-east-1.rds.amazonaws.com:5432/kobocat_django_app_kobocat"
+
+kpi:
+  env:
+    secret:
+      DATABASE_URL: "postgres://kobo:jgSk3gpjmRUe@development-shared.cebluwjpt3fm.us-east-1.rds.amazonaws.com:5432/kobocat_django_app_kpi"
+
+mongodb:
+  enabled: true
+redis:
+  enabled: true
+
