@@ -17,7 +17,7 @@ data:
 {{- if .Values.kobocat.ingress.enabled }}
   KOBOCAT_URL: {{ include "kobo.kobocatUrl" . | quote }}
 {{- end }}
-  KOBOCAT_INTERNAL_URL: http://{{ include "kobo.fullname" . }}-kobocat
+  KOBOCAT_INTERNAL_URL: http://{{ include "kobo.fullname" . }}-kpi
 {{- if .Values.enketo.ingress.enabled }}
   ENKETO_URL: {{ include "kobo.enketoUrl" . | quote }}
 {{- end }}
