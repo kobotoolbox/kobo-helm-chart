@@ -1,31 +1,31 @@
-{{- if .Values.preInstall.enabled -}}
+{{- if .Values.migrationJob.enabled -}}
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: {{ include "kobo.fullname" . }}-kobocat
+  name: {{ include "kobo.fullname" . }}-migration-job
   labels:
     {{- include "kobo.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": post-install,pre-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     "helm.sh/hook-weight": "0"
-    checksum/secret: {{ include (print $.Template.BasePath "/kobocat/secrets.yaml") . | sha256sum }}
-    checksum/configmap: {{ include (print $.Template.BasePath "/kobocat/configmap.yaml") . | sha256sum }}
-    tag: "{{ .Values.kobocat.image.tag }}"
+    checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
+    checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
+    tag: "{{ .Values.kpi.image.tag }}"
 spec:
-  activeDeadlineSeconds: {{ default 600 .Values.preInstall.activeDeadlineSeconds }}
+  activeDeadlineSeconds: {{ default 600 .Values.migrationJob.activeDeadlineSeconds }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/component: kobocat-job
+        app.kubernetes.io/component: kpi-job
         {{- include "kobo.selectorLabels" . | nindent 8 }}
     spec:
       restartPolicy: Never
       containers:
       - name: pre-install-job
-        image: "{{ .Values.kobocat.image.repository }}:{{ .Values.kobocat.image.tag }}"
-        imagePullPolicy: {{ .Values.kobocat.image.pullPolicy }}
-        command: ["./manage.py","migrate"]
+        image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag }}"
+        imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
+        command: ["./scripts/migrate.sh"]
         env:
           - name: DJANGO_SECRET_KEY
             value: {{ required "djangoSecret is a required value." .Values.kobotoolbox.djangoSecret }}
@@ -36,24 +36,28 @@ spec:
                 name: {{ default (include "kobo.postgresql.fullname" .) .Values.postgresql.auth.existingSecret }}
                 key: postgres-password
           - name: DATABASE_URL
-            value: {{ (include "kobo.postgresql.kc_url" .) }}
+            value: {{ (include "kobo.postgresql.url" .) }}
+          - name: KC_DATABASE_URL
+            value: postgres://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/postgres
           {{- else }}
           - name: DATABASE_URL
+            value: {{ required "kpi.env.secret.DATABASE_URL is a required value." .Values.kpi.env.secret.DATABASE_URL }}
+          - name: KC_DATABASE_URL
             value: {{ required "kobocatDatabase required" .Values.kobotoolbox.kobocatDatabase }}
           {{- end }}
           {{ if .Values.kobotoolbox.redis }}
-          - name: ENKETO_REDIS_MAIN_URL
-            value: {{ printf "%s/0%s" .Values.kobotoolbox.redis .Values.kobotoolbox.redisParameters | quote }}
+          - name: CACHE_URL
+            value: {{ printf "%s/5%s" .Values.kobotoolbox.redis .Values.kobotoolbox.redisParameters | quote }}
           {{- end }}
-        {{- range $k, $v := .Values.kobocat.env.normal }}
+        {{- range $k, $v := .Values.kpi.env.normal }}
           - name: {{ $k }}
             value: {{ $v | quote }}
         {{- end }}
-        {{- with .Values.kobocat.extraVolumeMounts }}
+        {{- with .Values.kpi.extraVolumeMounts }}
         volumeMounts:
           {{- toYaml . | nindent 10 }}
         {{- end }}
-      {{- with .Values.kobocat.extraVolumes }}
+      {{- with .Values.kpi.extraVolumes }}
       volumes:
         {{- toYaml . | nindent 6 }}
       {{- end }}
