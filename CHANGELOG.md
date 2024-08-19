@@ -1,4 +1,4 @@
-4.0.0 (Unreleased)
+4.0.0
 
 First stable release. We will begin posting changelogs for future work on the helm chart. A best effort will be given to use semantic versioning. However, breaking changes could still appear and we cannot test every combination of helm chart with each version of kobotoolbox. This project is still recommended only for advanced users.
 
