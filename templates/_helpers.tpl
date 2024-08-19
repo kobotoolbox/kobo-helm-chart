@@ -70,14 +70,6 @@ Guess the public kpi url, assume https
 {{- end }}
 
 {{/*
-Guess the public kobocat url, assume https
-*/}}
-{{- define "kobo.kobocatUrl" -}}
-{{- if .Values.kobocat.ingress.enabled }}
-{{- with (first .Values.kobocat.ingress.hosts) }}https://{{ .host }}{{- end }}{{- end }}
-{{- end }}
-
-{{/*
 Guess the public enketo at url, assume https
 */}}
 {{- define "kobo.enketoUrl" -}}

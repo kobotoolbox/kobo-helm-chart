@@ -21,7 +21,7 @@ kobotoolbox:
   enketoApiKey: "change_me_please"
 
 # Actually post-install and pre-update
-preInstall:
+migrationJob:
   enabled: true
   activeDeadlineSeconds: 600
 
@@ -33,7 +33,7 @@ kpi:
   image:
     repository: kobotoolbox/kpi
     pullPolicy: IfNotPresent
-    tag: "2.024.19d"
+    tag: "2.024.25"
   replicaCount: 1
   resources:
     limits:
@@ -91,7 +91,7 @@ kpi:
     secret:
       {}
       # DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
-      # KPI_BROKER_URL: "redis://localhost:6379/2"
+      # CELERY_BROKER_URL: "redis://localhost:6379/2"
       # CACHE_URL: "redis://localhost:6379/4"
       # AWS_ACCESS_KEY_ID: ""
       # AWS_SECRET_ACCESS_KEY: ""
@@ -168,55 +168,7 @@ kpi:
     #    hosts:
     #      - chart-example.local
 
-
 kobocat:
-  image:
-    repository: kobotoolbox/kobocat
-    pullPolicy: IfNotPresent
-    tag: "2.024.19d"
-  replicaCount: 1
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1300Mi
-    requests:
-      cpu: 500m
-      memory: 1100Mi
-  autoscaling:
-    enabled: false
-    minReplicas: 2
-    maxReplicas: 20
-    targetCPU: 80
-    targetMemory: 99
-  # strategy:
-  #   type: RollingUpdate
-  #   rollingUpdate:
-  #      maxSurge: "25%""
-  #      maxUnavailable: "25%"
-  nodeSelector: {}
-  tolerations: []
-  affinity: {}
-  service:
-    type: ClusterIP
-    port: 80
-  budget:
-    minAvailable: 1
-  env:
-    normal:
-      # By default, the following are set but can be overridden
-      ENKETO_EXPRESS_PUBLIC_SUBDOMAIN: "ee"
-      KOBOCAT_PUBLIC_SUBDOMAIN: "kc"
-      KOBOFORM_PUBLIC_SUBDOMAIN: "kobo"
-      PUBLIC_REQUEST_SCHEME: "https"
-      # Celery configuration
-      CELERY_WORKER_AUTOSCALE: "2,3"
-      CELERY_WORKER_MAX_TASKS_PER_CHILD: "10000"
-      # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
-      # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
-    secret: {}
-      # KOBOCAT_BROKER_URL: "redis://localhost:6379/3"
-      # KOBOCAT_AWS_ACCESS_KEY_ID: ""
-      # KOBOCAT_AWS_SECRET_ACCESS_KEY: ""
   ingress:
     enabled: false
     className: ""
@@ -231,32 +183,6 @@ kobocat:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
-  extraVolumeMounts: [ ]
-  extraVolumes: [ ]
-  worker:
-    replicaCount: 1
-    livenessProbe:
-      initialDelaySeconds: 10
-      periodSeconds: 60
-      timeoutSeconds: 30
-      exec:
-        command:
-          - "bash"
-          - "-c"
-          - "celery -A onadata inspect ping -d kobocat_main_worker@$HOSTNAME | grep -q OK"
-    resources:
-      limits:
-        cpu: 1000m
-        memory: 800Mi
-      requests:
-        cpu: 300m
-        memory: 280Mi
-    autoscaling:
-      enabled: false
-      minReplicas: 2
-      maxReplicas: 20
-      targetCPU: 80
-      # targetMemory: 80
 
 
 flower:
@@ -390,7 +316,7 @@ enketo:
     #      - chart-example.local
 
 nginx:
-  image: nginx:1.23
+  image: nginx:1.27
 
 # Chart managed mongodb uses replicaset (by default) to enable high availility
 # Kobotoolbox does not have automatic retry logic when the mongodb master changes
