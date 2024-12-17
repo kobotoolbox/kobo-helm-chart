@@ -33,7 +33,7 @@ kpi:
   image:
     repository: kobotoolbox/kpi
     pullPolicy: IfNotPresent
-    tag: "2.024.33e"
+    tag: "2.024.33f"
   replicaCount: 1
   resources:
     limits:
