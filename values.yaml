@@ -256,7 +256,7 @@ enketo:
       ENKETO_MAPS_3_TILES_0: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       ENKETO_MAPS_3_ATTRIBUTION: "&copy; <a href=\"https://openstreetmap.org\">OpenStreetMap</a> | <a href=\"https://www.openstreetmap.org/copyright\">Terms</a>"
       # -- Payload limit
-      ENKETO_PAYLOAD_LIMIT: 1mb
+      ENKETO_PAYLOAD_LIMIT: 10mb
       # -- Text field character limit
       ENKETO_TEXT_FIELD_CHARACTER_LIMIT: "1000000"
       # -- Widgets list. It is an array.
