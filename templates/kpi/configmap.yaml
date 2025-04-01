@@ -46,5 +46,8 @@ data:
   nginx.conf: |-
     {{ .Values.kpi.nginx.config | nindent 4 }}
 {{- else }}
-{{ (.Files.Glob "files/kpi/nginx.conf").AsConfig | indent 2 }}
-{{- end }}
+  nginx.conf: |-
+    {{- $nginxConf := .Files.Get "files/kpi/nginx.conf" }}
+    {{- $timeoutDirectives := printf "\n    proxy_read_timeout %d;\n    proxy_send_timeout %d;" (int .Values.global.timeout) (int .Values.global.timeout) }}
+    {{- $modifiedConf := regexReplaceAll "(?ms)(large_client_header_buffers.*?;)" $nginxConf "${1}${timeoutDirectives}" }}
+    {{- $modifiedConf | nindent 4 }}

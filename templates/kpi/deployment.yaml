@@ -98,6 +98,8 @@ spec:
             - name: CACHE_URL
               value: {{ (include "kobo.redis.url" .) }}/4
             {{- end }}
+            - name: UWSGI_HARAKIRI
+              value: "{{ .Values.global.timeout | default 120 }}"               
           envFrom:
             - secretRef:
                 name: {{ include "kobo.fullname" . }}-kpi
