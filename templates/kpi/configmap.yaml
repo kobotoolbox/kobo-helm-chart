@@ -46,5 +46,6 @@ data:
   nginx.conf: |-
     {{ .Values.kpi.nginx.config | nindent 4 }}
 {{- else }}
-{{ (.Files.Glob "files/kpi/nginx.conf").AsConfig | indent 2 }}
+  nginx.conf: |-
+    {{- tpl (.Files.Get "files/kpi/nginx.conf.tpl") . | nindent 4 }}
 {{- end }}

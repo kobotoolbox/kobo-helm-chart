@@ -1,4 +1,7 @@
 # Shared, provide your own values here
+global:
+  # Timeout in seconds for both NGINX proxy timeouts and uWSGI harakiri
+  timeout: 120
 kobotoolbox:
   djangoSecret: "change_me_please"
   mongoName: "formhub"

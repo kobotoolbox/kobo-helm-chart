@@ -8,6 +8,10 @@ server {
     client_max_body_size 100M;
     large_client_header_buffers 8 16k;
 
+    # Set timeout values from Helm values
+    proxy_read_timeout {{ .Values.global.timeout | default 120 }};
+    proxy_send_timeout {{ .Values.global.timeout | default 120 }};
+    
     gzip on;
     gzip_disable "msie6";
     gzip_comp_level 6;
