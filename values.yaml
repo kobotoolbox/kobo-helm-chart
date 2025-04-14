@@ -91,6 +91,7 @@ kpi:
       # KOBOCAT_DEFAULT_FILE_STORAGE: "storages.backends.s3boto3.S3Boto3Storage"
       # -- KoBoCAT Bucket name
       # KOBOCAT_AWS_STORAGE_BUCKET_NAME: ""
+      # KOBOCAT_URL: "https://kobo.example.com" # As suggested in https://github.com/kobotoolbox/kobo-helm-chart/blob/4f14fcf0024932639eaf9955fa49827fdaa4d215/CHANGELOG.md?plain=1#L21
     secret:
       {}
       # DATABASE_URL: "postgres://postgres:password@postgres-postgresql:5432/postgres"
