@@ -17,10 +17,14 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
         tag: "{{ .Values.kpi.image.tag }}"
+        {{- if .Values.kpi.podAnnotations }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.kpi.podAnnotations "context" $ ) | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/component: kpi-beat
         {{- include "kobo.selectorLabels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "kobo.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
