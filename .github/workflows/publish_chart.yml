@@ -1,0 +1,14 @@
+name: Publish chart on tag
+
+on:
+  push:
+    tags:        
+      - '*'
+
+jobs:
+  publish_chart:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: First step
+        id: first_step
+        run: echo "this is a placeholder"
