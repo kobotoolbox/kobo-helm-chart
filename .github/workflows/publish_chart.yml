@@ -1,14 +1,25 @@
-name: Publish chart on tag
+name: publish-chart
 
-on:
-  push:
-    tags:        
-      - '*'
+on: 
+  push: 
+    branches: 
+      - scott/gha_publish_chart
 
 jobs:
   publish_chart:
     runs-on: ubuntu-22.04
     steps:
-      - name: First step
-        id: first_step
-        run: echo "this is a placeholder"
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.7.0
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
