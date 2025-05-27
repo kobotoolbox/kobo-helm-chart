@@ -1,0 +1,41 @@
+name: publish-chart
+
+on: 
+  push: 
+    tags:
+      - '*'
+
+jobs:
+  publish_chart:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+        
+      - name: Set up Helm
+        uses: alexellis/arkade-get@master
+        with:
+          helm: latest
+      
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Package and push chart
+        run: |
+          helm package -d chart .
+
+          CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
+          OWNER_LOWER_CASE=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]') #repo must be lowercase
+          
+          # Push the chart using OCI
+          # This will call the package 'kobo' for now but it may make sense in the future to change it to `kobo-helm-chart` in Chart.yaml
+          helm push chart/kobo-${CHART_VERSION}.tgz oci://ghcr.io/${OWNER_LOWER_CASE}
