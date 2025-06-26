@@ -18,7 +18,7 @@ spec:
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
-        tag: "{{ .Values.kpi.image.tag }}"
+        tag: "{{ .Values.kpi.version }}"
       labels:
         app.kubernetes.io/component: kpi-worker-kobocat
         {{- include "kobo.selectorLabels" . | nindent 8 }}
@@ -29,7 +29,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.version }}"
           imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
           {{- if .Values.kpi.worker.livenessProbe}}
           livenessProbe:
