@@ -11,7 +11,7 @@ metadata:
     "helm.sh/hook-weight": "0"
     checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
     checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
-    tag: "{{ .Values.kpi.image.tag }}"
+    tag: "{{ .Values.kpi.version }}"
 spec:
   activeDeadlineSeconds: {{ default 600 .Values.migrationJob.activeDeadlineSeconds }}
   template:
@@ -23,12 +23,12 @@ spec:
       restartPolicy: Never
       containers:
       - name: pre-install-job
-        image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag }}"
+        image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.version }}"
         imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
         command: ["./scripts/migrate.sh"]
         env:
           - name: DJANGO_SECRET_KEY
-            value: {{ required "djangoSecret is a required value." .Values.kobotoolbox.djangoSecret }}
+            value: {{ required "kobotoolbox.djangoSecret is a required value." .Values.kobotoolbox.djangoSecret }}
           {{- if .Values.postgresql.enabled }}
           - name: POSTGRES_PASSWORD
             valueFrom:
@@ -43,7 +43,7 @@ spec:
           - name: DATABASE_URL
             value: {{ required "kpi.env.secret.DATABASE_URL is a required value." .Values.kpi.env.secret.DATABASE_URL }}
           - name: KC_DATABASE_URL
-            value: {{ required "kobocatDatabase required" .Values.kobotoolbox.kobocatDatabase }}
+            value: {{ required "kobotoolbox.kobocatDatabase required" .Values.kobotoolbox.kobocatDatabase }}
           {{- end }}
           {{ if .Values.kobotoolbox.redis }}
           - name: CACHE_URL

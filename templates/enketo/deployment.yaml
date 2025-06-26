@@ -33,7 +33,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.enketo.image.repository }}:{{ .Values.enketo.image.tag | default .Chart.AppVersion }}"
+          image: "{{ .Values.enketo.image.repository }}:{{ .Values.enketo.image.tag }}"
           imagePullPolicy: {{ .Values.enketo.image.pullPolicy }}
           ports:
             - name: http
