@@ -12,14 +12,16 @@ This chart is still being tested and isn't intended for external use at this tim
 - Every deployment/job should do one thing. Migrate, run uwsgi, run celery, etc
 
 # Usage
+This chart requires a value for `kpi.version` - there is no default set for it.
 
 1. Carefully review values.yaml. Set image tag version, if desired. Set databases, secret keys, etc.
-1. `helm install your-kobo oci://ghcr.io/kobotoolbox/kobo -f your-values.yaml`
+1. `helm install your-kobo oci://ghcr.io/kobotoolbox/kobo -f your-values.yaml --set kpi.version=VERSION_TO_DEPLOY`
 
 ## Upgrading
+This chart requires a value for `kpi.version` - there is no default set for it.
 
 1. `helm repo update`
-1. `helm upgrade your-kobo kobo -f your-values.yaml`
+1. `helm upgrade your-kobo kobo -f your-values.yaml --set kpi.version=VERSION_TO_DEPLOY`
 
 Tip: Consider using helm diff to preview changes first.
 

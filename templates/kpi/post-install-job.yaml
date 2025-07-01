@@ -20,12 +20,12 @@ spec:
       restartPolicy: Never
       containers:
       - name: post-install-job
-        image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.image.tag }}"
+        image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.version }}"
         imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
         command: ["/bin/sh", "-c", "{{ .Values.postInstall.command }}"]
         env:
           - name: DJANGO_SECRET_KEY
-            value: {{ required "djangoSecret is a required value." .Values.kobotoolbox.djangoSecret }}
+            value: {{ required "kobotoolbox.djangoSecret is a required value." .Values.kobotoolbox.djangoSecret }}
           {{- if .Values.postgresql.enabled }}
           - name: POSTGRES_PASSWORD
             valueFrom:
@@ -40,7 +40,7 @@ spec:
           - name: DATABASE_URL
             value: {{ required "kpi.env.secret.DATABASE_URL is a required value." .Values.kpi.env.secret.DATABASE_URL }}
           - name: KC_DATABASE_URL
-            value: {{ required "kobocatDatabase required" .Values.kobotoolbox.kobocatDatabase }}
+            value: {{ required "kobotoolbox.kobocatDatabase required" .Values.kobotoolbox.kobocatDatabase }}
           {{- end }}
           {{ if .Values.kobotoolbox.redis }}
           - name: CACHE_URL
