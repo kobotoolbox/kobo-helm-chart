@@ -23,10 +23,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: oras-project/setup-oras@v1
+
       - name: Check if chart version is updated
         id: check-version
-        uses: oras-project/setup-oras@v1
-      - run: |
+        run: |
           CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
           echo "CHART_VERSION=${CHART_VERSION}" >> $GITHUB_ENV
           oras repo tags ghcr.io/kobotoolbox/kobo | grep -qvz "${CHART_VERSION}"
