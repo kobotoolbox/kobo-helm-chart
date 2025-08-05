@@ -39,6 +39,7 @@ jobs:
           helm: latest
       
       - name: Verify helm chart is valid
+        id: helm-lint
         run: |
           helm lint --strict --set kpi.env.secret.DATABASE_URL=test --set kobotoolbox.kobocatDatabase=test --set kpi.version=test
       
@@ -47,7 +48,8 @@ jobs:
         run: |
           if [ "${{ steps.check-version.outcome }}" == "failure" ]; then
             echo "The chart version ${CHART_VERSION} is not updated. Please update the version in Chart.yaml before merging."
-          else
+          fi
+          if [ "${{ steps.helm-lint.outcome }}" == "failure" ]; then
             echo "Helm chart linting failed. Please fix the issues before merging."
           fi
           exit 1
