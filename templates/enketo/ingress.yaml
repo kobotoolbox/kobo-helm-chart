@@ -47,16 +47,16 @@ spec:
             pathType: {{ .pathType }}
             {{- end }}
             backend:
-              {{- if hasKey . "backend" }}
-              {{- toYaml .backend | nindent 14 }}
-              {{- else if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              {{- if .annotation }}
+              service:
+                name: {{ .annotation }}
+                port:
+                  name: use-annotation
+              {{- else }}
               service:
                 name: {{ $fullName }}-enketo
                 port:
                   number: {{ $svcPort }}
-              {{- else }}
-              serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
               {{- end }}
           {{- end }}
     {{- end }}
