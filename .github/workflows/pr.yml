@@ -28,7 +28,9 @@ jobs:
         uses: oras-project/setup-oras@v1
       - run: |
           CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
+          echo "CHART_VERSION=${CHART_VERSION}" >> $GITHUB_ENV
           oras repo tags ghcr.io/kobotoolbox/kobo | grep -qvz "${CHART_VERSION}"
+          echo "VALID_VERSION=1" >> $GITHUB_ENV
 
       - name: Set up Helm
         uses: alexellis/arkade-get@master
@@ -40,6 +42,11 @@ jobs:
           helm lint --strict --set kpi.env.secret.DATABASE_URL=test --set kobotoolbox.kobocatDatabase=test --set kpi.version=test
       
       - name: Fail if chart version is not updated
-        if: failure() && steps.check-version.outcome == failure()
+        if: failure()
         run: |
-          echo "The chart version ${CHART_VERSION} is already in the repository. You likely want to update the version in Chart.yaml before merging."
+          if [ "${{ env.VALID_VERSION }}" != "1" ]; then
+            echo "Helm chart linting failed. Please fix the issues before merging."
+          else
+            echo "The chart version ${CHART_VERSION} is not updated. Please update the version in Chart.yaml before merging."
+          fi
+          exit 1
