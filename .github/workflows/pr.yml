@@ -44,9 +44,9 @@ jobs:
       - name: Fail if chart version is not updated
         if: failure()
         run: |
-          if [ "${{ env.VALID_VERSION }}" != "1" ]; then
-            echo "Helm chart linting failed. Please fix the issues before merging."
-          else
+          if [ "${{ steps.check-version.outcome }}" == "failure" ]; then
             echo "The chart version ${CHART_VERSION} is not updated. Please update the version in Chart.yaml before merging."
+          else
+            echo "Helm chart linting failed. Please fix the issues before merging."
           fi
           exit 1
