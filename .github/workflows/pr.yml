@@ -1,0 +1,54 @@
+name: PR Checks
+
+on: 
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  run_checks:
+    permissions:
+      contents: read
+      packages: read
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: oras-project/setup-oras@v1
+
+      - name: Check if chart version is updated
+        id: check-version
+        run: |
+          CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
+          echo "CHART_VERSION=${CHART_VERSION}" >> $GITHUB_ENV
+          oras repo tags ghcr.io/kobotoolbox/kobo | grep -qvz "${CHART_VERSION}"
+
+      - name: Set up Helm
+        uses: alexellis/arkade-get@master
+        with:
+          helm: latest
+      
+      - name: Verify helm chart is valid
+        id: helm-lint
+        run: |
+          helm lint --strict --set kpi.env.secret.DATABASE_URL=test --set kobotoolbox.kobocatDatabase=test --set kpi.version=test
+      
+      - name: Failure messages
+        if: failure()
+        run: |
+          if [ "${{ steps.check-version.outcome }}" == "failure" ]; then
+            echo "The chart version ${CHART_VERSION} is already in use. you likely want to update the version in Chart.yaml before merging."
+          fi
+          if [ "${{ steps.helm-lint.outcome }}" == "failure" ]; then
+            echo "Helm chart linting failed. Please fix the issues before merging."
+          fi
+          exit 1
