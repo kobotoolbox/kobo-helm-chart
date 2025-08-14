@@ -169,6 +169,9 @@ kpi:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+  nginx:
+    large_headers:
+      enabled: false
 
 kobocat:
   ingress:
