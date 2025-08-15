@@ -92,11 +92,11 @@ spec:
             - name: REDIS_SESSION_URL
               value: {{ (include "kobo.redis.url" .) }}/1
             - name: SERVICE_ACCOUNT_BACKEND_URL
-              value: {{ (include "kobo.redis.url" .) }}/6
+              value: {{ (include "kobo.redis.url" .) }}/1
             - name: CELERY_BROKER_URL
-              value: {{ (include "kobo.redis.url" .) }}/2
+              value: {{ (include "kobo.redis.url" .) }}/1
             - name: CACHE_URL
-              value: {{ (include "kobo.redis.url" .) }}/4
+              value: {{ (include "kobo.redis.url" .) }}/1
             {{- end }}
             - name: UWSGI_HARAKIRI
               value: "{{ .Values.global.timeout | default 120 }}"               
