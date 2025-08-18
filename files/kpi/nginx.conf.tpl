@@ -8,10 +8,25 @@ server {
     client_max_body_size 100M;
     large_client_header_buffers 8 16k;
 
+    {{ if .Values.kpi.nginx.large_headers.enabled -}}
+    # Proxy buffer settings to handle large headers
+    proxy_buffer_size {{ .Values.kpi.nginx.large_headers.proxy_buffer_size | default "32k" }};
+    proxy_buffers {{ .Values.kpi.nginx.large_headers.proxy_buffers | default "8 32k" }};
+    proxy_busy_buffers_size {{ .Values.kpi.nginx.large_headers.proxy_busy_buffers_size | default "64k" }};
+    proxy_temp_file_write_size {{ .Values.kpi.nginx.large_headers.proxy_temp_file_write_size | default "64k" }};
+    proxy_max_temp_file_size {{ .Values.kpi.nginx.large_headers.proxy_max_temp_file_size | default "1024m" }};
+    proxy_buffering {{ .Values.kpi.nginx.large_headers.proxy_buffering | default "on" }};
+    {{- end }}
+
+    {{ $timeout := .Values.kpi.nginx.timeout | default (.Values.global.timeout | default 120) -}}
     # Set timeout values from Helm values
-    proxy_read_timeout {{ .Values.global.timeout | default 120 }};
-    proxy_send_timeout {{ .Values.global.timeout | default 120 }};
-    
+    proxy_read_timeout {{ $timeout }};
+    proxy_send_timeout {{ $timeout }};
+    {{- if .Values.kpi.nginx.timeout }}
+    proxy_connect_timeout {{ .Values.kpi.nginx.timeout }};
+    send_timeout {{ .Values.kpi.nginx.timeout }};
+    {{- end }}
+
     gzip on;
     gzip_disable "msie6";
     gzip_comp_level 6;
@@ -30,7 +45,6 @@ server {
         application/xml
         application/xml+rss
         image/svg+xml;
-
 
     location ~ ^/protected-s3/(.*)$ {
         # Allow internal requests only, i.e. return a 404 to any client who
@@ -73,6 +87,7 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_pass http://backend;
     }
+
     listen 80;
     server_tokens off;
 }

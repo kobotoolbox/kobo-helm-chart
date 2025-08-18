@@ -169,6 +169,15 @@ kpi:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
+  nginx:
+    large_headers:
+      enabled: false
+      proxy_buffer_size: "32k";
+      proxy_buffers: "8 32k";
+      proxy_busy_buffers_size: "64k";
+      proxy_temp_file_write_size: "64k";
+      proxy_max_temp_file_size: "1024m";
+      proxy_buffering: "on";
 
 kobocat:
   ingress:
