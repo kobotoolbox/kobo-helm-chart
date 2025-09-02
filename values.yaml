@@ -327,7 +327,7 @@ enketo:
     #      - chart-example.local
 
 nginx:
-  image: nginx:1.27
+  image: nginx:1.29
 
 # Chart managed mongodb uses replicaset (by default) to enable high availility
 # Kobotoolbox does not have automatic retry logic when the mongodb master changes
