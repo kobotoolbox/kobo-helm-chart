@@ -334,6 +334,8 @@ nginx:
 # These errors should be rare and brief, minimally acceptable for production.
 mongodb:
   enabled: false
+  image:
+    repository: bitnamilegacy/mongodb
   architecture: "replicaset"
   pdb:
     create: true
@@ -363,6 +365,8 @@ mongodb:
 # Chart managed redis is intended for testing only
 redis:
   enabled: false
+  image:
+    repository: bitnamilegacy/redis
   auth:
     password: "change_me_please"
   commonConfiguration: |-
@@ -392,6 +396,8 @@ redis:
 # Chart managed postgresql is intended for testing only
 postgresql:
   enabled: false
+  image:
+    repository: bitnamilegacy/postgresql
   auth:
     postgresPassword: "change_me_please"
   primary:
