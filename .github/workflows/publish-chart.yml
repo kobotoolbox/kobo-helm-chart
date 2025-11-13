@@ -20,7 +20,7 @@ jobs:
       - name: Set up Helm
         uses: alexellis/arkade-get@master
         with:
-          helm: ${{ secrets.HELM_VERSION }}
+          helm: ${{ vars.HELM_VERSION }}
       
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
