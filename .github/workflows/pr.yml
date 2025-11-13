@@ -35,7 +35,7 @@ jobs:
       - name: Set up Helm
         uses: alexellis/arkade-get@master
         with:
-          helm: v3.19.2
+          helm: ${{ secrets.HELM_VERSION }}
       
       - name: Verify helm chart is valid
         id: helm-lint
