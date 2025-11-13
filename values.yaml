@@ -123,6 +123,15 @@ kpi:
       maxReplicas: 20
       targetCPU: 90
       # targetMemory: 80
+  workerLongRunning:
+    celeryAutoscale: "2,10"
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 2000Mi
+      requests:
+        cpu: 500m
+        memory: 500Mi
   workerLowPriority:
     replicaCount: 1
     livenessProbe:
