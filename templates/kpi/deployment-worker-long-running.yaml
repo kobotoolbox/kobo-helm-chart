@@ -77,7 +77,7 @@ spec:
             - name: CACHE_URL
               value: {{ (include "kobo.redis.url" .) }}/4
             - name: CELERY_WORKER_AUTOSCALE
-              value: {{ .Values.workerLongRunning.celeryAutoscale }}
+              value: {{ .Values.kpi.workerLongRunning.celeryAutoscale }}
             {{- end }}
           envFrom:
             - secretRef:
