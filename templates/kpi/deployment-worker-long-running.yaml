@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kobo.fullname" . }}-kpi-worker-long-running
+  labels:
+    app.kubernetes.io/component: kpi-worker-long-running
+    {{- include "kobo.labels" . | nindent 4 }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kpi-worker-long-running
+      {{- include "kobo.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      annotations:
+        checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
+        tag: "{{ .Values.kpi.version }}"
+      labels:
+        app.kubernetes.io/component: kpi-worker-long-running
+        {{- include "kobo.selectorLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.kpi.image.repository }}:{{ .Values.kpi.version }}"
+          imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
+          {{- if .Values.kpi.workerLongRunning.livenessProbe}}
+          livenessProbe:
+            {{- .Values.kpi.workerLongRunning.livenessProbe | toYaml | nindent 12 }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.kpi.workerLongRunning.resources | nindent 12 }}
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            {{- if .Values.postgresql.enabled }}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (include "kobo.postgresql.fullname" .) .Values.postgresql.auth.existingSecret }}
+                  key: postgres-password
+            - name: DATABASE_URL
+              value: {{ (include "kobo.postgresql.url" .) }}
+            - name: KC_DATABASE_URL
+              value: {{ (include "kobo.postgresql.kc_url" .) }}
+            {{- end }}
+            {{- if .Values.mongodb.enabled }}
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (include "kobo.mongodb.fullname" .) .Values.mongodb.auth.existingSecret }}
+                  key: mongodb-passwords
+            - name: MONGO_DB_URL
+              value: {{ (include "kobo.mongodb.url" .) }}
+            {{- end }}
+            {{- if .Values.redis.enabled }}
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ default (include "kobo.redis.fullname" .) .Values.redis.auth.existingSecret }}
+                  key: redis-password
+            - name: ENKETO_REDIS_MAIN_URL
+              value: {{ (include "kobo.redis.url" .) }}/0
+            - name: REDIS_SESSION_URL
+              value: {{ (include "kobo.redis.url" .) }}/1
+            - name: SERVICE_ACCOUNT_BACKEND_URL
+              value: {{ (include "kobo.redis.url" .) }}/6
+            - name: CELERY_BROKER_URL
+              value: {{ (include "kobo.redis.url" .) }}/2
+            - name: CACHE_URL
+              value: {{ (include "kobo.redis.url" .) }}/4
+            - name: CELERY_WORKER_AUTOSCALE
+              value: {{ .Values.kpi.workerLongRunning.celeryAutoscale }}
+            {{- end }}
+          envFrom:
+            - secretRef:
+                name: {{ include "kobo.fullname" . }}-kpi
+            - configMapRef:
+                name: {{ include "kobo.fullname" . }}-kpi
+          command: ["celery", "-A", "kobo", "worker", "--queues=kpi_long_running_tasks_queue", "-l", "info", "--hostname=kpi_main_worker@%h"]
+          {{- with .Values.kpi.extraVolumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
+      {{- with .Values.kpi.workerLongRunning.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kpi.workerLongRunning.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kpi.workerLongRunning.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.kpi.extraVolumes }}
+      volumes:
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
