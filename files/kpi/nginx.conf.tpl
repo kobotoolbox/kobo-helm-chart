@@ -61,6 +61,8 @@ server {
         application/xml+rss
         image/svg+xml;
 
+    add_header Strict-Transport-Security "max-age=31536000; preload" always;
+
     location ~ ^/protected-s3/(.*)$ {
         # Allow internal requests only, i.e. return a 404 to any client who
         # tries to access this location directly
