@@ -179,6 +179,7 @@ kpi:
     #    hosts:
     #      - chart-example.local
   nginx:
+    hsts_max_age: "15780000" # 6 months in seconds
     large_headers:
       enabled: false
       proxy_buffer_size: "32k"

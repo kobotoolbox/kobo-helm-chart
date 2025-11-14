@@ -61,7 +61,7 @@ server {
         application/xml+rss
         image/svg+xml;
 
-    add_header Strict-Transport-Security "max-age=31536000; preload" always;
+    add_header Strict-Transport-Security "max-age={{ .Values.kpi.nginx.hsts_max_age }}; preload" always;
 
     location ~ ^/protected-s3/(.*)$ {
         # Allow internal requests only, i.e. return a 404 to any client who
