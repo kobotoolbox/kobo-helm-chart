@@ -76,7 +76,8 @@ kpi:
       ENKETO_EXPRESS_PUBLIC_SUBDOMAIN: "ee"
       KOBOCAT_PUBLIC_SUBDOMAIN: "kc"
       KOBOFORM_PUBLIC_SUBDOMAIN: "kobo"
-      PUBLIC_REQUEST_SCHEME: "https"
+      SESSION_COOKIE_DOMAIN: ".kobo.local:8080" # For testing locally, add subdomains to `etc/hosts` (e.g. 127.0.0.1 ee.kobo.local). For production, change this to ".your-domain.tld"
+      PUBLIC_REQUEST_SCHEME: "https" # For testing locally, change this to "http"
       # Celery configuration
       CELERY_WORKER_AUTOSCALE: "2,3"
       CELERY_WORKER_MAX_TASKS_PER_CHILD: "10000"
