@@ -121,7 +121,7 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_hide_header Strict-Transport-Security; # Let nginx always handle this header
+        proxy_hide_header Strict-Transport-Security; # Must be removed to not duplicate the header
         add_header Strict-Transport-Security "max-age={{ .Values.kpi.nginx.hsts_max_age }}" always;
         proxy_pass http://backend;
     }
