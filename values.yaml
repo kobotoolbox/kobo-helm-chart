@@ -314,6 +314,7 @@ enketo:
       ENKETO_WIDGETS_30: decimal
       ENKETO_WIDGETS_31: "../../../node_modules/enketo-image-customization-widget/image-customization"
       ENKETO_WIDGETS_32: "../../../node_modules/enketo-literacy-test-widget/literacywidget"
+      ENKETO_CSP_ENABLED: "true"
     secret:
       {}
       # Set if kobotoolbox.redis is unset
