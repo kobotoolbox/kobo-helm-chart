@@ -4,7 +4,6 @@ global:
   timeout: 120
 kobotoolbox:
   djangoSecret: "change_me_please"
-  mongoName: "formhub"
   # mongoDatabase: "mongodb://root:password@mongodb:27017"
   # kobocatDatabase: "postgis://postgres:password@postgres-postgresql:5432/postgres"
   # Set to use for all redis needs (cache, broker, etc) redis connection string without db number.
