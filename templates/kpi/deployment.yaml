@@ -102,7 +102,7 @@ spec:
               value: "{{ .Values.global.timeout | default 120 }}"               
           envFrom:
             - secretRef:
-                name: {{ include "kobo.fullname" . }}-kpi
+                name: {{ include "kobo.kpi.secretName" . }}
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
           command: ["/srv/init/run-uwsgi.sh"]
