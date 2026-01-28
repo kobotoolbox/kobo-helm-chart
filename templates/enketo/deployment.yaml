@@ -67,7 +67,7 @@ spec:
             {{- end }}
           envFrom:
             - secretRef:
-                name: {{ include "kobo.fullname" . }}-enketo
+                name: {{ include "kobo.enketo.secretName" . }}
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-enketo
           {{- with .Values.enketo.extraVolumeMounts }}

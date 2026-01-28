@@ -3,7 +3,17 @@ global:
   # Timeout in seconds for both NGINX proxy timeouts and uWSGI harakiri
   timeout: 120
 kobotoolbox:
-  djangoSecret: "change_me_please"
+  # -- Existing secret reference for credentials
+  # Create this secret with: kubectl create secret generic kobo-secrets \
+  #   --from-literal=DJANGO_SECRET_KEY=your-key \
+  #   --from-literal=ENKETO_API_KEY=your-key
+  secrets:
+    # -- Use existing secret instead of creating a new one
+    existingSecret: ""
+    # -- Key in the secret for Django secret key
+    djangoSecretKeyField: "DJANGO_SECRET_KEY"
+    # -- Key in the secret for Enketo API key
+    enketoApiKeyField: "ENKETO_API_KEY"
   # mongoDatabase: "mongodb://root:password@mongodb:27017"
   # kobocatDatabase: "postgis://postgres:password@postgres-postgresql:5432/postgres"
   # Set to use for all redis needs (cache, broker, etc) redis connection string without db number.
@@ -20,7 +30,6 @@ kobotoolbox:
   redisParameters: "" # ?ssl_cert_reqs=CERT_REQUIRED
   #redisSession: "redis://:pass@redis-master:6379/1"
   #serviceAccountBackend: "redis://:pass@redis-master:6379/6"
-  enketoApiKey: "change_me_please"
 
 # Actually post-install and pre-update
 migrationJob:
