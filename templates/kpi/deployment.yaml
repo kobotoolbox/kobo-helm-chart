@@ -33,12 +33,17 @@ spec:
       serviceAccountName: {{ include "kobo.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      terminationGracePeriodSeconds: {{ add 30 .Values.global.timeout }} # Wait timeout+30 seconds to allow time for the prestop to execute
       containers:
         - name: backend
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.kpi.image.repository }}:{{ required "kpi.version required" .Values.kpi.version }}"
           imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/bash", "-c", "sleep {{ add 30 .Values.global.timeout }}"] # Wait timeout+30s to ensure the load balancer has removed this pod before the app starts its internal shutdown.
           ports:
             - name: http
               containerPort: 8000
@@ -117,6 +122,10 @@ spec:
         - name: nginx
           image: {{ .Values.nginx.image }}
           imagePullPolicy: Always
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/bash", "-c", "sleep {{ add 30 .Values.global.timeout }}"] # Wait timeout+30s to ensure the load balancer has removed this pod before the app starts its internal shutdown.
           resources:
             limits:
               cpu: 100m
