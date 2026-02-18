@@ -60,6 +60,10 @@ kpi:
   #       listen       80;
   #        server_name  example.com;
   #     }
+  containerLifecycle:
+    enabled: false
+    postStartCommand: []
+    preStopCommand: []
   nodeSelector: {}
   tolerations: []
   podAnnotations: {}

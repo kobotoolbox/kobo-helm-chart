@@ -33,12 +33,26 @@ spec:
       serviceAccountName: {{ include "kobo.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      terminationGracePeriodSeconds: {{ add 10 .Values.global.timeout }}
       containers:
         - name: backend
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.kpi.image.repository }}:{{ required "kpi.version required" .Values.kpi.version }}"
           imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
+          {{- if .Values.kpi.containerLifecycle.enabled }}
+          lifecycle:
+            {{- if .Values.kpi.containerLifecycle.postStartCommand }}
+            postStart:
+              exec:
+                command: {{ toYaml .Values.kpi.containerLifecycle.postStartCommand | nindent 16 }}
+            {{- end }}
+            {{- if .Values.kpi.containerLifecycle.preStopCommand }}
+            preStop:
+              exec:
+                command: {{ toYaml .Values.kpi.containerLifecycle.preStopCommand | nindent 16 }}
+            {{- end }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 8000
@@ -117,6 +131,19 @@ spec:
         - name: nginx
           image: {{ .Values.nginx.image }}
           imagePullPolicy: Always
+          {{- if .Values.kpi.containerLifecycle.enabled }}
+          lifecycle:
+            {{- if .Values.kpi.containerLifecycle.postStartCommand }}
+            postStart:
+              exec:
+                command: {{ toYaml .Values.kpi.containerLifecycle.postStartCommand | nindent 16 }}
+            {{- end }}
+            {{- if .Values.kpi.containerLifecycle.preStopCommand }}
+            preStop:
+              exec:
+                command: {{ toYaml .Values.kpi.containerLifecycle.preStopCommand | nindent 16 }}
+            {{- end }}
+          {{- end }}
           resources:
             limits:
               cpu: 100m
