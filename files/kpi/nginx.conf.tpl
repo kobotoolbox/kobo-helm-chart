@@ -18,6 +18,10 @@ map $arg_format $schema_type {
     json    application/json;
 }
 
+log_format with_host '$http_host | $remote_addr - $upstream_http_x_kobonaut [$time_local] '
+    '"$request" $status ($body_bytes_sent bytes)"$http_referer" '
+    '"$http_user_agent"';
+    
 server {
 
     client_max_body_size 100M;
