@@ -40,11 +40,13 @@ spec:
               containerPort: 8005
               protocol: TCP
           livenessProbe:
-            tcpSocket:
+            httpGet:
+              path: /connection
               port: 8005
             initialDelaySeconds: 3
           readinessProbe:
-            tcpSocket:
+            httpGet:
+              path: /connection
               port: 8005
             initialDelaySeconds: 10
           resources:
