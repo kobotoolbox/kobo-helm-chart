@@ -64,6 +64,8 @@ kpi:
     enabled: false
     postStartCommand: []
     preStopCommand: []
+  metrics:
+    enabled: false # Only available to kobo instances - external entities can't use this yet so default it to enabled false
   nodeSelector: {}
   tolerations: []
   podAnnotations: {}

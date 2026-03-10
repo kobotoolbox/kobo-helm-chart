@@ -1,0 +1,52 @@
+{{- if .Values.kpi.metrics.enabled -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kpi-metrics
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: kpi-metrics
+spec:
+  imagePullPolicy: Always
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kpi-metrics
+  template:
+    metadata:
+      labels:
+        app: kpi-metrics
+        {{- include "kobo.selectorLabels" . | nindent 8 }}
+      annotations:
+        ad.datadoghq.com/metrics.checks: |
+          {
+            "openmetrics": {
+              "init_config": {},
+              "instances": [{"openmetrics_endpoint": "http://%%host%%:%%port%%/metrics", "metrics":["kpi_.*"]}]
+            }
+          }
+    spec:
+      containers:
+      - name: metrics
+        image: 917503078660.dkr.ecr.us-east-1.amazonaws.com/kpi_metrics:x86
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+        env:
+          - name: CELERY_BROKER_URL
+            valueFrom:
+              secretKeyRef:
+                key: CELERY_BROKER_URL
+                name: {{ include "kobo.fullname" . }}-kpi
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: DATABASE_URL
+                name: {{ include "kobo.fullname" . }}-kpi
+{{- end }}
