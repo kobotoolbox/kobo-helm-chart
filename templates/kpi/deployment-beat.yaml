@@ -78,7 +78,7 @@ spec:
                 name: {{ include "kobo.fullname" . }}-kpi
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
-          command: ["celery", "-A", "kobo", "beat", "-l", "info", "--pidfile=/tmp/celery_beat.pid", "--scheduler", "django_celery_beat.schedulers:DatabaseScheduler"]
+          command: ["celery", "-A", "kobo", "beat", "-l", "info", "--pidfile=/tmp/celery_beat.pid", "--scheduler", "kobo.apps.beat.schedulers:ThrottledDatabaseScheduler"]
           {{- with .Values.kpi.extraVolumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 10 }}
