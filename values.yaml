@@ -162,6 +162,7 @@ kpi:
       targetCPU: 80
       # targetMemory: 80
   beat:
+    scheduler: "kobo.apps.beat.schedulers:ThrottledDatabaseScheduler" # If running a version prior to 2.026.07g this must be overridden to "django_celery_beat.schedulers:DatabaseScheduler"
     resources:
       limits:
         cpu: 800m
