@@ -234,7 +234,6 @@ enketo:
   image:
     repository: kobotoolbox/enketo-express-extra-widgets
     pullPolicy: IfNotPresent
-    tag: "7.6.1"
   replicaCount: 1
   resources:
     limits:
