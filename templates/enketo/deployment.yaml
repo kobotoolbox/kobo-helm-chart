@@ -21,7 +21,7 @@ spec:
       annotations:
         checksum/secret: {{ include (print $.Template.BasePath "/enketo/secrets.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/enketo/configmap.yaml") . | sha256sum }}
-        tag: "{{ .Values.enketo.image.tag }}"
+        tag: "{{ .Values.enketo.version }}"
       labels:
         app.kubernetes.io/component: enketo
         {{- include "kobo.selectorLabels" . | nindent 8 }}
@@ -33,7 +33,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.enketo.image.repository }}:{{ .Values.enketo.image.tag }}"
+          image: "{{ .Values.enketo.image.repository }}:{{ required "enketo.version required" .Values.enketo.version }}"
           imagePullPolicy: {{ .Values.enketo.image.pullPolicy }}
           ports:
             - name: http
