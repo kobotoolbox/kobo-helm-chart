@@ -22,6 +22,9 @@ spec:
         checksum/secret: {{ include (print $.Template.BasePath "/enketo/secrets.yaml") . | sha256sum }}
         checksum/configmap: {{ include (print $.Template.BasePath "/enketo/configmap.yaml") . | sha256sum }}
         tag: "{{ .Values.enketo.version }}"
+        {{- if .Values.enketo.podAnnotations }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.enketo.podAnnotations "context" $ ) | nindent 8 }}
+        {{- end }}
       labels:
         app.kubernetes.io/component: enketo
         {{- include "kobo.selectorLabels" . | nindent 8 }}
