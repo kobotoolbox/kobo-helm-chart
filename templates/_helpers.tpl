@@ -153,3 +153,27 @@ Requires REDIS_PASSWORD to be set environment variable
 {{- define "kobo.redis.url" -}}
 {{- printf "redis://:$(REDIS_PASSWORD)@%s-master:6379" (include "kobo.redis.fullname" .) -}}
 {{- end -}}
+
+{{/*
+Get the KPI secret name
+Returns either the existing secret or the generated one
+*/}}
+{{- define "kobo.kpi.secretName" -}}
+{{- if .Values.kobotoolbox.secrets.existingSecret -}}
+{{- .Values.kobotoolbox.secrets.existingSecret -}}
+{{- else -}}
+{{- include "kobo.fullname" . }}-kpi
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the Enketo secret name
+Returns either the existing secret or the generated one
+*/}}
+{{- define "kobo.enketo.secretName" -}}
+{{- if .Values.kobotoolbox.secrets.existingSecret -}}
+{{- .Values.kobotoolbox.secrets.existingSecret -}}
+{{- else -}}
+{{- include "kobo.fullname" . }}-enketo
+{{- end -}}
+{{- end -}}

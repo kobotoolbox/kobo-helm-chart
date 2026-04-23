@@ -81,7 +81,7 @@ spec:
             {{- end }}
           envFrom:
             - secretRef:
-                name: {{ include "kobo.fullname" . }}-kpi
+                name: {{ include "kobo.kpi.secretName" . }}
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
           command: ["celery", "-A", "kobo", "worker", "--queues=kpi_long_running_tasks_queue", "-l", "info", "--hostname=kpi_main_worker@%h"]
