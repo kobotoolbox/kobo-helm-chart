@@ -26,6 +26,7 @@ server {
 
     client_max_body_size 100M;
     large_client_header_buffers 8 16k;
+    access_log  /var/log/nginx/access.log with_host;
 
     {{ if .Values.kpi.nginx.large_headers.enabled -}}
     # Proxy buffer settings to handle large headers
