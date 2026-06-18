@@ -75,7 +75,7 @@ spec:
             {{- end }}
           envFrom:
             - secretRef:
-                name: {{ include "kobo.fullname" . }}-kpi
+                name: {{ include \"kobo.kpi.secretName\" . }}
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
           command: ["celery", "-A", "kobo", "beat", "-l", "info", "--pidfile=/tmp/celery_beat.pid", "--scheduler", "{{ .Values.kpi.beat.scheduler }}"]
