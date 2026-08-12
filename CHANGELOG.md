@@ -1,3 +1,9 @@
+# 6.0.0
+- MongoDB 8 upgrade
+  ACTION NEEDED IF USING THE MONGO DEPENDENCY:
+  This upgrade involves downtime. You will likely have to scale the mongo deployment to 0 replicas and then back up in order to avoid Multi-Attach error for volume errors.
+  Once the mongo 8 pod is healthy you will need to manually run this command in the instance afterwards: `db.adminCommand( { setFeatureCompatibilityVersion: "8.0", confirm: true } )`
+
 # 4.0.5
 
 - kpi "2.024.33"
