@@ -23,6 +23,7 @@ spec:
         app.kubernetes.io/component: kpi-worker-low-priority
         {{- include "kobo.selectorLabels" . | nindent 8 }}
     spec:
+      serviceAccountName: {{ include "kobo.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
