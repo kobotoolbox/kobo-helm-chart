@@ -12,3 +12,20 @@ data:
 {{- range $k, $v := .Values.enketo.env.normal }}
   {{ $k }}: {{ $v | quote }}
 {{- end }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kobo.fullname" . }}-nginx-enketo-conf
+  labels:
+    component: enketo
+    {{- include "kobo.labels" . | nindent 4 }}
+data:
+{{- if and .Values.kpi.nginx .Values.kpi.nginx.config }}
+  nginx.conf: |-
+    {{ .Values.kpi.nginx.config | nindent 4 }}
+{{- else }}
+  nginx.conf: |-
+    {{- tpl (.Files.Get "files/kpi/nginx_enketo.conf.tpl") . | nindent 4 }}
+{{- end }}

@@ -8,7 +8,7 @@ spec:
   type: {{ .Values.enketo.service.type }}
   ports:
     - port: {{ .Values.enketo.service.port }}
-      targetPort: 8005
+      targetPort: {{ .Values.enketo.service.port }}
       protocol: TCP
       name: http
   selector:

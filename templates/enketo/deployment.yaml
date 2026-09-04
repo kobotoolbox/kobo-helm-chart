@@ -79,6 +79,30 @@ spec:
           volumeMounts:
             {{- toYaml . | nindent 10 }}
           {{- end }}
+        - name: nginx
+          image: {{ .Values.nginx.image }}
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: 100m
+              memory: 250Mi
+            requests:
+              cpu: 1m
+              memory: 32Mi
+          volumeMounts:
+          - name: nginx-conf
+            mountPath: /etc/nginx/conf.d/
+          {{- if .Values.kpi.nginx.ssl.enabled }}
+          - name: nginx-ssl
+            mountPath: /etc/nginx/ssl
+            readOnly: true
+          {{- end }}
+          ports:
+            {{- if .Values.kpi.nginx.ssl.enabled }}
+            - containerPort: 443
+            {{- else }}
+            - containerPort: 80
+            {{- end }}
       {{- with .Values.enketo.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -98,7 +122,15 @@ spec:
         labelSelector:
           matchLabels:
             app.kubernetes.io/component: enketo
-      {{- with .Values.enketo.extraVolumes }}
       volumes:
+      - name: nginx-conf
+        configMap:
+          name: {{ include "kobo.fullname" . }}-nginx-enketo-conf
+      {{- if .Values.kpi.nginx.ssl.enabled }}
+      - name: nginx-ssl
+        secret:
+          secretName: {{ required "kpi.nginx.ssl.certSecret is required when tls is enabled" .Values.kpi.nginx.ssl.certSecret }}
+      {{- end }}
+      {{- with .Values.enketo.extraVolumes }}
         {{- toYaml . | nindent 6 }}
       {{- end }}
