@@ -14,7 +14,7 @@ spec:
     - name: nginx
       protocol: TCP
       port: {{ .Values.kpi.service.port }}
-      targetPort: 80
+      targetPort: {{ .Values.kpi.service.port }}
   selector:
     {{- include "kobo.selectorLabels" . | nindent 4 }}
     app.kubernetes.io/component: kpi

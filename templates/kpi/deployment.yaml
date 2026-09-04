@@ -156,8 +156,17 @@ spec:
             mountPath: /static
           - name: nginx-conf
             mountPath: /etc/nginx/conf.d/
+          {{- if .Values.kpi.nginx.ssl.enabled }}
+          - name: nginx-ssl
+            mountPath: /etc/nginx/ssl
+            readOnly: true
+          {{- end }}
           ports:
+            {{- if .Values.kpi.nginx.ssl.enabled }}
+            - containerPort: 443
+            {{- else }}
             - containerPort: 80
+            {{- end }}
       {{- with .Values.kpi.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -190,6 +199,11 @@ spec:
       - name: nginx-conf
         configMap:
           name: {{ include "kobo.fullname" . }}-nginx-kpi-conf
+      {{- if .Values.kpi.nginx.ssl.enabled }}
+      - name: nginx-ssl
+        secret:
+          secretName: {{ required "kpi.nginx.ssl.certSecret is required when tls is enabled" .Values.kpi.nginx.ssl.certSecret }}
+      {{- end }}
       {{- with .Values.kpi.extraVolumes }}
         {{- toYaml . | nindent 6 }}
       {{- end }}

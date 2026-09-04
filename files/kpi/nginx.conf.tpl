@@ -131,6 +131,13 @@ server {
         proxy_pass http://backend;
     }
 
+    {{- if .Values.kpi.nginx.ssl.enabled }}
+    listen 443 ssl default_server;
+    ssl_certificate /etc/nginx/ssl/tls.crt;
+    ssl_certificate_key /etc/nginx/ssl/tls.key;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    {{- else }}
     listen 80;
+    {{- end }}
     server_tokens off;
 }

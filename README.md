@@ -17,6 +17,38 @@ This chart requires values for `kpi.version` and `enketo.version` - there are no
 1. Carefully review values.yaml. Set image tag version, if desired. Set databases, secret keys, etc.
 1. `helm install your-kobo oci://ghcr.io/kobotoolbox/kobo -f your-values.yaml --set kpi.version=VERSION_TO_DEPLOY --set enketo.version=VERSION_TO_DEPLOY`
 
+## Nginx SSL
+
+To enable SSL on the KPI nginx sidecar, create a Kubernetes TLS secret and reference it in your values.
+
+**Using a self-signed certificate:**
+
+```bash
+# Generate a self-signed certificate and key
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+  -keyout tls.key \
+  -out tls.crt \
+  -subj "/CN=your-domain.example.com/O=your-org"
+
+# Create the Kubernetes secret
+kubectl create secret tls my-kobo-tls \
+  --cert=tls.crt \
+  --key=tls.key \
+  --namespace your-namespace
+```
+
+Then enable SSL in your values:
+
+```yaml
+kpi:
+  nginx:
+    ssl:
+      enabled: true
+      certSecret: my-kobo-tls
+```
+
+The secret must contain `tls.crt` and `tls.key` keys (the default when created with `kubectl create secret tls`).
+
 ## Upgrading
 This chart requires values for `kpi.version` and `enketo.version` - there are no defaults set for them.
 
