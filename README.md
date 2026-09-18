@@ -1,8 +1,13 @@
 # KoboToolbox Helm Chart
+This chart is intended for high availability instances of KoboToolbox running in kubernetes. Small and casual instances should use [kobo-install](https://github.com/kobotoolbox/kobo-install).
 
-This chart is intended for high availability instances of KoboToolbox. Small and casual instances should use [kobo-install](https://github.com/kobotoolbox/kobo-install).
+# Versioning
+This chart is versioned using semver: `<Major>.<Minor>.<Patch>`
 
-This chart is still being tested and isn't intended for external use at this time. Versions may change for no reason at all or breaking changes may apply without updating the version.
+* Major: Indicates breaking changes to the chart. Upgrading will require manual intervention, value updates, or migration steps (e.g., breaking changes to values.yaml, removing/renaming values, dropping Kubernetes version support, or changing resource selectors that trigger resource recreation).
+* Minor: Indicates backwards-compatible feature additions. Used when adding new default values, optional templates, or supporting new Kubernetes resources/capabilities without breaking existing installations.
+* Patch: Indicates backwards-compatible bug fixes. Used for internal template fixes, updating non-breaking default configurations, or updating the chart documentation and metadata without changing the external contract.
+
 
 # Design decisions
 
