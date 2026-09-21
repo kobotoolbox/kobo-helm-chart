@@ -14,7 +14,8 @@
   | `commonConfiguration`          | `valkeyConfig`                        |
   | `master.persistence.size`      | `dataStorage.requestedSize`           |
   | `master.resources`             | `resources` (top level now)           |
-  | `architecture`, `sentinel.*`   | gone - standalone renders a Deployment|
+  | `architecture: standalone`     | `replica.enabled: false`              |
+  | `sentinel.*`                   | gone                                  |
 
   Valkey authenticates with ACL users rather than a single password. A `default` user is
   required; clients connecting as `redis://:password@host` authenticate as that user, so
@@ -23,6 +24,21 @@
   Two names change on the cluster: the password now lives in `<release>-redis-auth` under the
   key `default-password`, and the service loses its suffix - connect to `<release>-redis`
   rather than `<release>-redis-master`. If you pinned `redis.image.*`, drop it.
+
+  Replication stays the default - one primary and three replicas, as before - so if you were
+  running the default topology you do not need to do anything.
+
+  If you were setting `architecture: "standalone"`, you do need to act. That key does not
+  exist in the new chart and is silently ignored, so you would get replicas where you used to
+  get a single pod. Replace it with:
+
+      redis:
+        replica:
+          enabled: false
+
+  This matters especially alongside `dataStorage.persistentVolumeClaimName` below, which only
+  applies to the single-instance path. With replicas enabled the chart uses volumeClaimTemplates
+  instead and will provision fresh empty volumes rather than adopting your existing one.
 
   ## Migrating without losing your data
 

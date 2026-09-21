@@ -407,6 +407,14 @@ redis:
     requests:
       cpu: 100m
       memory: 512Mi
+  # Replicated by default, as before. Set enabled to false for a single instance, which
+  # swaps the StatefulSet for a Deployment and drops the read service.
+  # Replicas authenticate as replicationUser, which must exist in auth.aclUsers above.
+  replica:
+    enabled: true
+    replicas: 3
+    persistence:
+      size: 10Gi
 
 # Chart managed postgresql is intended for testing only
 postgresql:
