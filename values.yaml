@@ -377,7 +377,6 @@ mongodb:
       cpu: 100m
       memory: 512Mi
 
-# Chart managed redis is intended for testing only
 # Deployed via the upstream valkey-io/valkey chart, aliased as "redis" so existing
 # releases keep their resource names and the kobo.redis.* helpers keep working.
 redis:
@@ -407,8 +406,7 @@ redis:
     requests:
       cpu: 100m
       memory: 512Mi
-  # Replicated by default, as before. Set enabled to false for a single instance, which
-  # swaps the StatefulSet for a Deployment and drops the read service.
+  # Set enabled to false for a single instance
   # Replicas authenticate as replicationUser, which must exist in auth.aclUsers above.
   replica:
     enabled: true
