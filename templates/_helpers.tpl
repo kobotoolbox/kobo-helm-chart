@@ -147,10 +147,24 @@ Requires MONGODB_PASSWORD to be set environment variable
 {{- end -}}
 
 {{/*
+Fail on redis values that the valkey chart silently ignores, rather than letting the
+upgrade succeed against an empty volume or the wrong secret.
+*/}}
+{{- define "kobo.redis.validate" -}}
+{{- if .Values.redis.auth.existingSecret -}}
+{{- fail "redis.auth.existingSecret is not supported by the valkey chart. Use redis.auth.usersExistingSecret, and store the password under the key \"default-password\" rather than \"redis-password\"." -}}
+{{- end -}}
+{{- if and .Values.redis.replica.enabled .Values.redis.dataStorage.persistentVolumeClaimName -}}
+{{- fail "redis.dataStorage.persistentVolumeClaimName is ignored when redis.replica.enabled is true: replicated mode uses volumeClaimTemplates and would provision empty volumes. Set redis.replica.enabled to false to adopt the existing claim." -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Name of the secret holding the Valkey ACL user passwords.
 The upstream valkey chart appends "-auth" to its fullname.
 */}}
 {{- define "kobo.redis.secretName" -}}
+{{- include "kobo.redis.validate" . -}}
 {{- default (printf "%s-auth" (include "kobo.redis.fullname" .)) .Values.redis.auth.usersExistingSecret -}}
 {{- end -}}
 

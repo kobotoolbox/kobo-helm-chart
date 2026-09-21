@@ -15,6 +15,7 @@
   | `master.persistence.size`      | `dataStorage.requestedSize`           |
   | `master.resources`             | `resources` (top level now)           |
   | `architecture: standalone`     | `replica.enabled: false`              |
+  | `auth.existingSecret`          | `auth.usersExistingSecret`            |
   | `sentinel.*`                   | gone                                  |
 
   Valkey authenticates with ACL users rather than a single password. A `default` user is
@@ -25,27 +26,31 @@
   key `default-password`, and the service loses its suffix - connect to `<release>-redis`
   rather than `<release>-redis-master`. If you pinned `redis.image.*`, drop it.
 
-  Replication stays the default - one primary and three replicas, as before - so if you were
-  running the default topology you do not need to do anything.
+  When supplying secret, note that both the value key and the key inside the
+  secret changed. Move `auth.existingSecret` to `auth.usersExistingSecret`, and the secret must
+  hold the password under `default-password` rather than `redis-password`.
 
-  If you were setting `architecture: "standalone"`, you do need to act. That key does not
-  exist in the new chart and is silently ignored, so you would get replicas where you used to
-  get a single pod. Replace it with:
+  If you were setting `architecture: "standalone"`, replace it with `replica.enabled: false`.
+  The old key does not exist in the new chart and is silently ignored, so leaving it there
+  gives you replicas where you used to have a single pod.
+
+  ## Migrating without losing your data
+
+  Read this before upgrading. Every instance needs migration work - the PVC names change in
+  both topologies, so an upgrade on default settings provisions empty volumes and leaves your
+  existing data stranded on the old claims.
+
+  Old claims were `redis-data-<release>-redis-master-0` for the primary and
+  `redis-data-<release>-redis-replicas-N` for replicas. The new chart names them
+  `valkey-data-<release>-redis-N` in replicated mode, and in single instance mode it can be
+  pointed at an existing claim by name instead.
+
+  Single instance is therefore the only topology that can adopt your old volume directly, and
+  it is the path we have tested. Point it at the existing claim:
 
       redis:
         replica:
           enabled: false
-
-  This matters especially alongside `dataStorage.persistentVolumeClaimName` below, which only
-  applies to the single-instance path. With replicas enabled the chart uses volumeClaimTemplates
-  instead and will provision fresh empty volumes rather than adopting your existing one.
-
-  ## Migrating without losing your data
-
-  The new chart can adopt the volume your old redis was already using, so there is no dump
-  and restore. Point it at the existing claim:
-
-      redis:
         dataStorage:
           persistentVolumeClaimName: "redis-data-{{ .Release.Name }}-redis-master-0"
 
@@ -57,9 +62,17 @@
   Then upgrade as usual. The new pod mounts the same volume and loads the existing dump, so
   sessions, queued tasks and cache all survive. Expect well under a minute of downtime.
 
-  One thing to be aware of: once an instance uses `persistentVolumeClaimName` it should keep
-  using it. Removing the setting later makes the chart provision a fresh empty volume instead
-  of the one holding your data.
+  There is no equivalent for replicated mode - upstream scopes claim adoption to standalone
+  deployments, see https://github.com/valkey-io/valkey-helm/blob/main/valkey/values.yaml#L152 -
+  so a replicated deployment always starts from empty volumes and the replicas sync from an
+  empty primary. If you want both replication and your existing data, come up as a single
+  instance first, then restore the dump into the new primary claim by hand when you enable
+  replicas. If the data is cache and queues you can rebuild, take the reset instead.
+
+  Two things to be aware of: once an instance uses `persistentVolumeClaimName` it should keep
+  using it, because removing the setting later makes the chart provision a fresh empty volume
+  instead of the one holding your data. And take a dump before you start either way -
+  `redis-cli BGSAVE` then copy `/data/dump.rdb` off the pod.
 
   A note on `--reuse-values`: it keeps the previous release's values but drops this chart's
   own `redis:` defaults, so anything the chart would normally supply (the ACL user, the
