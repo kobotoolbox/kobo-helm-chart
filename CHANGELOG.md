@@ -1,8 +1,10 @@
 # 6.1.0
 - Move from Redis to Valkey.
 
-  The dependency is aliased as "redis", so every resource keeps the name it already has and
-  the `kobo.redis.*` template helpers work unchanged. Only the values shape changes.
+  The dependency is aliased as "redis", so resources stay under the `<release>-redis-` prefix
+  rather than moving to `<release>-valkey-`, and the `kobo.redis.*` template helpers work
+  unchanged. Individual names do still change - the service drops its `-master` suffix, the
+  workload and its claims are renamed - see the migration notes below.
 
   ACTION NEEDED IF USING THE REDIS/VALKEY DEPENDENCY:
 
@@ -30,15 +32,18 @@
   secret changed. Move `auth.existingSecret` to `auth.usersExistingSecret`, and the secret must
   hold the password under `default-password` rather than `redis-password`.
 
-  If you were setting `architecture: "standalone"`, replace it with `replica.enabled: false`.
-  The old key does not exist in the new chart and is silently ignored, so leaving it there
-  gives you replicas where you used to have a single pod.
+  The default topology changes: a single instance now, where the old chart defaulted to one
+  primary and three replicas. Single instance is the only mode that can adopt your existing
+  volume, so it is the sane default for an upgrade. Set `replica.enabled: true` to get
+  replicas back, but read the migration notes first - that path cannot keep your data.
+
+  `architecture: "standalone"` no longer exists and is silently ignored. You can drop it; the
+  equivalent is `replica.enabled: false`, which is now the default anyway.
 
   ## Migrating without losing your data
 
-  Read this before upgrading. Every instance needs migration work - the PVC names change in
-  both topologies, so an upgrade on default settings provisions empty volumes and leaves your
-  existing data stranded on the old claims.
+  Read this before upgrading. The claim names change, so an upgrade that does not name your
+  existing claim provisions an empty volume and leaves your data stranded on the old one.
 
   Old claims were `redis-data-<release>-redis-master-0` for the primary and
   `redis-data-<release>-redis-replicas-N` for replicas. The new chart names them

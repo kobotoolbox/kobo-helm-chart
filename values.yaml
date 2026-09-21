@@ -406,10 +406,12 @@ redis:
     requests:
       cpu: 100m
       memory: 512Mi
-  # Set enabled to false for a single instance
-  # Replicas authenticate as replicationUser, which must exist in auth.aclUsers above.
+  # Single instance by default: only this mode can adopt an existing volume via
+  # dataStorage.persistentVolumeClaimName. Enabling replicas swaps the Deployment for a
+  # StatefulSet with its own claims, and replicas authenticate as replicationUser, which
+  # must exist in auth.aclUsers above.
   replica:
-    enabled: true
+    enabled: false
     replicas: 3
     persistence:
       size: 10Gi
