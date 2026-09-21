@@ -147,9 +147,17 @@ Requires MONGODB_PASSWORD to be set environment variable
 {{- end -}}
 
 {{/*
-Redis connection URL (without DB number)
+Name of the secret holding the Valkey ACL user passwords.
+The upstream valkey chart appends "-auth" to its fullname.
+*/}}
+{{- define "kobo.redis.secretName" -}}
+{{- default (printf "%s-auth" (include "kobo.redis.fullname" .)) .Values.redis.auth.usersExistingSecret -}}
+{{- end -}}
+
+{{/*
+Redis/Valkey connection URL (without DB number)
 Requires REDIS_PASSWORD to be set environment variable
 */}}
 {{- define "kobo.redis.url" -}}
-{{- printf "redis://:$(REDIS_PASSWORD)@%s-master:6379" (include "kobo.redis.fullname" .) -}}
+{{- printf "redis://:$(REDIS_PASSWORD)@%s:6379" (include "kobo.redis.fullname" .) -}}
 {{- end -}}

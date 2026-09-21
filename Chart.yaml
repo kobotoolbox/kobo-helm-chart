@@ -15,16 +15,17 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 6.0.1
+version: 6.1.0
 
 dependencies:
   - name: mongodb
     version: ^19.1.17
     repository: https://charts.bitnami.com/bitnami
     condition: mongodb.enabled
-  - name: redis
-    version: ^19.6.2
-    repository: https://charts.bitnami.com/bitnami
+  - name: valkey
+    alias: redis
+    version: ^0.12.0
+    repository: https://valkey.io/valkey-helm/
     condition: redis.enabled
   - name: postgresql
     version: ^15.5.17
