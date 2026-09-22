@@ -74,10 +74,20 @@
   instance first, then restore the dump into the new primary claim by hand when you enable
   replicas. If the data is cache and queues you can rebuild, take the reset instead.
 
-  Two things to be aware of: once an instance uses `persistentVolumeClaimName` it should keep
-  using it, because removing the setting later makes the chart provision a fresh empty volume
-  instead of the one holding your data. And take a dump before you start either way -
-  `redis-cli BGSAVE` then copy `/data/dump.rdb` off the pod.
+  **Ensure to backup your data before you start, whichever option you choose.** Trigger a save
+  on the running pod, wait for it to finish, then copy the dump somewhere outside the cluster:
+
+      kubectl exec -n <namespace> <old-pod> -- redis-cli -a <password> BGSAVE
+      kubectl exec -n <namespace> <old-pod> -- redis-cli -a <password> INFO persistence \
+        | grep rdb_bgsave_in_progress
+      kubectl cp <namespace>/<old-pod>:/data/dump.rdb ./dump-$(date +%F).rdb
+
+  `rdb_bgsave_in_progress:0` means the save finished and the file is safe to copy. Keep that
+  dump until you have confirmed the new pod came up with your keys.
+
+  One last thing: once an instance uses `persistentVolumeClaimName` it should keep using it.
+  Removing the setting later makes the chart provision a fresh empty volume instead of the one
+  holding your data.
 
   A note on `--reuse-values`: it keeps the previous release's values but drops this chart's
   own `redis:` defaults, so anything the chart would normally supply (the ACL user, the

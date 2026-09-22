@@ -381,8 +381,6 @@ mongodb:
 # releases keep their resource names and the kobo.redis.* helpers keep working.
 redis:
   enabled: false
-  image:
-    repository: valkey/valkey
   # The upstream chart uses ACL users rather than a single requirepass password.
   # A "default" user is required; clients using redis://:password@host authenticate as it.
   auth:
