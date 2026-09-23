@@ -1,3 +1,99 @@
+# 7.0.0
+- Move from Redis to Valkey.
+
+  The dependency is aliased as "redis", so resources stay under the `<release>-redis-` prefix
+  rather than moving to `<release>-valkey-`, and the `kobo.redis.*` template helpers work
+  unchanged. Individual names do still change - the service drops its `-master` suffix, the
+  workload and its claims are renamed - see the migration notes below.
+
+  ACTION NEEDED IF USING THE REDIS/VALKEY DEPENDENCY:
+
+  The `redis:` values follow the upstream chart now, so a few keys moved:
+
+  | was                            | is now                                |
+  | ------------------------------ | ------------------------------------- |
+  | `auth.password`                | `auth.aclUsers.default.password`      |
+  | `commonConfiguration`          | `valkeyConfig`                        |
+  | `master.persistence.size`      | `dataStorage.requestedSize`           |
+  | `master.resources`             | `resources` (top level now)           |
+  | `architecture: standalone`     | `replica.enabled: false`              |
+  | `auth.existingSecret`          | `auth.usersExistingSecret`            |
+  | `sentinel.*`                   | gone                                  |
+
+  Valkey authenticates with ACL users rather than a single password. A `default` user is
+  required; clients connecting as `redis://:password@host` authenticate as that user, so
+  existing connection strings keep working.
+
+  Two names change on the cluster: the password now lives in `<release>-redis-auth` under the
+  key `default-password`, and the service loses its suffix - connect to `<release>-redis`
+  rather than `<release>-redis-master`. If you pinned `redis.image.*`, drop it.
+
+  When supplying secret, note that both the value key and the key inside the
+  secret changed. Move `auth.existingSecret` to `auth.usersExistingSecret`, and the secret must
+  hold the password under `default-password` rather than `redis-password`.
+
+  The default topology changes: a single instance now, where the old chart defaulted to one
+  primary and three replicas. Single instance is the only mode that can adopt your existing
+  volume, so it is the sane default for an upgrade. Set `replica.enabled: true` to get
+  replicas back, but read the migration notes first - that path cannot keep your data.
+
+  `architecture: "standalone"` no longer exists and is silently ignored. You can drop it; the
+  equivalent is `replica.enabled: false`, which is now the default anyway.
+
+  ## Migrating without losing your data
+
+  Read this before upgrading. The claim names change, so an upgrade that does not name your
+  existing claim provisions an empty volume and leaves your data stranded on the old one.
+
+  Old claims were `redis-data-<release>-redis-master-0` for the primary and
+  `redis-data-<release>-redis-replicas-N` for replicas. The new chart names them
+  `valkey-data-<release>-redis-N` in replicated mode, and in single instance mode it can be
+  pointed at an existing claim by name instead.
+
+  Single instance is therefore the only topology that can adopt your old volume directly, and
+  it is the path we have tested. Point it at the existing claim:
+
+      redis:
+        replica:
+          enabled: false
+        dataStorage:
+          persistentVolumeClaimName: "redis-data-{{ .Release.Name }}-redis-master-0"
+
+  Scale the old StatefulSet to 0 first so it lets go of the volume - it is ReadWriteOnce, and
+  the new pod cannot attach until the old one is gone:
+
+      kubectl scale statefulset <release>-redis-master --replicas=0
+
+  Then upgrade as usual. The new pod mounts the same volume and loads the existing dump, so
+  sessions, queued tasks and cache all survive. Expect well under a minute of downtime.
+
+  There is no equivalent for replicated mode - upstream scopes claim adoption to standalone
+  deployments, see https://github.com/valkey-io/valkey-helm/blob/main/valkey/values.yaml#L152 -
+  so a replicated deployment always starts from empty volumes and the replicas sync from an
+  empty primary. If you want both replication and your existing data, come up as a single
+  instance first, then restore the dump into the new primary claim by hand when you enable
+  replicas. If the data is cache and queues you can rebuild, take the reset instead.
+
+  **Ensure to backup your data before you start, whichever option you choose.** Trigger a save
+  on the running pod, wait for it to finish, then copy the dump somewhere outside the cluster:
+
+      kubectl exec -n <namespace> <old-pod> -- redis-cli -a <password> BGSAVE
+      kubectl exec -n <namespace> <old-pod> -- redis-cli -a <password> INFO persistence \
+        | grep rdb_bgsave_in_progress
+      kubectl cp <namespace>/<old-pod>:/data/dump.rdb ./dump-$(date +%F).rdb
+
+  `rdb_bgsave_in_progress:0` means the save finished and the file is safe to copy. Keep that
+  dump until you have confirmed the new pod came up with your keys.
+
+  One last thing: once an instance uses `persistentVolumeClaimName` it should keep using it.
+  Removing the setting later makes the chart provision a fresh empty volume instead of the one
+  holding your data.
+
+  A note on `--reuse-values`: it keeps the previous release's values but drops this chart's
+  own `redis:` defaults, so anything the chart would normally supply (the ACL user, the
+  memory config, resources) silently falls back to whatever the old release had. If you
+  deploy that way, set those explicitly in your own values file.
+
 # 6.0.0
 - MongoDB 8 upgrade
   ACTION NEEDED IF USING THE MONGO DEPENDENCY:

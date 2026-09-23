@@ -50,8 +50,8 @@ spec:
             - name: REDIS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ default (include "kobo.redis.fullname" .) .Values.redis.auth.existingSecret }}
-                  key: redis-password
+                  name: {{ include "kobo.redis.secretName" . }}
+                  key: default-password
             - name: REDIS_SESSION_URL
               value: {{ (include "kobo.redis.url" .) }}/1
             - name: SERVICE_ACCOUNT_BACKEND_URL
