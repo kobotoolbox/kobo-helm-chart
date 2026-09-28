@@ -5,7 +5,7 @@ metadata:
   name: {{ include "kobo.fullname" . }}-flower
   labels:
     {{- include "kobo.labels" . | nindent 4 }}
-    app.kubernetes.io/component: flower 
+    app.kubernetes.io/component: flower
 spec:
   replicas: 1
   selector:
@@ -55,11 +55,11 @@ spec:
             - name: REDIS_SESSION_URL
               value: {{ (include "kobo.redis.url" .) }}/1
             - name: SERVICE_ACCOUNT_BACKEND_URL
-              value: {{ (include "kobo.redis.url" .) }}/6
+              value: {{ (include "kobo.redis.url" .) }}/1
             - name: CELERY_BROKER_URL
-              value: {{ (include "kobo.redis.url" .) }}/2
+              value: {{ (include "kobo.redis.url" .) }}/1
             - name: CACHE_URL
-              value: {{ (include "kobo.redis.url" .) }}/4
+              value: {{ (include "kobo.redis.url" .) }}/1
             {{- end }}
           envFrom:
             - secretRef:
