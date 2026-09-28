@@ -1,0 +1,40 @@
+%% Mermaid architecture diagram for Kobo Helm chart
+flowchart LR
+  subgraph Ingress[Ingress / Load Balancer]
+    Nginx[Nginx / Ingress Controller]
+  end
+
+  Enketo[Enketo Express\n(JS/Node frontend)]
+  KoBoCAT[KoBoCAT\n(Django backend)]
+  KPI[KPI\n(Django analytics)]
+  Celery[Celery workers & beat]
+  Flower[Flower (monitor)]
+  Redis[Redis\n(broker / cache)]
+  MongoDB[MongoDB\n(document store)]
+  Postgres[PostgreSQL / PostGIS\n(relational metadata)]
+
+  Nginx --> Enketo
+  Nginx --> KoBoCAT
+  Nginx --> KPI
+
+  Enketo --> KoBoCAT
+  KoBoCAT --> MongoDB
+  KoBoCAT --> Postgres
+  KPI --> MongoDB
+  KPI --> Postgres
+
+  KoBoCAT --> Celery
+  KPI --> Celery
+  Celery --> Redis
+  Celery --> MongoDB
+
+  Flower --> Celery
+
+  %% Kubernetes primitives (note: rendered by Helm templates)
+  classDef infra fill:#f8f9fa,stroke:#333,stroke-width:1
+  class Nginx,Enketo,KoBoCAT,KPI,Celery,Flower,Redis,MongoDB,Postgres infra
+
+  %% Short labels for chart files
+  click Enketo "../templates/enketo/deployment.yaml" "Enketo Deployment template"
+  click KoBoCAT "../templates/kpi/deployment.yaml" "KoBoCAT/KPI Deployment templates"
+  click Celery "../templates/kpi/deployment-worker.yaml" "Celery worker templates"
