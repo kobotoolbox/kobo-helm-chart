@@ -377,42 +377,36 @@ mongodb:
       cpu: 100m
       memory: 512Mi
 
-# Deployed via the upstream valkey-io/valkey chart, aliased as "redis" so existing
-# releases keep their resource names and the kobo.redis.* helpers keep working.
+# Chart managed redis is intended for testing only
 redis:
   enabled: false
-  # The upstream chart uses ACL users rather than a single requirepass password.
-  # A "default" user is required; clients using redis://:password@host authenticate as it.
+  image:
+    repository: bitnamilegacy/redis
   auth:
-    enabled: true
-    aclUsers:
-      default:
-        permissions: "~* &* +@all"
-        password: "change_me_please"
-  valkeyConfig: |-
+    password: "change_me_please"
+  commonConfiguration: |-
     maxmemory 900mb
     maxmemory-policy volatile-lru
-  dataStorage:
-    enabled: true
-    requestedSize: 10Gi
-    # To adopt an existing PVC instead of provisioning a new one, set
-    # persistentVolumeClaimName (supports templating) in your environment values.
-  resources:
-    limits:
-      cpu: 1000m
-      memory: 1Gi
-    requests:
-      cpu: 100m
-      memory: 512Mi
-  # Single instance by default: only this mode can adopt an existing volume via
-  # dataStorage.persistentVolumeClaimName. Enabling replicas swaps the Deployment for a
-  # StatefulSet with its own claims, and replicas authenticate as replicationUser, which
-  # must exist in auth.aclUsers above.
-  replica:
-    enabled: false
-    replicas: 3
+  master:
     persistence:
       size: 10Gi
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+  replica:
+    persistence:
+      size: 10Gi
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 100m
+        memory: 512Mi
 
 # Chart managed postgresql is intended for testing only
 postgresql:
