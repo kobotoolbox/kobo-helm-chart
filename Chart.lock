@@ -2,11 +2,11 @@ dependencies:
 - name: mongodb
   repository: https://charts.bitnami.com/bitnami
   version: 19.1.17
-- name: redis
-  repository: https://charts.bitnami.com/bitnami
-  version: 19.6.4
+- name: valkey
+  repository: https://valkey.io/valkey-helm/
+  version: 0.12.0
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 15.5.38
-digest: sha256:4cdaf9bd02acd3454154bd25cf08b479dad0f546b4243584b0c911a7de35ba4f
-generated: "2026-07-22T09:41:36.183652-05:00"
+digest: sha256:073c6f3768151b760fd995cc8c4a323a9d1ec8cd2efc92337b790465d006a600
+generated: "2026-09-17T15:48:13.46786+01:00"
