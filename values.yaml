@@ -344,10 +344,9 @@ enketo:
 nginx:
   image: nginx:1.31
 
-# Chart managed mongodb is intended for testing only
-# Uses replicaset (by default) to enable high availility
-# Kobotoolbox does not have automatic retry logic when the mongodb master changes
-# These errors should be rare and brief, minimally acceptable for production.
+# Chart-managed MongoDB is intended for testing only.
+# It uses a replica set by default, but KoboToolbox does not automatically retry
+# when the MongoDB primary changes, so brief errors can occur during failover.
 mongodb:
   enabled: false
   image:
