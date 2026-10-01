@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - gha-for-releases # TODO: remove before merging, for testing only
   # trigger manually from gh ui
   workflow_dispatch:
 
