@@ -43,7 +43,8 @@ jobs:
           CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
           echo "CHART_VERSION=${CHART_VERSION}" >> $GITHUB_ENV
           # fixed-string match so a prerelease like 7.0.0-dev-env doesn't count as 7.0.0
-          if oras repo tags ghcr.io/kobotoolbox/kobo | grep -qxF "${CHART_VERSION}"; then
+          TAGS=$(oras repo tags ghcr.io/kobotoolbox/kobo)
+          if grep -qxF "${CHART_VERSION}" <<< "${TAGS}"; then
             echo "published=true" >> $GITHUB_OUTPUT
           fi
 
