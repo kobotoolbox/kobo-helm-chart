@@ -344,7 +344,8 @@ enketo:
 nginx:
   image: nginx:1.31
 
-# Chart managed mongodb uses replicaset (by default) to enable high availility
+# Chart managed mongodb is intended for testing only
+# Uses replicaset (by default) to enable high availility
 # Kobotoolbox does not have automatic retry logic when the mongodb master changes
 # These errors should be rare and brief, minimally acceptable for production.
 mongodb:
@@ -377,6 +378,7 @@ mongodb:
       cpu: 100m
       memory: 512Mi
 
+# Chart managed redis is intended for testing only
 # Deployed via the upstream valkey-io/valkey chart, aliased as "redis" so existing
 # releases keep their resource names and the kobo.redis.* helpers keep working.
 redis:

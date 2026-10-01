@@ -1,3 +1,6 @@
+# 7.0.0-test
+Testing gha for prereleases
+
 # 7.0.0
 - Move from Redis to Valkey.
 
