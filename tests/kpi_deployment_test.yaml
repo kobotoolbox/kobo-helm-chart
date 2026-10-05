@@ -1,0 +1,156 @@
+suite: kpi deployment
+templates:
+- kpi/deployment.yaml
+- kpi/secrets.yaml
+- kpi/configmap.yaml
+release:
+  name: kobo
+values:
+- values/required.yaml
+tests:
+- it: renders the backend container from the kpi image
+  template: kpi/deployment.yaml
+  asserts:
+  - isKind:
+      of: Deployment
+  - equal:
+      path: metadata.name
+      value: kobo-kpi
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "backend")].image
+      value: kobotoolbox/kpi:2.026.33
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "backend")].command
+      value: ["/srv/init/run-uwsgi.sh"]
+  - contains:
+      path: spec.template.spec.containers[?(@.name == "backend")].ports
+      content:
+        name: http
+        containerPort: 8000
+        protocol: TCP
+
+- it: loads kpi env from the chart secret and configmap
+  template: kpi/deployment.yaml
+  asserts:
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "backend")].envFrom
+      value:
+      - secretRef:
+          name: kobo-kpi
+      - configMapRef:
+          name: kobo-kpi
+
+- it: applies the default security context to the backend container
+  template: kpi/deployment.yaml
+  asserts:
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "backend")].securityContext
+      value:
+        runAsNonRoot: true
+        runAsUser: 1000
+
+- it: allows unsetting runAsUser for a cluster-assigned UID
+  template: kpi/deployment.yaml
+  set:
+    podSecurityContext:
+      fsGroup: 2000
+    securityContext:
+      runAsUser: null
+  asserts:
+  - equal:
+      path: spec.template.spec.securityContext
+      value:
+        fsGroup: 2000
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "backend")].securityContext
+      value:
+        runAsNonRoot: true
+
+- it: renders the nginx sidecar on port 80 with static files and config
+  template: kpi/deployment.yaml
+  asserts:
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "nginx")].image
+      value: nginx:1.31
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "nginx")].ports
+      value:
+      - containerPort: 80
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "nginx")].volumeMounts
+      value:
+      - name: static-volume
+        mountPath: /static
+      - name: nginx-conf
+        mountPath: /etc/nginx/conf.d/
+
+- it: uses the nginx image from values
+  template: kpi/deployment.yaml
+  set:
+    nginx.image: registry.example.org/nginx-unprivileged:1.27
+  asserts:
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "nginx")].image
+      value: registry.example.org/nginx-unprivileged:1.27
+
+- it: appends extra volumes and mounts to the backend container only
+  template: kpi/deployment.yaml
+  set:
+    kpi.extraVolumes:
+    - name: media
+      persistentVolumeClaim:
+        claimName: kpi-media
+    kpi.extraVolumeMounts:
+    - name: media
+      mountPath: /srv/src/kpi/media
+  asserts:
+  - contains:
+      path: spec.template.spec.volumes
+      content:
+        name: media
+        persistentVolumeClaim:
+          claimName: kpi-media
+  - contains:
+      path: spec.template.spec.containers[?(@.name == "backend")].volumeMounts
+      content:
+        name: media
+        mountPath: /srv/src/kpi/media
+  - notContains:
+      path: spec.template.spec.containers[?(@.name == "nginx")].volumeMounts
+      content:
+        name: media
+        mountPath: /srv/src/kpi/media
+
+- it: always mounts the chart volumes
+  template: kpi/deployment.yaml
+  asserts:
+  - contains:
+      path: spec.template.spec.volumes
+      content:
+        name: static-volume
+        emptyDir: {}
+  - contains:
+      path: spec.template.spec.volumes
+      content:
+        name: nginx-conf
+        configMap:
+          name: kobo-nginx-kpi-conf
+
+- it: uses the service account from values
+  template: kpi/deployment.yaml
+  set:
+    serviceAccount:
+      create: false
+      name: icrc-kobo
+  asserts:
+  - equal:
+      path: spec.template.spec.serviceAccountName
+      value: icrc-kobo
+
+- it: sets replicas unless autoscaling is enabled
+  template: kpi/deployment.yaml
+  set:
+    kpi.autoscaling.enabled: true
+  asserts:
+  - notExists:
+      path: spec.replicas
