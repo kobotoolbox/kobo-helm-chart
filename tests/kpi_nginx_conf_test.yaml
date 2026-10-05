@@ -1,0 +1,60 @@
+suite: kpi nginx config
+templates:
+- kpi/configmap.yaml
+release:
+  name: kobo
+values:
+- values/required.yaml
+tests:
+- it: listens on port 80 and proxies to uWSGI
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: (?m)^\s*listen 80;$
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: server 127\.0\.0\.1:8000;
+
+- it: forwards Host, X-Real-IP and X-Forwarded-For
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: proxy_set_header Host \$host;
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: proxy_set_header X-Real-IP \$remote_addr;
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+
+- it: serves static files and the protected S3 location
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: location /static \{\s*alias /static;
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: location ~ \^/protected-s3/\(\.\*\)\$ \{\s*# Allow internal requests only
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: (?s)location ~ \^/protected-s3/.*?internal;
+
+- it: replaces the whole config when kpi.nginx.config is set
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.nginx.config: "server { listen 8080; }"
+  asserts:
+  - equal:
+      path: data["nginx.conf"]
+      value: "server { listen 8080; }"

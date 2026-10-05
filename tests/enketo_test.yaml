@@ -1,0 +1,77 @@
+suite: enketo
+templates:
+- enketo/deployment.yaml
+- enketo/secrets.yaml
+- enketo/configmap.yaml
+release:
+  name: kobo
+values:
+- values/required.yaml
+tests:
+- it: renders the enketo container
+  template: enketo/deployment.yaml
+  asserts:
+  - equal:
+      path: metadata.name
+      value: kobo-enketo
+  - equal:
+      path: spec.template.spec.containers[0].image
+      value: kobotoolbox/enketo-express-extra-widgets:7.6.4
+  - equal:
+      path: spec.template.spec.containers[0].envFrom
+      value:
+      - secretRef:
+          name: kobo-enketo
+      - configMapRef:
+          name: kobo-enketo
+
+- it: applies the security contexts and service account
+  template: enketo/deployment.yaml
+  set:
+    securityContext:
+      runAsUser: null
+    serviceAccount:
+      create: false
+      name: icrc-kobo
+  asserts:
+  - equal:
+      path: spec.template.spec.containers[0].securityContext
+      value:
+        runAsNonRoot: true
+  - equal:
+      path: spec.template.spec.serviceAccountName
+      value: icrc-kobo
+
+- it: renders the api key and redis URLs in the enketo secret
+  template: enketo/secrets.yaml
+  asserts:
+  - equal:
+      path: data.ENKETO_LINKED_FORM_AND_DATA_SERVER_API_KEY
+      value: test-enketo-api-key
+      decodeBase64: true
+  - equal:
+      path: data.ENKETO_REDIS_MAIN_URL
+      value: redis://:pw@redis:6379
+      decodeBase64: true
+  - equal:
+      path: data.ENKETO_REDIS_CACHE_URL
+      value: redis://:pw@redis:6379
+      decodeBase64: true
+
+- it: adds enketo.env.secret entries to the secret
+  template: enketo/secrets.yaml
+  set:
+    enketo.env.secret.ENKETO_ENCRYPTION_KEY: test-key
+  asserts:
+  - equal:
+      path: data.ENKETO_ENCRYPTION_KEY
+      value: test-key
+      decodeBase64: true
+
+- it: fails without enketoApiKey
+  template: enketo/secrets.yaml
+  set:
+    kobotoolbox.enketoApiKey: ""
+  asserts:
+  - failedTemplate:
+      errorPattern: enketoApiKey required
