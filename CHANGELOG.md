@@ -1,3 +1,6 @@
+# 7.0.2
+- kpi nginx sidecar forwards `X-Forwarded-Proto` (incoming value, or the request scheme), so Django detects HTTPS behind a TLS-terminating ingress (#116).
+
 # 7.0.1
 - Post-install job loads the kpi Secret and ConfigMap (`envFrom`), like the migration job, so `postInstall.command` sees the full kpi environment (#113).
 
