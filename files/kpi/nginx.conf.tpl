@@ -18,6 +18,12 @@ map $arg_format $schema_type {
     json    application/json;
 }
 
+# Keep the scheme set by a TLS-terminating proxy in front, else use our own
+map $http_x_forwarded_proto $forwarded_proto {
+    default $http_x_forwarded_proto;
+    ''      $scheme;
+}
+
 log_format with_host '$http_host | $remote_addr - $upstream_http_x_kobonaut [$time_local] '
     '"$request" $status ($body_bytes_sent bytes)"$http_referer" '
     '"$http_user_agent"';
@@ -126,6 +132,7 @@ server {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $forwarded_proto;
         proxy_hide_header Strict-Transport-Security; # Must be removed to not duplicate the header
         add_header Strict-Transport-Security "max-age={{ .Values.kpi.nginx.hsts_max_age }}" always;
         proxy_pass http://backend;

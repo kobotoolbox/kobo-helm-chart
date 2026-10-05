@@ -1,0 +1,25 @@
+suite: kpi nginx forwarded proto
+templates:
+- kpi/configmap.yaml
+release:
+  name: kobo
+values:
+- values/required.yaml
+tests:
+- it: forwards X-Forwarded-Proto to the backend
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: (?s)location / \{.*?proxy_set_header X-Forwarded-Proto \$forwarded_proto;
+
+- it: keeps the incoming header and falls back to the request scheme
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: (?s)map \$http_x_forwarded_proto \$forwarded_proto \{\s*default\s+\$http_x_forwarded_proto;\s*''\s+\$scheme;\s*\}
