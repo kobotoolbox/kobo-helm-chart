@@ -1,3 +1,6 @@
+# 7.2.0
+- kpi nginx sidecar: `nginx.extraVolumeMounts` and `kpi.nginx.protectedMediaPath`, to serve attachments from filesystem storage through the internal `/protected/` location (#115).
+
 # 7.1.0
 - kpi nginx sidecar: `nginx.port` (default `80`) and `nginx.securityContext` (default `{}`), for unprivileged images and restricted Pod Security (#114).
 
