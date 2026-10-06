@@ -164,6 +164,9 @@ spec:
             mountPath: /static
           - name: nginx-conf
             mountPath: /etc/nginx/conf.d/
+          {{- with .Values.nginx.extraVolumeMounts }}
+            {{- toYaml . | nindent 10 }}
+          {{- end }}
           ports:
             - containerPort: {{ .Values.nginx.port }}
       {{- with .Values.kpi.nodeSelector }}
