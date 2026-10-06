@@ -65,6 +65,15 @@ server {
         application/xml
         application/xml+rss
         image/svg+xml;
+    {{- with .Values.kpi.nginx.protectedMediaPath }}
+
+    # Filesystem storage: KPI redirects to /protected/<path relative to
+    # KOBOCAT_MEDIA_ROOT>, served from the media volume mounted in the sidecar
+    location /protected/ {
+        internal;
+        alias {{ trimSuffix "/" . }}/;
+    }
+    {{- end }}
 
     location ~ ^/protected-s3/(.*)$ {
         # Allow internal requests only, i.e. return a 404 to any client who

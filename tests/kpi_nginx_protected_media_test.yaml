@@ -1,0 +1,75 @@
+suite: kpi nginx protected media
+templates:
+- kpi/deployment.yaml
+- kpi/secrets.yaml
+- kpi/configmap.yaml
+release:
+  name: kobo
+values:
+- values/required.yaml
+tests:
+- it: renders no /protected/ location by default
+  template: kpi/configmap.yaml
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  asserts:
+  - notMatchRegex:
+      path: data["nginx.conf"]
+      pattern: location /protected/
+
+- it: renders an internal /protected/ location aliasing protectedMediaPath
+  template: kpi/configmap.yaml
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.nginx.protectedMediaPath: /media/
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: "location /protected/ \\{\\s*internal;\\s*alias /media/;\\s*\\}"
+
+- it: adds the trailing slash to the alias
+  template: kpi/configmap.yaml
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.nginx.protectedMediaPath: /media
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: "alias /media/;"
+
+- it: mounts only the nginx config in the sidecar by default
+  template: kpi/deployment.yaml
+  asserts:
+  - lengthEqual:
+      path: spec.template.spec.containers[?(@.name == "nginx")].volumeMounts
+      count: 2
+
+- it: appends nginx.extraVolumeMounts to the sidecar only
+  template: kpi/deployment.yaml
+  set:
+    kpi.extraVolumes:
+    - name: media
+      persistentVolumeClaim:
+        claimName: kobo-media
+    nginx.extraVolumeMounts:
+    - name: media
+      mountPath: /media
+      readOnly: true
+  asserts:
+  - contains:
+      path: spec.template.spec.containers[?(@.name == "nginx")].volumeMounts
+      content:
+        name: media
+        mountPath: /media
+        readOnly: true
+  - notContains:
+      path: spec.template.spec.containers[?(@.name == "backend")].volumeMounts
+      content:
+        name: media
+        mountPath: /media
+        readOnly: true
