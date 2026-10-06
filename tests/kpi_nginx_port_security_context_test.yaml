@@ -1,0 +1,78 @@
+suite: kpi nginx port and securityContext
+templates:
+- kpi/deployment.yaml
+- kpi/secrets.yaml
+- kpi/service.yaml
+- kpi/configmap.yaml
+release:
+  name: kobo
+values:
+- values/required.yaml
+tests:
+- it: listens on port 80 by default
+  template: kpi/deployment.yaml
+  asserts:
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "nginx")].ports[0].containerPort
+      value: 80
+  - notExists:
+      path: spec.template.spec.containers[?(@.name == "nginx")].securityContext
+
+- it: targets port 80 from the Service by default
+  template: kpi/service.yaml
+  asserts:
+  - equal:
+      path: spec.ports[?(@.name == "nginx")].targetPort
+      value: 80
+
+- it: renders listen 80 by default
+  template: kpi/configmap.yaml
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: "\\n\\s*listen 80;"
+
+- it: applies nginx.port to the container, Service and nginx.conf
+  set:
+    nginx.port: 8080
+  asserts:
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "nginx")].ports[0].containerPort
+      value: 8080
+    template: kpi/deployment.yaml
+  - equal:
+      path: spec.ports[?(@.name == "nginx")].targetPort
+      value: 8080
+    template: kpi/service.yaml
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: "\\n\\s*listen 8080;"
+    template: kpi/configmap.yaml
+    documentSelector:
+      path: metadata.name
+      value: kobo-nginx-kpi-conf
+
+- it: applies nginx.securityContext to the sidecar only
+  template: kpi/deployment.yaml
+  set:
+    nginx.securityContext:
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: [ALL]
+  asserts:
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "nginx")].securityContext
+      value:
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: [ALL]
+  - equal:
+      path: spec.template.spec.containers[?(@.name == "backend")].securityContext
+      value:
+        runAsNonRoot: true
+        runAsUser: 1000

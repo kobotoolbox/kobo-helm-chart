@@ -343,6 +343,11 @@ enketo:
 
 nginx:
   image: nginx:1.31
+  # Port the kpi nginx sidecar listens on. Use 8080 with unprivileged images
+  # (e.g. nginxinc/nginx-unprivileged). Not applied to a custom kpi.nginx.config.
+  port: 80
+  # securityContext of the kpi nginx sidecar container
+  securityContext: {}
 
 # Chart-managed MongoDB is intended for testing only.
 # It uses a replica set by default, but KoboToolbox does not automatically retry
