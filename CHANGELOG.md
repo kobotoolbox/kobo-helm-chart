@@ -1,3 +1,6 @@
+# 7.2.0
+- kpi nginx sidecar: `nginx.extraVolumeMounts` and `kpi.nginx.protectedMediaPath`, to serve attachments from filesystem storage through the internal `/protected/` location (#115).
+
 # 7.0.2
 - `imagePullSecrets` is now rendered in every pod spec (kpi, workers, beat, metrics, enketo, flower, jobs, test pod) (#117).
 
