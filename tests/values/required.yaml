@@ -1,0 +1,14 @@
+# Minimal values for the chart to render with external datastores.
+kobotoolbox:
+  djangoSecret: test-django-secret
+  enketoApiKey: test-enketo-api-key
+  kobocatDatabase: postgis://kobo:pw@postgres:5432/kobocat
+  mongoDatabase: mongodb://kobo:pw@mongo:27017/formhub
+  redis: redis://:pw@redis:6379
+kpi:
+  version: 2.026.33
+  env:
+    secret:
+      DATABASE_URL: postgres://kobo:pw@postgres:5432/koboform
+enketo:
+  version: 7.6.4

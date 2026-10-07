@@ -1,0 +1,27 @@
+suite: kpi post-install job
+templates:
+- kpi/post-install-job.yaml
+release:
+  name: kobo
+values:
+- values/required.yaml
+set:
+  postInstall.command: ./manage.py create_kobo_superuser
+tests:
+- it: loads kpi env from the chart secret and configmap
+  asserts:
+  - equal:
+      path: spec.template.spec.containers[0].envFrom
+      value:
+      - secretRef:
+          name: kobo-kpi
+      - configMapRef:
+          name: kobo-kpi
+
+- it: keeps the inline database URLs
+  asserts:
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: DATABASE_URL
+        value: postgres://kobo:pw@postgres:5432/koboform

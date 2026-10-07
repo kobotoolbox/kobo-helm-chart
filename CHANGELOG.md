@@ -1,3 +1,6 @@
+# 7.0.1
+- Post-install job loads the kpi Secret and ConfigMap (`envFrom`), like the migration job, so `postInstall.command` sees the full kpi environment (#113).
+
 # 7.0.0
 - Move from Redis to Valkey.
 
