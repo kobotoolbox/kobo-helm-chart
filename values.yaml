@@ -437,6 +437,9 @@ postgresql:
         cpu: 100m
         memory: 512Mi
 
+# Secrets used to pull images from private registries, added to every pod spec
+# imagePullSecrets:
+#   - name: my-registry-secret
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""

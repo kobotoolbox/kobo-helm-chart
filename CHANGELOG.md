@@ -1,3 +1,6 @@
+# 7.0.2
+- `imagePullSecrets` is now rendered in every pod spec (kpi, workers, beat, metrics, enketo, flower, jobs, test pod) (#117).
+
 # 7.0.1
 - Post-install job loads the kpi Secret and ConfigMap (`envFrom`), like the migration job, so `postInstall.command` sees the full kpi environment (#113).
 
