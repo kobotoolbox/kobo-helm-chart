@@ -1,3 +1,6 @@
+# 7.3.0
+- `kpi.existingSecret` and `enketo.existingSecret`: use a Secret managed outside the chart instead of the generated one, in every pod and Job of the component. When set, the chart Secret and the `checksum/secret` annotation are not rendered, and `kobotoolbox.djangoSecret`, `kobotoolbox.enketoApiKey` and `kpi.env.secret.DATABASE_URL` are no longer required (#23).
+
 # 7.0.2
 - `imagePullSecrets` is now rendered in every pod spec (kpi, workers, beat, metrics, enketo, flower, jobs, test pod) (#117).
 
