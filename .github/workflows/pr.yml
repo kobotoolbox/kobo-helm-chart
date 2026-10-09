@@ -42,7 +42,12 @@ jobs:
         id: helm-lint
         run: |
           helm lint --strict --set kpi.env.secret.DATABASE_URL=test --set kobotoolbox.kobocatDatabase=test --set kpi.version=test --set enketo.version=test
-      
+
+      - name: Run helm unit tests
+        id: helm-unittest
+        run: |
+          docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD":/apps helmunittest/helm-unittest:4.3.0-1.2.1 .
+
       - name: Failure messages
         if: failure()
         run: |
@@ -51,5 +56,8 @@ jobs:
           fi
           if [ "${{ steps.helm-lint.outcome }}" == "failure" ]; then
             echo "Helm chart linting failed. Please fix the issues before merging."
+          fi
+          if [ "${{ steps.helm-unittest.outcome }}" == "failure" ]; then
+            echo "Helm unit tests failed. Please fix the issues before merging."
           fi
           exit 1
