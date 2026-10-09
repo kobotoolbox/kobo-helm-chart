@@ -1,3 +1,6 @@
+# 7.2.1
+- helm-unittest suites for kpi, enketo, jobs, nginx config, secrets and service account, run by the PR checks; no change to the rendered chart (#118).
+
 # 7.0.2
 - `imagePullSecrets` is now rendered in every pod spec (kpi, workers, beat, metrics, enketo, flower, jobs, test pod) (#117).
 
