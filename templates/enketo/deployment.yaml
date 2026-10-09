@@ -19,7 +19,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if not .Values.enketo.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/enketo/secrets.yaml") . | sha256sum }}
+        {{- end }}
         checksum/configmap: {{ include (print $.Template.BasePath "/enketo/configmap.yaml") . | sha256sum }}
         tag: "{{ .Values.enketo.version }}"
         {{- if .Values.enketo.podAnnotations }}
@@ -76,7 +78,7 @@ spec:
             {{- end }}
           envFrom:
             - secretRef:
-                name: {{ include "kobo.fullname" . }}-enketo
+                name: {{ include "kobo.enketo.secretName" . }}
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-enketo
           {{- with .Values.enketo.extraVolumeMounts }}

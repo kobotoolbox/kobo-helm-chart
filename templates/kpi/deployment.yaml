@@ -19,7 +19,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if not .Values.kpi.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
+        {{- end }}
         checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         tag: "{{ .Values.kpi.version }}"
@@ -120,7 +122,7 @@ spec:
               value: "{{ .Values.global.timeout | default 120 }}"               
           envFrom:
             - secretRef:
-                name: {{ include "kobo.fullname" . }}-kpi
+                name: {{ include "kobo.kpi.secretName" . }}
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
           command: ["/srv/init/run-uwsgi.sh"]
