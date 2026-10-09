@@ -1,0 +1,32 @@
+suite: kpi service
+templates:
+- kpi/service.yaml
+release:
+  name: kobo
+values:
+- values/required.yaml
+tests:
+- it: exposes uWSGI and the nginx sidecar
+  asserts:
+  - equal:
+      path: metadata.name
+      value: kobo-kpi
+  - equal:
+      path: spec.ports
+      value:
+      - name: http
+        protocol: TCP
+        port: 8001
+        targetPort: 8000
+      - name: nginx
+        protocol: TCP
+        port: 80
+        targetPort: 80
+
+- it: uses the service port from values for nginx
+  set:
+    kpi.service.port: 8080
+  asserts:
+  - equal:
+      path: spec.ports[?(@.name == "nginx")].port
+      value: 8080

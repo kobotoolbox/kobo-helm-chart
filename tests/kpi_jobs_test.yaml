@@ -1,0 +1,107 @@
+suite: kpi jobs
+templates:
+- kpi/migration-job.yaml
+- kpi/post-install-job.yaml
+# included by the migration job checksum annotations
+- kpi/secrets.yaml
+- kpi/configmap.yaml
+release:
+  name: kobo
+values:
+- values/required.yaml
+tests:
+- it: runs migrations as a post-install and pre-upgrade hook
+  template: kpi/migration-job.yaml
+  asserts:
+  - isKind:
+      of: Job
+  - equal:
+      path: metadata.annotations["helm.sh/hook"]
+      value: post-install,pre-upgrade
+  - equal:
+      path: spec.template.spec.containers[0].command
+      value: ["./scripts/migrate.sh"]
+  - equal:
+      path: spec.template.spec.containers[0].image
+      value: kobotoolbox/kpi:2.026.33
+  - equal:
+      path: spec.template.spec.containers[0].envFrom
+      value:
+      - secretRef:
+          name: kobo-kpi
+      - configMapRef:
+          name: kobo-kpi
+
+- it: passes the database URLs to the migration job
+  template: kpi/migration-job.yaml
+  asserts:
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: DATABASE_URL
+        value: postgres://kobo:pw@postgres:5432/koboform
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: KC_DATABASE_URL
+        value: postgis://kobo:pw@postgres:5432/kobocat
+
+- it: mounts extra volumes in the migration job
+  template: kpi/migration-job.yaml
+  set:
+    kpi.extraVolumes:
+    - name: media
+      emptyDir: {}
+    kpi.extraVolumeMounts:
+    - name: media
+      mountPath: /srv/media
+  asserts:
+  - equal:
+      path: spec.template.spec.volumes
+      value:
+      - name: media
+        emptyDir: {}
+  - equal:
+      path: spec.template.spec.containers[0].volumeMounts
+      value:
+      - name: media
+        mountPath: /srv/media
+
+- it: skips the migration job when disabled
+  template: kpi/migration-job.yaml
+  set:
+    migrationJob.enabled: false
+  asserts:
+  - hasDocuments:
+      count: 0
+
+- it: fails the migration job without DATABASE_URL
+  template: kpi/migration-job.yaml
+  set:
+    kpi.env.secret.DATABASE_URL: ""
+  asserts:
+  - failedTemplate:
+      errorPattern: kpi.env.secret.DATABASE_URL is a required value
+
+- it: renders no post-install job without a command
+  template: kpi/post-install-job.yaml
+  asserts:
+  - hasDocuments:
+      count: 0
+
+- it: runs the post-install command as a post-install hook
+  template: kpi/post-install-job.yaml
+  set:
+    postInstall.command: ./manage.py create_kobo_superuser
+  asserts:
+  - equal:
+      path: metadata.annotations["helm.sh/hook"]
+      value: post-install
+  - equal:
+      path: spec.template.spec.containers[0].command
+      value: ["/bin/sh", "-c", "./manage.py create_kobo_superuser"]
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: DATABASE_URL
+        value: postgres://kobo:pw@postgres:5432/koboform
