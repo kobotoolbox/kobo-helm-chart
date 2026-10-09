@@ -1,3 +1,6 @@
+# 7.3.0
+- `kpi.existingSecret` and `enketo.existingSecret`: use a Secret managed outside the chart instead of the generated one, in every pod and Job of the component. When set, the chart Secret and the `checksum/secret` annotation are not rendered, and `kobotoolbox.djangoSecret`, `kobotoolbox.enketoApiKey` and `kpi.env.secret.DATABASE_URL` are no longer required (#23).
+
 # 7.2.1
 - helm-unittest suites for kpi, enketo, jobs, nginx config, secrets and service account, run by the PR checks; no change to the rendered chart (#118).
 
