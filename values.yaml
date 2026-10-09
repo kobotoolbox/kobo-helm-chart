@@ -75,6 +75,15 @@ kpi:
     port: 80
   budget:
     minAvailable: 1
+  # -- Name of an existing Secret used instead of the chart-generated "<fullname>-kpi" Secret
+  # by kpi, beat, workers, flower, metrics and the migration/post-install Jobs.
+  # When set, kobotoolbox.djangoSecret, kobotoolbox.enketoApiKey and kpi.env.secret are ignored
+  # for kpi. The Secret must hold the keys the chart would generate: DJANGO_SECRET_KEY,
+  # ENKETO_API_KEY, ENKETO_API_TOKEN; DATABASE_URL and KC_DATABASE_URL when postgresql.enabled
+  # is false; MONGO_DB_URL when mongodb.enabled is false; REDIS_SESSION_URL,
+  # SERVICE_ACCOUNT_BACKEND_URL, CELERY_BROKER_URL, CACHE_URL and ENKETO_REDIS_MAIN_URL when
+  # redis.enabled is false; and any other key you would set in kpi.env.secret.
+  existingSecret: ""
   env:
     normal:
       # By default, the following are set but can be overridden
@@ -265,6 +274,12 @@ enketo:
     port: 80
   budget:
     minAvailable: 1
+  # -- Name of an existing Secret used instead of the chart-generated "<fullname>-enketo" Secret.
+  # When set, kobotoolbox.enketoApiKey and enketo.env.secret are ignored for enketo. The Secret
+  # must hold ENKETO_LINKED_FORM_AND_DATA_SERVER_API_KEY, ENKETO_REDIS_MAIN_URL and
+  # ENKETO_REDIS_CACHE_URL (when redis.enabled is false), and any other key you would set in
+  # enketo.env.secret.
+  existingSecret: ""
   env:
     normal:
       ENKETO_APP_NAME: "Enketo Express for KoboToolbox"

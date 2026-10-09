@@ -175,3 +175,17 @@ Requires REDIS_PASSWORD to be set environment variable
 {{- define "kobo.redis.url" -}}
 {{- printf "redis://:$(REDIS_PASSWORD)@%s:6379" (include "kobo.redis.fullname" .) -}}
 {{- end -}}
+
+{{/*
+Name of the kpi Secret: kpi.existingSecret when set, else the chart-generated one.
+*/}}
+{{- define "kobo.kpi.secretName" -}}
+{{- default (printf "%s-kpi" (include "kobo.fullname" .)) .Values.kpi.existingSecret -}}
+{{- end -}}
+
+{{/*
+Name of the enketo Secret: enketo.existingSecret when set, else the chart-generated one.
+*/}}
+{{- define "kobo.enketo.secretName" -}}
+{{- default (printf "%s-enketo" (include "kobo.fullname" .)) .Values.enketo.existingSecret -}}
+{{- end -}}

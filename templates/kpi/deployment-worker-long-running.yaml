@@ -14,7 +14,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if not .Values.kpi.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
+        {{- end }}
         checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
         tag: "{{ .Values.kpi.version }}"
       labels:
@@ -86,7 +88,7 @@ spec:
             {{- end }}
           envFrom:
             - secretRef:
-                name: {{ include "kobo.fullname" . }}-kpi
+                name: {{ include "kobo.kpi.secretName" . }}
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
           command: ["celery", "-A", "kobo", "worker", "--queues=kpi_long_running_tasks_queue", "-l", "info", "--hostname=kpi_main_worker@%h"]
