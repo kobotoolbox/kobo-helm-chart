@@ -1,3 +1,6 @@
+# 7.1.0
+- kpi nginx sidecar: `nginx.port` (default `80`) and `nginx.securityContext` (default `{}`), for unprivileged images and restricted Pod Security (#114).
+
 # 7.0.2
 - `imagePullSecrets` is now rendered in every pod spec (kpi, workers, beat, metrics, enketo, flower, jobs, test pod) (#117).
 

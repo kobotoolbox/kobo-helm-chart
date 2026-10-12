@@ -131,6 +131,6 @@ server {
         proxy_pass http://backend;
     }
 
-    listen 80;
+    listen {{ .Values.nginx.port }};
     server_tokens off;
 }
