@@ -186,6 +186,10 @@ kpi:
     #      - chart-example.local
   nginx:
     hsts_max_age: "15780000" # 6 months in seconds
+    # Filesystem storage only: path where the KOBOCAT_MEDIA_ROOT volume is mounted
+    # in the nginx sidecar (see nginx.extraVolumeMounts). Enables the internal
+    # /protected/ location used to serve attachments.
+    protectedMediaPath: ""
     large_headers:
       enabled: false
       proxy_buffer_size: "32k"
@@ -348,6 +352,8 @@ nginx:
   port: 80
   # securityContext of the kpi nginx sidecar container
   securityContext: {}
+  # Extra volume mounts for the kpi nginx sidecar, using volumes from kpi.extraVolumes
+  extraVolumeMounts: []
 
 # Chart-managed MongoDB is intended for testing only.
 # It uses a replica set by default, but KoboToolbox does not automatically retry
