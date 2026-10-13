@@ -1,3 +1,6 @@
+# 7.2.1
+- helm-unittest suites for kpi, enketo, jobs, nginx config, secrets and service account, run by the PR checks; no change to the rendered chart (#118).
+
 # 7.2.0
 - kpi nginx sidecar: `nginx.extraVolumeMounts` and `kpi.nginx.protectedMediaPath`, to serve attachments from filesystem storage through the internal `/protected/` location (#115).
 
