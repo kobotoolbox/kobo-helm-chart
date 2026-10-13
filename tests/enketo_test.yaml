@@ -32,7 +32,7 @@ tests:
       runAsUser: null
     serviceAccount:
       create: false
-      name: icrc-kobo
+      name: custom-sa
   asserts:
   - equal:
       path: spec.template.spec.containers[0].securityContext
@@ -40,7 +40,7 @@ tests:
         runAsNonRoot: true
   - equal:
       path: spec.template.spec.serviceAccountName
-      value: icrc-kobo
+      value: custom-sa
 
 - it: renders the api key and redis URLs in the enketo secret
   template: enketo/secrets.yaml

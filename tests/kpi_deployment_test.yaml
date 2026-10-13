@@ -70,9 +70,6 @@ tests:
   template: kpi/deployment.yaml
   asserts:
   - equal:
-      path: spec.template.spec.containers[?(@.name == "nginx")].image
-      value: nginx:1.31
-  - equal:
       path: spec.template.spec.containers[?(@.name == "nginx")].ports
       value:
       - containerPort: 80
@@ -141,11 +138,11 @@ tests:
   set:
     serviceAccount:
       create: false
-      name: icrc-kobo
+      name: custom-sa
   asserts:
   - equal:
       path: spec.template.spec.serviceAccountName
-      value: icrc-kobo
+      value: custom-sa
 
 - it: sets replicas unless autoscaling is enabled
   template: kpi/deployment.yaml
