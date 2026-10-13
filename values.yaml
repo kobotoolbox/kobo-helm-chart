@@ -82,7 +82,14 @@ kpi:
   # ENKETO_API_KEY, ENKETO_API_TOKEN; DATABASE_URL and KC_DATABASE_URL when postgresql.enabled
   # is false; MONGO_DB_URL when mongodb.enabled is false; REDIS_SESSION_URL,
   # SERVICE_ACCOUNT_BACKEND_URL, CELERY_BROKER_URL, CACHE_URL and ENKETO_REDIS_MAIN_URL when
-  # redis.enabled is false; and any other key you would set in kpi.env.secret.
+  # redis.enabled is false; DATABASE_URL and CELERY_BROKER_URL whenever kpi.metrics.enabled is
+  # true, even with the chart-managed PostgreSQL and Redis; and any other key you would set in
+  # kpi.env.secret.
+  # Use a different name than "<fullname>-kpi": the generated Secret is no longer rendered, so
+  # the next upgrade deletes it while the pods still reference it. To migrate, copy it first, e.g.
+  # kubectl get secret <fullname>-kpi -o json | jq '{apiVersion,kind,type,data,metadata:{name:"<new-name>"}}' | kubectl apply -f -
+  # Pods do not restart when the Secret changes: run kubectl rollout restart on the kpi
+  # Deployments after editing it.
   existingSecret: ""
   env:
     normal:
@@ -279,6 +286,11 @@ enketo:
   # must hold ENKETO_LINKED_FORM_AND_DATA_SERVER_API_KEY, ENKETO_REDIS_MAIN_URL and
   # ENKETO_REDIS_CACHE_URL (when redis.enabled is false), and any other key you would set in
   # enketo.env.secret.
+  # Use a different name than "<fullname>-enketo": the generated Secret is no longer rendered, so
+  # the next upgrade deletes it while the pods still reference it. To migrate, copy it first, e.g.
+  # kubectl get secret <fullname>-enketo -o json | jq '{apiVersion,kind,type,data,metadata:{name:"<new-name>"}}' | kubectl apply -f -
+  # Pods do not restart when the Secret changes: run kubectl rollout restart on the enketo
+  # Deployment after editing it.
   existingSecret: ""
   env:
     normal:
