@@ -28,8 +28,10 @@ spec:
         imagePullPolicy: {{ .Values.kpi.image.pullPolicy }}
         command: ["/bin/sh", "-c", "{{ .Values.postInstall.command }}"]
         env:
+          {{- if not .Values.kpi.existingSecret }}
           - name: DJANGO_SECRET_KEY
             value: {{ required "kobotoolbox.djangoSecret is a required value." .Values.kobotoolbox.djangoSecret }}
+          {{- end }}
           {{- if .Values.postgresql.enabled }}
           - name: POSTGRES_PASSWORD
             valueFrom:
@@ -40,7 +42,7 @@ spec:
             value: {{ (include "kobo.postgresql.url" .) }}
           - name: KC_DATABASE_URL
             value: postgres://postgres:$(POSTGRES_PASSWORD)@{{ (include "kobo.postgresql.fullname" .) }}:5432/postgres
-          {{- else }}
+          {{- else if not .Values.kpi.existingSecret }}
           - name: DATABASE_URL
             value: {{ required "kpi.env.secret.DATABASE_URL is a required value." .Values.kpi.env.secret.DATABASE_URL }}
           - name: KC_DATABASE_URL
@@ -56,7 +58,7 @@ spec:
         {{- end }}
         envFrom:
           - secretRef:
-              name: {{ include "kobo.fullname" . }}-kpi
+              name: {{ include "kobo.kpi.secretName" . }}
           - configMapRef:
               name: {{ include "kobo.fullname" . }}-kpi
         {{- with .Values.kpi.extraVolumeMounts }}

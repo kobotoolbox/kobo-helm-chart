@@ -47,10 +47,10 @@ spec:
             valueFrom:
               secretKeyRef:
                 key: CELERY_BROKER_URL
-                name: {{ include "kobo.fullname" . }}-kpi
+                name: {{ include "kobo.kpi.secretName" . }}
           - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
                 key: DATABASE_URL
-                name: {{ include "kobo.fullname" . }}-kpi
+                name: {{ include "kobo.kpi.secretName" . }}
 {{- end }}

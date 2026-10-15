@@ -15,7 +15,9 @@ spec:
   template:
     metadata:
       annotations:
+        {{- if not .Values.kpi.existingSecret }}
         checksum/secret: {{ include (print $.Template.BasePath "/kpi/secrets.yaml") . | sha256sum }}
+        {{- end }}
         checksum/configmap: {{ include (print $.Template.BasePath "/kpi/configmap.yaml") . | sha256sum }}
         tag: "{{ .Values.kpi.version }}"
         {{- if .Values.flower.podAnnotations }}
@@ -67,7 +69,7 @@ spec:
             {{- end }}
           envFrom:
             - secretRef:
-                name: {{ include "kobo.fullname" . }}-kpi
+                name: {{ include "kobo.kpi.secretName" . }}
             - configMapRef:
                 name: {{ include "kobo.fullname" . }}-kpi
       {{- with .Values.flower.nodeSelector }}
