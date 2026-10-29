@@ -26,14 +26,18 @@ map $arg_format $schema_type {
 {{- $kpiHost = (urlParse $kpiUrl).host | lower }}
 {{- $kobocatHost = (urlParse $kobocatUrl).host | lower }}
 {{- end }}
-{{- if and $kpiHost $kobocatHost (ne $kpiHost $kobocatHost) }}
+{{- /* $host has no port: compare and map on hostnames, keep the port for the redirect */}}
+{{- $kpiHostname := regexReplaceAll ":[0-9]+$" $kpiHost "" }}
+{{- $kobocatHostname := regexReplaceAll ":[0-9]+$" $kobocatHost "" }}
+{{- $domainRouting := and $kpiHostname $kobocatHostname (ne $kpiHostname $kobocatHostname) }}
+{{- if $domainRouting }}
 
 # KPI and KoboCAT share this server; tell them apart by public domain. Any
 # other Host (e.g. the internal service name used by Enketo) is left alone.
 map $host $kobo_domain {
     default "";
-    {{ regexReplaceAll ":[0-9]+$" $kpiHost "" }} kpi;
-    {{ regexReplaceAll ":[0-9]+$" $kobocatHost "" }} kobocat;
+    {{ $kpiHostname }} kpi;
+    {{ $kobocatHostname }} kobocat;
 }
 
 map "$kobo_domain $uri" $kobo_domain_route {
@@ -95,7 +99,7 @@ server {
         application/xml
         application/xml+rss
         image/svg+xml;
-    {{- if and $kpiHost $kobocatHost (ne $kpiHost $kobocatHost) }}
+    {{- if $domainRouting }}
 
     # Redirect the KoboCAT root (only) to KPI
     if ($kobo_domain_route = redirect_to_kpi) {

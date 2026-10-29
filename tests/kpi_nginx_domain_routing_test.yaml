@@ -80,6 +80,18 @@ tests:
       path: data["nginx.conf"]
       pattern: kobo_domain
 
+- it: renders no domain routing when KPI and KoboCAT share a hostname on different ports
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.env.normal.KOBOFORM_URL: https://kobo.example.com
+    kpi.env.normal.KOBOCAT_URL: https://kobo.example.com:443
+  asserts:
+  - notMatchRegex:
+      path: data["nginx.conf"]
+      pattern: kobo_domain
+
 - it: renders no domain routing when kpi.nginx.domainRouting is false
   documentSelector:
     path: metadata.name
