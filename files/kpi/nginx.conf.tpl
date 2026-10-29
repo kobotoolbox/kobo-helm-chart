@@ -18,6 +18,40 @@ map $arg_format $schema_type {
     json    application/json;
 }
 
+{{- $kpiUrl := .Values.kpi.env.normal.KOBOFORM_URL | default (include "kobo.kpiUrl" .) }}
+{{- $kobocatUrl := .Values.kpi.env.normal.KOBOCAT_URL | default "" }}
+{{- $kpiHost := "" }}
+{{- $kobocatHost := "" }}
+{{- if and .Values.kpi.nginx.domainRouting $kpiUrl $kobocatUrl }}
+{{- $kpiHost = (urlParse $kpiUrl).host | lower }}
+{{- $kobocatHost = (urlParse $kobocatUrl).host | lower }}
+{{- end }}
+{{- /* $host has no port: compare and map on hostnames, keep the port for the redirect */}}
+{{- $kpiHostname := regexReplaceAll ":[0-9]+$" $kpiHost "" }}
+{{- $kobocatHostname := regexReplaceAll ":[0-9]+$" $kobocatHost "" }}
+{{- $domainRouting := and $kpiHostname $kobocatHostname (ne $kpiHostname $kobocatHostname) }}
+{{- if $domainRouting }}
+
+# KPI and KoboCAT share this server; tell them apart by public domain. Any
+# other Host (e.g. the internal service name used by Enketo) is left alone.
+map $host $kobo_domain {
+    default "";
+    {{ $kpiHostname }} kpi;
+    {{ $kobocatHostname }} kobocat;
+}
+
+map "$kobo_domain $uri" $kobo_domain_route {
+    default "";
+    "kobocat /" redirect_to_kpi;
+}
+
+# TLS is terminated before this sidecar, so $scheme is always http
+map $http_x_forwarded_proto $kobo_public_scheme {
+    default $http_x_forwarded_proto;
+    ""      $scheme;
+}
+
+{{ end -}}
 log_format with_host '$http_host | $remote_addr - $upstream_http_x_kobonaut [$time_local] '
     '"$request" $status ($body_bytes_sent bytes)"$http_referer" '
     '"$http_user_agent"';
@@ -65,6 +99,13 @@ server {
         application/xml
         application/xml+rss
         image/svg+xml;
+    {{- if $domainRouting }}
+
+    # Redirect the KoboCAT root (only) to KPI
+    if ($kobo_domain_route = redirect_to_kpi) {
+        return 301 $kobo_public_scheme://{{ $kpiHost }}/;
+    }
+    {{- end }}
     {{- with .Values.kpi.nginx.protectedMediaPath }}
 
     # Filesystem storage: KPI redirects to /protected/<path relative to

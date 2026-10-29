@@ -1,0 +1,106 @@
+suite: kpi nginx domain routing
+templates:
+- kpi/configmap.yaml
+release:
+  name: kobo
+values:
+- values/required.yaml
+tests:
+- it: renders no domain routing without KOBOCAT_URL
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.env.normal.KOBOFORM_URL: https://kf.example.com
+  asserts:
+  - notMatchRegex:
+      path: data["nginx.conf"]
+      pattern: kobo_domain
+
+- it: maps the KPI and KoboCAT hosts from the ingress and KOBOCAT_URL
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.ingress.enabled: true
+    kpi.ingress.hosts:
+    - host: kf.example.com
+      paths: [{path: /, pathType: Prefix}]
+    kpi.env.normal.KOBOCAT_URL: https://kc.example.com
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: (?m)^\s*kf\.example\.com kpi;$
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: (?m)^\s*kc\.example\.com kobocat;$
+
+- it: redirects the KoboCAT root to KPI with the forwarded scheme
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.env.normal.KOBOFORM_URL: https://kf.example.com
+    kpi.env.normal.KOBOCAT_URL: https://kc.example.com
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: '"kobocat /" redirect_to_kpi;'
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: map \$http_x_forwarded_proto \$kobo_public_scheme \{\s*default \$http_x_forwarded_proto;\s*"" +\$scheme;
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: if \(\$kobo_domain_route = redirect_to_kpi\) \{\s*return 301 \$kobo_public_scheme://kf\.example\.com/;
+
+- it: matches the KPI host without its port but keeps the port in the redirect
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.env.normal.KOBOFORM_URL: https://KF.example.com:8443
+    kpi.env.normal.KOBOCAT_URL: https://kc.example.com
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: (?m)^\s*kf\.example\.com kpi;$
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: return 301 \$kobo_public_scheme://kf\.example\.com:8443/;
+
+- it: renders no domain routing when KPI and KoboCAT share a host
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.env.normal.KOBOFORM_URL: https://kobo.example.com
+    kpi.env.normal.KOBOCAT_URL: https://kobo.example.com
+  asserts:
+  - notMatchRegex:
+      path: data["nginx.conf"]
+      pattern: kobo_domain
+
+- it: renders no domain routing when KPI and KoboCAT share a hostname on different ports
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.env.normal.KOBOFORM_URL: https://kobo.example.com
+    kpi.env.normal.KOBOCAT_URL: https://kobo.example.com:443
+  asserts:
+  - notMatchRegex:
+      path: data["nginx.conf"]
+      pattern: kobo_domain
+
+- it: renders no domain routing when kpi.nginx.domainRouting is false
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.nginx.domainRouting: false
+    kpi.env.normal.KOBOFORM_URL: https://kf.example.com
+    kpi.env.normal.KOBOCAT_URL: https://kc.example.com
+  asserts:
+  - notMatchRegex:
+      path: data["nginx.conf"]
+      pattern: kobo_domain
