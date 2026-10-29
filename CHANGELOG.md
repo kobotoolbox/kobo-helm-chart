@@ -1,3 +1,6 @@
+# 7.4.0
+- kpi nginx sidecar: when `kpi.env.normal.KOBOCAT_URL` and the KPI URL (`kpi.env.normal.KOBOFORM_URL`, or the first `kpi.ingress` host) are on different hosts, the KoboCAT root (`/` only) redirects to KPI, using the scheme from `X-Forwarded-Proto` rather than nginx's `$scheme`, which is always `http` behind a TLS-terminating ingress. Set `kpi.nginx.domainRouting: false` to disable. Requests on any other host, such as the internal service name, are unchanged.
+
 # 7.3.0
 - `kpi.existingSecret` and `enketo.existingSecret`: use a Secret managed outside the chart instead of the generated one, in every pod and Job of the component. When set, the chart Secret and the `checksum/secret` annotation are not rendered, and `kobotoolbox.djangoSecret`, `kobotoolbox.enketoApiKey` and `kpi.env.secret.DATABASE_URL` are no longer required (#23).
 

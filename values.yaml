@@ -206,6 +206,10 @@ kpi:
     # in the nginx sidecar (see nginx.extraVolumeMounts). Enables the internal
     # /protected/ location used to serve attachments.
     protectedMediaPath: ""
+    # When kpi.env.normal.KOBOCAT_URL and the KPI URL (kpi.env.normal.KOBOFORM_URL, or the
+    # first kpi.ingress host) are on different hosts: redirect the KoboCAT root to KPI
+    # using the scheme from X-Forwarded-Proto.
+    domainRouting: true
     large_headers:
       enabled: false
       proxy_buffer_size: "32k"
