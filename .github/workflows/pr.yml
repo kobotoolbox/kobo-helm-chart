@@ -33,6 +33,15 @@ jobs:
           # Exact, fixed-string match so a prerelease like 7.0.0-dev-env doesn't block 7.0.0
           ! oras repo tags ghcr.io/kobotoolbox/kobo | grep -qxF "${CHART_VERSION}"
 
+      - name: Check changelog has version entry
+        id: changelog-version
+        run: |
+          CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
+          if ! grep -Eq "^# ${CHART_VERSION}$" CHANGELOG.md; then
+            echo "CHANGELOG.md is missing an entry for chart version ${CHART_VERSION}."
+            exit 1
+          fi
+
       - name: Set up Helm
         uses: alexellis/arkade-get@master
         with:
@@ -53,6 +62,9 @@ jobs:
         run: |
           if [ "${{ steps.check-version.outcome }}" == "failure" ]; then
             echo "The chart version ${CHART_VERSION} is already in use. you likely want to update the version in Chart.yaml before merging."
+          fi
+          if [ "${{ steps.changelog-version.outcome }}" == "failure" ]; then
+            echo "CHANGELOG.md is missing an entry for the chart version ${CHART_VERSION}."
           fi
           if [ "${{ steps.helm-lint.outcome }}" == "failure" ]; then
             echo "Helm chart linting failed. Please fix the issues before merging."
