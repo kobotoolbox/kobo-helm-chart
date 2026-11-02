@@ -49,6 +49,9 @@ tests:
       pattern: real_ip_header X-Forwarded-For;
   - matchRegex:
       path: data["nginx.conf"]
+      pattern: real_ip_recursive on;
+  - matchRegex:
+      path: data["nginx.conf"]
       pattern: proxy_set_header X-Forwarded-For \$remote_addr;
 
 - it: serves static files and the protected S3 location
