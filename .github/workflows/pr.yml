@@ -37,7 +37,7 @@ jobs:
         id: changelog-version
         run: |
           CHART_VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
-          if ! grep -Eq "^# ${CHART_VERSION}$" CHANGELOG.md; then
+          if ! grep -qxF "# ${CHART_VERSION}" CHANGELOG.md; then
             echo "CHANGELOG.md is missing an entry for chart version ${CHART_VERSION}."
             exit 1
           fi
