@@ -18,7 +18,7 @@ tests:
       path: data["nginx.conf"]
       pattern: server 127\.0\.0\.1:8000;
 
-- it: forwards Host, X-Real-IP and X-Forwarded-For
+- it: forwards Host, X-Real-IP and the client chain when no trusted proxies are configured
   documentSelector:
     path: metadata.name
     value: kobo-nginx-kpi-conf
@@ -32,6 +32,24 @@ tests:
   - matchRegex:
       path: data["nginx.conf"]
       pattern: proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+
+- it: uses the sanitized remote address when trusted proxies are configured
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.nginx.trustedProxyCIDRs:
+      - 10.0.0.0/16
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: set_real_ip_from 10\.0\.0\.0/16;
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: real_ip_header X-Forwarded-For;
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: proxy_set_header X-Forwarded-For \$remote_addr;
 
 - it: serves static files and the protected S3 location
   documentSelector:
