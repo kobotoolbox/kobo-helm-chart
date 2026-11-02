@@ -46,7 +46,9 @@ map "$kobo_domain $uri" $kobo_domain_route {
     {{- if .Values.kpi.nginx.openRosaOnKobocatOnly }}
     # OpenRosa endpoints only exist on the KoboCAT domain. `/api/` is excluded:
     # KPI serves its own formList/manifest/submission under /api/v2/asset_snapshots/.
-    "~^kpi /(?!api/)(.+/)?(formList|submission|bulk-submission(-form)?|xformsManifest|xformsMedia)(/|$)" not_found;
+    # File-serving paths are excluded too: attachment paths start with the
+    # username, which may itself be e.g. "submission".
+    "~^kpi /(?!api/|protected(-s3)?/|static/|media/)(.+/)?(formList|submission|bulk-submission(-form)?|xformsManifest|xformsMedia)(/|$)" not_found;
     {{- end }}
 }
 
