@@ -1,5 +1,5 @@
 # 7.4.0
-- adds `kpi.nginx.trustedProxyCIDRs` - set this to a list of IPv4 CIDR addresses that you want to use as trusted trusted proxies to increase the accuracy of client IP address reporting to the backend; This will typically be the IP range for any load balancer that is in front of the kpi instance.
+- adds `kpi.nginx.trustedProxyCIDRs` - set this to a list of IPv4 CIDR addresses that you want to use as trusted proxies to increase the accuracy of client IP address reporting to the backend; This will typically be the IP range for any load balancer that is in front of the kpi instance.
 
 # 7.3.0
 - `kpi.existingSecret` and `enketo.existingSecret`: use a Secret managed outside the chart instead of the generated one, in every pod and Job of the component. When set, the chart Secret and the `checksum/secret` annotation are not rendered, and `kobotoolbox.djangoSecret`, `kobotoolbox.enketoApiKey` and `kpi.env.secret.DATABASE_URL` are no longer required (#23).

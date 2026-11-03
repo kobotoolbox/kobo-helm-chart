@@ -26,16 +26,13 @@ log_format with_host '$http_host | $remote_addr - $upstream_http_x_kobonaut [$ti
     
 server {
     {{- if .Values.kpi.nginx.trustedProxyCIDRs }}
+    # Define trusted proxy network(s) and configure nginx to read. the correct client IP
     {{- range .Values.kpi.nginx.trustedProxyCIDRs }}
-    # 1. Define a trusted proxy network
     set_real_ip_from {{ . }};
     {{- end }}
-
-    # 2. Specify which header contains the IP chain
     real_ip_header X-Forwarded-For;
-
-    # 3. Read the header right-to-left to strip trusted IPs and find the true client
     real_ip_recursive on;
+    # End trusted proxy
     {{- end }}
 
     client_max_body_size 100M;
@@ -148,11 +145,7 @@ server {
     location / {
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
-        {{- if .Values.kpi.nginx.trustedProxyCIDRs }}
         proxy_set_header X-Forwarded-For $remote_addr;
-        {{- else }}
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        {{- end }}
         proxy_hide_header Strict-Transport-Security; # Must be removed to not duplicate the header
         add_header Strict-Transport-Security "max-age={{ .Values.kpi.nginx.hsts_max_age }}" always;
         proxy_pass http://backend;
