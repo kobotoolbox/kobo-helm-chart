@@ -1,3 +1,6 @@
+# 7.5.0
+- kpi nginx sidecar: when `kpi.env.normal.KOBOCAT_URL` and the KPI URL (`kpi.env.normal.KOBOFORM_URL`, or the first `kpi.ingress` host) are on different hosts, the KoboCAT root (`/` only) redirects to KPI, using the scheme from `X-Forwarded-Proto` rather than nginx's `$scheme`, which is always `http` behind a TLS-terminating ingress. Set `kpi.nginx.domainRouting: false` to disable. Requests on any other host, such as the internal service name, are unchanged.
+
 # 7.4.0
 - adds `kpi.nginx.trustedProxyCIDRs` - set this to a list of IPv4 CIDR addresses that you want to use as trusted proxies to increase the accuracy of client IP address reporting to the backend; This will typically be the IP range for any load balancer that is in front of the kpi instance.
 
