@@ -201,6 +201,7 @@ kpi:
     #    hosts:
     #      - chart-example.local
   nginx:
+    trustedProxyCIDRs: [] # Set this to your load balancer/ingress CIDR so that the client's IP address is reliably reported to the backend
     hsts_max_age: "15780000" # 6 months in seconds
     # Filesystem storage only: path where the KOBOCAT_MEDIA_ROOT volume is mounted
     # in the nginx sidecar (see nginx.extraVolumeMounts). Enables the internal
