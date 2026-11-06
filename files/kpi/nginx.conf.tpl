@@ -45,6 +45,13 @@ map $host $kobo_domain {
 map "$kobo_domain $uri" $kobo_domain_route {
     default "";
     "kobocat /" redirect_to_kpi;
+    {{- if .Values.kpi.nginx.openRosaOnKobocatOnly }}
+    # OpenRosa endpoints only exist on the KoboCAT domain. `/api/` is excluded:
+    # KPI serves its own formList/manifest/submission under /api/v2/asset_snapshots/.
+    # File-serving paths are excluded too: attachment paths start with the
+    # username, which may itself be e.g. "submission".
+    "~^kpi /(?!api/|protected(-s3)?/|static/|media/)(.+/)?(formList|submission|bulk-submission(-form)?|xformsManifest|xformsMedia)(/|$)" not_found;
+    {{- end }}
 }
 
 # TLS is terminated before this sidecar, so $scheme is always http
@@ -116,6 +123,12 @@ server {
     if ($kobo_domain_route = redirect_to_kpi) {
         return 301 $kobo_public_scheme://{{ $kpiHost }}/;
     }
+    {{- if .Values.kpi.nginx.openRosaOnKobocatOnly }}
+
+    if ($kobo_domain_route = not_found) {
+        return 404;
+    }
+    {{- end }}
     {{- end }}
     {{- with .Values.kpi.nginx.protectedMediaPath }}
 

@@ -1,3 +1,10 @@
+# 8.0.0
+- kpi nginx sidecar: OpenRosa endpoints (`formList`, `submission`, `bulk-submission`, `xformsManifest`, `xformsMedia`, at the root or under `/<username>/`) return 404 on the KPI host. They stay available on the KoboCAT host. KPI's own `/api/` endpoints, such as `/api/v2/asset_snapshots/<uid>/formList` used by Enketo previews, are not affected. Applies when the KoboCAT root redirect from 7.4.0 is active; set `kpi.nginx.openRosaOnKobocatOnly: false` to keep the redirect without the 404.
+
+  ACTION NEEDED IF KOBOCOLLECT, ODK COLLECT OR OTHER OPENROSA CLIENTS USE THE KPI DOMAIN:
+
+  Clients configured with the KPI URL (e.g. `https://kf.example.com/<username>`) stop working. Enketo web forms and the KPI web app are not affected. Point them at `KOBOCAT_URL` (e.g. `https://kc.example.com/<username>`), or set `kpi.nginx.openRosaOnKobocatOnly: false` before upgrading.
+
 # 7.5.0
 - kpi nginx sidecar: when `kpi.env.normal.KOBOCAT_URL` and the KPI URL (`kpi.env.normal.KOBOFORM_URL`, or the first `kpi.ingress` host) are on different hosts, the KoboCAT root (`/` only) redirects to KPI, using the scheme from `X-Forwarded-Proto` rather than nginx's `$scheme`, which is always `http` behind a TLS-terminating ingress. Set `kpi.nginx.domainRouting: false` to disable. Requests on any other host, such as the internal service name, are unchanged.
 
