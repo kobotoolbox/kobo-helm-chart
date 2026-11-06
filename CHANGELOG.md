@@ -5,8 +5,11 @@
 
   Clients configured with the KPI URL (e.g. `https://kf.example.com/<username>`) stop working. Enketo web forms and the KPI web app are not affected. Point them at `KOBOCAT_URL` (e.g. `https://kc.example.com/<username>`), or set `kpi.nginx.openRosaOnKobocatOnly: false` before upgrading.
 
-# 7.4.0
+# 7.5.0
 - kpi nginx sidecar: when `kpi.env.normal.KOBOCAT_URL` and the KPI URL (`kpi.env.normal.KOBOFORM_URL`, or the first `kpi.ingress` host) are on different hosts, the KoboCAT root (`/` only) redirects to KPI, using the scheme from `X-Forwarded-Proto` rather than nginx's `$scheme`, which is always `http` behind a TLS-terminating ingress. Set `kpi.nginx.domainRouting: false` to disable. Requests on any other host, such as the internal service name, are unchanged.
+
+# 7.4.0
+- adds `kpi.nginx.trustedProxyCIDRs` - set this to a list of IPv4 CIDR addresses that you want to use as trusted proxies to increase the accuracy of client IP address reporting to the backend; This will typically be the IP range for any load balancer that is in front of the kpi instance.
 
 # 7.3.0
 - `kpi.existingSecret` and `enketo.existingSecret`: use a Secret managed outside the chart instead of the generated one, in every pod and Job of the component. When set, the chart Secret and the `checksum/secret` annotation are not rendered, and `kobotoolbox.djangoSecret`, `kobotoolbox.enketoApiKey` and `kpi.env.secret.DATABASE_URL` are no longer required (#23).
