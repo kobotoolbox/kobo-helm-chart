@@ -53,6 +53,37 @@ tests:
       path: data["nginx.conf"]
       pattern: if \(\$kobo_domain_route = redirect_to_kpi\) \{\s*return 301 \$kobo_public_scheme://kf\.example\.com/;
 
+- it: returns 404 for OpenRosa endpoints on the KPI host, outside /api/ and file-serving paths
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.env.normal.KOBOFORM_URL: https://kf.example.com
+    kpi.env.normal.KOBOCAT_URL: https://kc.example.com
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: '"~\^kpi /\(\?!api/\|protected\(-s3\)\?/\|static/\|media/\)\(\.\+/\)\?\(formList\|submission\|bulk-submission\(-form\)\?\|xformsManifest\|xformsMedia\)\(/\|\$\)" not_found;'
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: if \(\$kobo_domain_route = not_found\) \{\s*return 404;
+
+- it: keeps the redirect but not the 404 when openRosaOnKobocatOnly is false
+  documentSelector:
+    path: metadata.name
+    value: kobo-nginx-kpi-conf
+  set:
+    kpi.nginx.openRosaOnKobocatOnly: false
+    kpi.env.normal.KOBOFORM_URL: https://kf.example.com
+    kpi.env.normal.KOBOCAT_URL: https://kc.example.com
+  asserts:
+  - matchRegex:
+      path: data["nginx.conf"]
+      pattern: '"kobocat /" redirect_to_kpi;'
+  - notMatchRegex:
+      path: data["nginx.conf"]
+      pattern: not_found
+
 - it: matches the KPI host without its port but keeps the port in the redirect
   documentSelector:
     path: metadata.name
