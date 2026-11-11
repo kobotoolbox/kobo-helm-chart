@@ -1,3 +1,6 @@
+# 8.1.0
+- Enables the Enketo default content security policy.  It can be disabled by setting `enketo.env.normal.ENKETO_CSP_ENABLED: "false"`
+
 # 8.0.0
 - kpi nginx sidecar: OpenRosa endpoints (`formList`, `submission`, `bulk-submission`, `xformsManifest`, `xformsMedia`, at the root or under `/<username>/`) return 404 on the KPI host. They stay available on the KoboCAT host. KPI's own `/api/` endpoints, such as `/api/v2/asset_snapshots/<uid>/formList` used by Enketo previews, are not affected. Applies when the KoboCAT root redirect from 7.5.0 is active; set `kpi.nginx.openRosaOnKobocatOnly: false` to keep the redirect without the 404.
 
