@@ -359,6 +359,7 @@ enketo:
       ENKETO_WIDGETS_31: "../../../node_modules/enketo-image-customization-widget/image-customization"
       ENKETO_WIDGETS_32: "../../../node_modules/enketo-literacy-test-widget/literacywidget"
       ENKETO_CSP_ENABLED: "true"
+      ENKETO_CSP_VALUE: "default-src 'self' blob:; script-src 'self' 'unsafe-inline' data: https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' data:; img-src 'self' data: blob: https://*.openstreetmap.org https://*.openstreetmap.fr https://*.opentopomap.org https://*.arcgisonline.com https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' blob: https://maps.googleapis.com https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com"
     secret:
       {}
       # Set if kobotoolbox.redis is unset
