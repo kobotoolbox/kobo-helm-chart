@@ -1,3 +1,6 @@
+# 8.1.1
+- Adds `enketo.env.normal.ENKETO_CSP_VALUE` with a value that allows for google tag manager and openstreet map tiles.  Override this value if you want to modify the enketo content security policy.
+
 # 8.1.0
 - Enables the Enketo default content security policy.  It can be disabled by setting `enketo.env.normal.ENKETO_CSP_ENABLED: "false"`
 
