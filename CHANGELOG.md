@@ -1,3 +1,6 @@
+# 8.1.2
+- Updates the enketo content security policy to support offline mode
+
 # 8.1.1
 - Adds `enketo.env.normal.ENKETO_CSP_VALUE` with a value that allows for google tag manager and openstreet map tiles.  Override this value if you want to modify the enketo content security policy.
 
